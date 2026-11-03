@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.5.0-rc.3",
+    "tag": "v0.5.0-rc.3",
+    "title": "Atrium 0.5.0-rc.3",
+    "prerelease": true,
+    "published_at": "2026-11-03T14:51:46Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.3",
+    "notes": "预发布版，供试用。\n\n## 改动\n\n- **右侧对话也跟随半透明**：开启窗口半透明后，对话和时间线共用同一层背景，不再是一块实色。\n- **动画**：\n    - 新任务从顶部滑入，任务顺序变化时平滑移动。\n    - 任务状态变化时节点轻微弹动，变成阻塞时会跳动一次提醒你。\n    - 时长数字滚动更新，选中任务时高亮渐变。\n    - 对话轮次展开、收起有过渡；新的工具调用淡入；审批和出错从底部浮现；切换任务时对话交叉淡入。\n    - 开启“减弱动态效果”时，这些动画全部停用。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.5.0-rc.3-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.3/Atrium-0.5.0-rc.3-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.5.0-rc.3-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.3/Atrium-0.5.0-rc.3-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.5.0-rc.2",
     "tag": "v0.5.0-rc.2",
     "title": "Atrium 0.5.0-rc.2",
