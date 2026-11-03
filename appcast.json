@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.5.0-rc.4",
+    "tag": "v0.5.0-rc.4",
+    "title": "Atrium 0.5.0-rc.4",
+    "prerelease": true,
+    "published_at": "2026-11-03T15:09:24Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.4",
+    "notes": "预发布版，供试用。\n\n## 改动\n\n- **Atrium 自己的配色**：不再使用 macOS 默认的蓝、红、青、靛。\n    - 底色是暖石色（时间线）和纸色（对话），文字用墨色。\n    - 按钮和链接用庭院绿；阻塞用朱砂，异常用赭黄，待看用青金蓝。\n    - 浅色、深色和“增强对比度”各自调过。\n- **字体与排版**：\n    - 对话标题和你写的消息用衬线：英文 Charter，中文宋体。全角标点间距正确，中英混排不再有大空隙。\n    - 界面和 agent 的回答用系统无衬线；阅读正文 14pt，行距加大；次要文字从 11pt 提到 12pt。\n    - 代码、路径、分支和时长用 Maple Mono。字体随 app 打包（SIL OFL 1.1，许可证在 app 的 Resources/Fonts 里），没有安装这个字体的电脑也能显示。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.5.0-rc.4-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.4/Atrium-0.5.0-rc.4-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.5.0-rc.4-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.4/Atrium-0.5.0-rc.4-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.5.0-rc.3",
     "tag": "v0.5.0-rc.3",
     "title": "Atrium 0.5.0-rc.3",
