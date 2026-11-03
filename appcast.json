@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.4.1",
+    "tag": "v0.4.1",
+    "title": "Atrium 0.4.1",
+    "prerelease": false,
+    "published_at": "2026-11-03T05:57:57Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.4.1",
+    "notes": "这一版的自动更新不再依赖 GitHub CLI。\n\n## 新功能\n\n- **检查更新不再需要 `gh`**：Atrium 改为从公开仓库 [chenkeyv/atrium-releases](https://github.com/chenkeyv/atrium-releases) 读取版本清单并下载更新，不用再安装或登录 GitHub CLI。下载只接受 GitHub 的固定域名，sha256、签名、版本号和 bundle ID 的校验都和以前一样。\n- 发布包同时公开在 atrium-releases，可以直接下载。\n\n## 升级\n\n从 0.4.0 及更早的版本升级到这一版时，仍然要用已登录的 `gh`，这是最后一次。升级到 0.4.1 之后，后续更新就不再需要它了。\n\n## 由 agent 编写的部分\n\n由 Codex 实现。另一个 Codex 会话独立审查后，修复了发布流程的 3 个问题：失败后无法重跑补全、清单可能超过 1 MB、并发发布会漏掉版本。Claude 负责规划、审阅和复测。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.4.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.4.1/Atrium-0.4.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.4.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.4.1/Atrium-0.4.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.4.1-rc.1",
     "tag": "v0.4.1-rc.1",
     "title": "Atrium 0.4.1-rc.1",
