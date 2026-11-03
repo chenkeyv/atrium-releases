@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.5.0-rc.1",
+    "tag": "v0.5.0-rc.1",
+    "title": "Atrium 0.5.0-rc.1",
+    "prerelease": true,
+    "published_at": "2026-11-03T13:08:15Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.1",
+    "notes": "这一版把主窗口换成了任务时间线。这是预发布版，供试用。\n\n## 新功能\n\n- **任务时间线**：时间是主干，每个任务在开始时刻从主干分叉；继续、审查、交接产生的任务从原任务分叉。界面只突出状态：\n    - 阻塞的任务最醒目；\n    - 运行中的任务有心跳，几分钟没有动静、同一命令反复执行或连续失败时会提示；\n    - 跑完待看的任务显示结论。\n- **检查面板随状态变化**：\n    - 阻塞时直接审批、重试或登录；\n    - 运行中看计划进度、工具动态和最近输出，可以把消息排到本轮之后，也可以插话；\n    - 跑完后看结论和改动，可以在原会话里回复、接受，或交给另一个 agent 审查。\n- **权限模式**：全局三档（询问、自动允许编辑、全部自动允许），单个会话可以覆盖。由后台服务执行，关掉窗口也生效；自动允许的操作会在活动记录里标出。\n- **模型、effort 和分支**：每个会话显示实际使用的模型、effort 和所在分支。每个 agent 记住上次的选择，新会话自动套用。\n- **新任务**：⌘N 新建，默认放在新的 worktree 里。\n- **不依赖通知中心**：菜单栏和 Dock 图标显示阻塞和运行中的任务数。\n- **跨天**：没有完成的任务会留在今天的时间线上，⌘[ 和 ⌘] 查看之前的日子。\n- **设置窗口**，以及实验性的半透明窗口背景。\n\n## 升级\n\n- 预发布版不会推送给正式版用户，需要从 Releases 页面手动下载。\n- 如果 0.4.x 的后台服务里还有正在运行的会话，新版无法控制它们，建议先结束会话再升级。没有会话时会自动替换后台服务；替换后，旧会话出现在历史里，可以继续。\n\n## 已知问题\n\n- 任务很少时，时间线区域显得空。\n- Kiro 和 Antigravity 还没有用真实 agent 测试过。\n\n## 由 agent 编写的部分\n\n由 Codex 通过 `atrium-probe` 实现：核心逻辑、时间线视图、主窗口集成、问题修复、权限模式和视觉打磨。设计调研由 Codex 和 Antigravity 完成，依据是你工作电脑一个月的匿名使用数据。两轮独立的 Codex 审查都用真实的 Codex 和 Claude Code 跑过冒烟测试。Claude 负责规划、设计、审阅和复测。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.5.0-rc.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.1/Atrium-0.5.0-rc.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.5.0-rc.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.1/Atrium-0.5.0-rc.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.4.1",
     "tag": "v0.4.1",
     "title": "Atrium 0.4.1",
