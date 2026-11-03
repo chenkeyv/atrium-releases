@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.5.0-rc.6",
+    "tag": "v0.5.0-rc.6",
+    "title": "Atrium 0.5.0-rc.6",
+    "prerelease": true,
+    "published_at": "2026-11-03T15:28:12Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.6",
+    "notes": "预发布版，供试用。\n\n## 改动\n\n- **每个 harness 用它自己的图标**：Atrium 从本机已安装的 app 读取图标显示，自身不打包任何 logo。目前识别 Claude、Codex（含 ChatGPT）、Antigravity、Gemini、Kiro 和 OpenCode 的桌面 app；没装对应 app 的 agent，仍显示它的彩色符号。\n- 包含 rc.5 的全部改动：更华丽的时间线，每行显示模型 · effort 和工作区分支。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.5.0-rc.6-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.6/Atrium-0.5.0-rc.6-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.5.0-rc.6-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.6/Atrium-0.5.0-rc.6-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.5.0-rc.5",
     "tag": "v0.5.0-rc.5",
     "title": "Atrium 0.5.0-rc.5",
