@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.5.0-rc.2",
+    "tag": "v0.5.0-rc.2",
+    "title": "Atrium 0.5.0-rc.2",
+    "prerelease": true,
+    "published_at": "2026-11-03T14:38:38Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.2",
+    "notes": "这一版重新设计了时间线和对话的显示。预发布版，供试用。\n\n## 改动\n\n- **时间线按事件排序**：像 `git log --graph`，每一行是一个任务，最新的在上面，正在跑、阻塞和待看的任务排在最前。左侧的线连回任务开始的位置，后续任务从原任务分叉。时间轴不再按分钟画，空闲时间不占位置；只在跨天的地方标出日期。\n- **行更紧凑**：每行只有状态符号、标题、一句话和时长（或时间），一屏能看清更多任务。运行中的任务每有新活动，圆环会跳动一下。\n- **右侧常驻对话**：\n    - 选中任务就显示它的对话，按轮组织。之前的轮次折叠成“你的消息 + 一句结论”，点击展开。\n    - 每轮的工具调用收成一行计数（读取、编辑、命令、测试结果、失败、自动批准），也可以展开。\n    - 当前这一轮显示计划、最近的工具调用和正在生成的回答。审批、出错和登录出现在对话末尾，也就是 agent 停下的地方。\n- **只有需要你的任务才跨天**：之前看过或完成的任务留在它们那一天，不再全部挤进今天。\n- **头部文字不再显示 Markdown 原文**，比如 `[notes.md](file://…)` 现在显示为 `notes.md`。\n- **Kiro 改用 v3 引擎**（`kiro-cli acp --agent-engine v3`）。v3 通过 ACP 报告模式和模型，Atrium 的预设会在会话开始时自动设好模型，不用每次从 auto 手动切换。\n- 两栏比例大约 4:6，给对话更多宽度。VoiceOver 可以选中时间线里的任务。\n\n## 升级\n\n预发布版不会推送给正式版用户，需要从 Releases 页面手动下载。从 rc.1 升级时，如果还有正在运行的会话，新版会提示你，不会擅自结束它们。\n\n## 由 agent 编写的部分\n\n界面（时间线列表、对话视图和整体排版）由 Claude 设计并编写。事件排序的布局、跨天规则、对话分轮和文字清理由 Codex 通过 `atrium-probe` 实现，并经过另一个 Codex 会话的独立审查。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.5.0-rc.2-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.2/Atrium-0.5.0-rc.2-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.5.0-rc.2-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.2/Atrium-0.5.0-rc.2-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.5.0-rc.1",
     "tag": "v0.5.0-rc.1",
     "title": "Atrium 0.5.0-rc.1",
