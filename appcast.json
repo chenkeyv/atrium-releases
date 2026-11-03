@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.5.0-rc.5",
+    "tag": "v0.5.0-rc.5",
+    "title": "Atrium 0.5.0-rc.5",
+    "prerelease": true,
+    "published_at": "2026-11-03T15:22:35Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.5",
+    "notes": "预发布版，供试用。\n\n## 改动\n\n- **时间线更华丽**，所有装饰都和状态、身份对应：\n    - 活跃任务的线条更粗，用 agent 的颜色渐变，底下垫一层柔光；已完成的任务退成细淡的线。\n    - 运行中的任务有一道光，从分叉处流向节点。\n    - 节点会发光。运行中带缓慢的呼吸光晕，阻塞时光晕更快，提醒你处理。\n    - 主干从“现在”往下渐隐，顶端有一个发光点。\n    - 活跃任务的行底铺一层 agent 色的渐变，阻塞任务铺朱砂色。\n    - 日期分隔改用衬线字配细线。\n- **每行显示 harness 和环境**：\n    - 标题前是 agent 图标，用各自的颜色。\n    - 第三行写模型 · effort，以及仓库 › worktree · 分支；和预设不一致时显示为橙色。\n- 开启“减弱动态效果”时，流光和呼吸光晕停止。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.5.0-rc.5-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.5/Atrium-0.5.0-rc.5-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.5.0-rc.5-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.5/Atrium-0.5.0-rc.5-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.5.0-rc.4",
     "tag": "v0.5.0-rc.4",
     "title": "Atrium 0.5.0-rc.4",
