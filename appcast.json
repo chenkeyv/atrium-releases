@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.7.3",
+    "tag": "v0.7.3",
+    "title": "Atrium 0.7.3",
+    "prerelease": false,
+    "published_at": "2026-11-04T12:41:53Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.7.3",
+    "notes": "这一版让 Atrium agent 能用上聚合多家模型的公司网关。\n\n## 模型服务\n\n- 设置 › 模型服务 › 编辑服务 › 高级里新增\"模型名：加上提供方\"。打开后，模型列表里的每个模型都会按 `owned_by` 拼成\"提供方/模型\"，比如 `deepseek/deepseek-flash`，请求时也用这个名字。小米 Mify 这类网关会把同一个模型挂在多家提供方下面，必须带上提供方才能路由到正确的地方。默认关闭，标准 OpenAI 接口不受影响。\n- 模型列表里注明了 `model_type` 的条目，只保留对话模型（`llm`），向量、语音、图像、视频、重排等模型不再出现在模型选择里。\n\n例如 Mify：\n- 协议选 OpenAI 兼容；\n- 地址填 `https://api.llm.mioffice.cn/v1`；\n- 在\"高级\"里填好模型列表地址，打开\"加上提供方\"。\n\n## 其他\n\n- 修复一个只在 CI 上偶发失败的对话列表测试。v0.7.2 发布时就是被它卡住，重跑后才发出去。\n\n## 由 agent 编写的部分\n\n- Claude 根据网关实际返回的模型列表实现并测试了这些改动。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.7.3-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.7.3/Atrium-0.7.3-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.7.3-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.7.3/Atrium-0.7.3-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.7.2",
     "tag": "v0.7.2",
     "title": "Atrium 0.7.2",
