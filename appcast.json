@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.8.1",
+    "tag": "v0.8.1",
+    "title": "Atrium 0.8.1",
+    "prerelease": false,
+    "published_at": "2026-11-05T04:18:11Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.8.1",
+    "notes": "这一版主要有这些改进：\n- Atrium agent 新增 OpenAI Responses 接口；\n- Anthropic 接口换成当前写法，适配 Claude Opus 5.5、Sonnet 5.5 等新模型；\n- 复合命令不再反复要授权，选了\"全部自动允许\"后 Atrium agent 不再做任何权限判断；\n- 输入框 Shift+Return 换行。\n\n## OpenAI Responses\n\n- 设置 › 模型服务 › 添加里新增\"OpenAI Responses\"，和\"OpenAI 兼容\"（Chat Completions）、\"Anthropic 兼容\"并列，编辑时可以切换协议。\n- 支持的内容：流式回复，思考（包括摘要，以及 DeepSeek 风格的 `reasoning_content`），多个工具调用和分片的参数，用量（含缓存命中和推理 token），以及错误。\n- 推理内容会在工具循环、下一轮和恢复的会话里原样传回，模型能接着上一步思考。\n- 适合 Mify 这类同时提供 Responses 接口的网关。例如 Mify：\n    - 协议选 OpenAI Responses，地址填 `https://api.llm.mioffice.cn/v1`；\n    - 打开\"模型名：加上提供方\"，选 `deepseek/deepseek-flash`。\n\n## Anthropic 接口\n\n- 当前的 Claude 模型（4.6 及以后、Fable、Mythos）改用自适应思考，思考档位（low 到 max）放在 `output_config.effort` 里，思考内容以摘要显示。以前的 `budget_tokens` 写法会被这些新模型直接拒绝（HTTP 400）。\n- 思考档位越高，单次回复的上限越大（high 32K，xhigh 和 max 64K），深度思考不会被截断。只按实际生成的 token 计费。\n- 旧的 Claude 模型，以及 Kimi、GLM、DeepSeek 等\"Anthropic 兼容\"网关，保留原来的思考预算写法。\n- 在模型服务的\"高级\"里可以手动指定思考方式（自动、自适应、思考预算、关闭）和 API 版本。默认版本是 `2026-10-21`，只认旧版本的网关可以改成 `2023-06-01`。\n- 模型拒绝回答时，这一轮会显示\"模型拒绝了这个请求\"和拒绝的类别，不会自动重试，也不会执行这一轮的工具调用。\n- 大的工具参数（比如整个文件的内容）改为边生成边传输；执行前会检查参数，残缺或格式不对的会作为工具错误交还给模型。\n- 裁剪工具输出、重置上下文时，改写点之后已经失效的思考内容会被去掉，避免新模型返回 400。\n\n## 命令权限\n\n- Atrium agent 现在会把复合命令拆开判断。像 `git status && git diff | head` 这样的命令，由已经允许过的命令组成时不再询问。选\"本会话允许\"会记住其中的每个命令，提示里也只列出还没允许过的命令。\n- 引号里的 `|`、`$HOME`，以及 `2>&1`、`>/dev/null` 这类写法，不再算作复合语法。\n- 以下写法仍然每次确认，提示里会写明原因：\n    - 命令替换 `$(…)`、子 shell、heredoc、后台 `&`；\n    - 写入文件的重定向；\n    - `bash -c`、`eval`、`sudo`、`xargs`、`find -exec`、带内联代码的 python 或 awk 等会执行参数里命令的写法。\n- 选了\"全部自动允许\"后，Atrium agent 不再做任何权限判断，所有操作直接执行。每个操作旁边仍有\"自动批准\"标记，记录也照常写入日志。其他 agent 的行为不变。\n\n## 输入框\n\n- Shift+Return 换行，回车照旧发送。换行插在光标处，也可以撤销。\n\n## 已知问题\n\n- 新版本发布后约 5 分钟内，检查更新可能还看不到它。这是 GitHub 缓存造成的，过几分钟再检查即可。\n- 展开一轮的详情后，每段思考最多显示 8 行。会在之后的版本改成可以滚动查看全文。\n- 真实的 Mify、Anthropic 官方服务和第三方兼容网关都没有在发布前实际连通过，只用本地模拟网关验证。遇到问题时请把报错发给我们。\n\n## 由 agent 编写的部分\n\n- Codex 通过 `atrium-probe` 实现了 Responses 接口、Anthropic 接口更新和命令权限。每项都在测试 app 里用模拟网关完整走过一遍。\n- Claude 负责：\n    - 写规格和验收；\n    - 对照 Anthropic 的最新 API 说明定下思考的写法，调整回复上限；\n    - 实现输入框换行；\n    - 合并分支，在真实 app 里检查。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.8.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.8.1/Atrium-0.8.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.8.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.8.1/Atrium-0.8.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.8.0",
     "tag": "v0.8.0",
     "title": "Atrium 0.8.0",
