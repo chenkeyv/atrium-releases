@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.8.6",
+    "tag": "v0.8.6",
+    "title": "Atrium 0.8.6",
+    "prerelease": false,
+    "published_at": "2026-11-06T09:23:57Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.8.6",
+    "notes": "这一版主要有这些改进：\n- Kiro 会话的上下文窗口大小不再抖动，Opus 5.5 稳定显示 1.0M，进度条按 Kiro 自己报的精确百分比走；\n- 右侧小组件栏和底部终端跟着窗口一起半透明；\n- 对话里的工具区和短思考按内容收缩，不再留大块空白；\n- 升级时强制结束卡住的旧后台服务，它启动的 agent 和终端也一起结束，不再留下还在改工作区的孤儿进程。\n\n## Kiro 的上下文窗口\n\n- Kiro 不报告窗口的绝对大小，之前 Atrium 用每次更新里四舍五入过的百分比反推，用量小的时候误差很大，而且 Kiro 对回复和提示词的 token 数只是估算（中文会低估一倍），所以窗口大小会一路漂。\n- 现在只用上下文文件、工具、记忆、会话文件这几类稳定的数据估窗口，估出来的值和已经显示的大小不矛盾就不改；需要重算时吸附到常见的窗口大小（128K、200K、1M 等）。用一份真实的 Kiro 会话回放，195 次更新全程显示 1.0M。\n- 已用量和各类别的数字按 Kiro 报告的百分比乘以窗口大小计算，和它自己的进度一致。\n\n## 半透明\n\n- 开启窗口半透明后，右侧小组件栏不再是实色底。原因是主窗口在半透明设置生效的范围之外读那个开关，一直读到\"关\"。\n- 终端跟着窗口一起透出背景：半透明时终端背景完全透明，文字、光标、选区颜色不变；关闭半透明或系统开启\"减少透明度\"\"增强对比度\"时恢复实色。拖动不透明度滑块、开关模糊时立即生效，不用重开终端。独立的终端窗口（⌥⌘T）同样跟随。\n\n## 对话布局\n\n- 正在运行的工具列表按实际内容的高度显示，最多仍是 5 行或对话区高度的 40%；只有一个调用时不再预留 5 行的空白。\n- 展开的短思考按文字高度显示，长思考仍在 60% 高度内滚动。\n\n## 后台服务\n\n- 升级时旧后台服务卡住不退出的情况下，Atrium 会先结束它，再结束它启动的 agent 和终端进程。只结束升级前确认属于旧服务的进程（按进程号和启动时间识别），正常退出的路径不受影响。\n\n## 已知问题\n\n- 新版本发布后约 5 分钟内，检查更新可能还看不到它。这是 GitHub 缓存造成的，过几分钟再检查即可。\n- Kiro 的窗口大小仍是估算值，不是 Kiro 报告的。模型切换后窗口变化会在下一次用量更新时体现。\n- 3000 项的大会话里快速滚动，个别帧的间隔仍比 v0.8.1 略长（p95 约 33 毫秒）。\n\n## 由 agent 编写的部分\n\n- Codex、OpenCode 和 Antigravity 这天都没有额度，四项改动都由 Claude Code 的子 agent 实现：布局收缩用 Opus，其余三项用 Sonnet。每项都按规格在隔离的真实 app 里验证，并留下截图或日志。\n- Claude（Atrium 总工程师）负责：\n    - 写规格和验收，独立重跑全部测试（两种并发模式）和真实 app 测试工具；\n    - 用真实的 Kiro 会话日志核对上下文用量的字段口径，据此改了三轮规则；\n    - 合并四个分支并发布。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.8.6-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.8.6/Atrium-0.8.6-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.8.6-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.8.6/Atrium-0.8.6-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.8.5",
     "tag": "v0.8.5",
     "title": "Atrium 0.8.5",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.5.0-rc.1-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.1/Atrium-0.5.0-rc.1-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.4.1",
-    "tag": "v0.4.1",
-    "title": "Atrium 0.4.1",
-    "prerelease": false,
-    "published_at": "2026-11-03T05:57:57Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.4.1",
-    "notes": "这一版的自动更新不再依赖 GitHub CLI。\n\n## 新功能\n\n- **检查更新不再需要 `gh`**：Atrium 改为从公开仓库 [chenkeyv/atrium-releases](https://github.com/chenkeyv/atrium-releases) 读取版本清单并下载更新，不用再安装或登录 GitHub CLI。下载只接受 GitHub 的固定域名，sha256、签名、版本号和 bundle ID 的校验都和以前一样。\n- 发布包同时公开在 atrium-releases，可以直接下载。\n\n## 升级\n\n从 0.4.0 及更早的版本升级到这一版时，仍然要用已登录的 `gh`，这是最后一次。升级到 0.4.1 之后，后续更新就不再需要它了。\n\n## 由 agent 编写的部分\n\n由 Codex 实现。另一个 Codex 会话独立审查后，修复了发布流程的 3 个问题：失败后无法重跑补全、清单可能超过 1 MB、并发发布会漏掉版本。Claude 负责规划、审阅和复测。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.4.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.4.1/Atrium-0.4.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.4.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.4.1/Atrium-0.4.1-macos-arm64.zip.sha256"
       }
     ]
   }
