@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.9.1",
+    "tag": "v0.9.1",
+    "title": "Atrium 0.9.1",
+    "prerelease": false,
+    "published_at": "2026-11-06T16:48:28Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.9.1",
+    "notes": "这一版主要有这些改进：\n- Antigravity 改走它自己的 ACP 服务（`agy acp`）：和 Claude Code、Codex、Kiro 一样的会话、权限、模型和思考等级，老的无头模式只在没有 ACP 的旧版 `agy` 上作为回退；\n- 时间线行里的命令原样显示，`$HOME/x` 不再被缩成 `$x`。\n\n## Antigravity\n\n- 新建 Antigravity 会话时，Atrium 先探测 `agy acp --help`（每次运行探测一次，5 秒超时）。成功就用 ACP；失败就回到原来的无头模式，并在对话里提示\"Antigravity 没有 ACP 模式，使用无头模式。\"。自己在 agents.json 里改过 Antigravity 命令行的，按改过的启动，不探测。\n- 登录：按 Antigravity 给出的方式认证（oauth-personal、oauth-business、gemini-api-key、agent-platform）。设了 `GEMINI_API_KEY` 环境变量的直接用它。`terminal-login` 只能在终端里完成，Atrium 不列出来。\n- 模型和思考等级是会话配置项，和 Kiro 一样在对话里切换，预设也照常生效。思考等级映射到强度格：Low 一格，Medium 两格，High 三格，Extra 四格，Max 四格加顶部墨色。Gemini 3.8 Flash 目前只有 Low、Medium、High 三档。\n- 插话：运行中按 Return 发出的消息作为第二个 prompt 送进当前轮，Antigravity 把它并进正在跑的回合，输入框下方显示\"等待模型采纳\"，被采纳后出现在采纳的位置。Antigravity 不接受时，消息退回排队并提示\"Antigravity 没有接受这条插话，已排到下一轮发送。\"。有权限请求在等的时候，插话等权限处理完再送。\n- 沙箱模式下用 `--sandbox` 启动（这是 Antigravity 自己的终端限制，不是 Atrium 内置 Agent 的围栏）；对话里切了 worktree 的，用 `--add-dir` 把那个目录交给它。权限模式在会话中途切换不会重启 Antigravity。\n- 恢复：和其他 ACP agent 一样走原生会话恢复，升级时的挂起和恢复也覆盖 Antigravity。\n\n## 小修\n\n- 时间线行、吸顶工具条和辅助功能标签里的命令原样显示：`$HOME/x`、`${HOME}/x`、`$(pwd)/x` 不再被当成文件路径缩写。对话面板本来就是对的。\n- `TerminalHostTests.relayStartupAndErrorPaths` 在负载下偶发失败是测试夹具里退出码先于输出可见的竞态，已修；产品代码没有改动。\n\n## 已知问题\n\n- Antigravity 在取消（Esc）之后，它自己派生的 shell 子进程不一定会被结束；会话停止时 Atrium 会连同子孙进程一起清理。\n- Antigravity 不报告上下文窗口大小，右栏的上下文小组件仍显示\"还没有报告上下文用量\"。\n- 没有在 Antigravity 上验证过的路径：有权限请求在等时发插话、`--sandbox` 和 `--add-dir` 的实际效果、原生会话恢复；都按 ACP 的约定实现，遇到问题请反馈。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.9.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.9.1/Atrium-0.9.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.9.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.9.1/Atrium-0.9.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.9.0",
     "tag": "v0.9.0",
     "title": "Atrium 0.9.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.5.0-rc.4-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.4/Atrium-0.5.0-rc.4-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.5.0-rc.3",
-    "tag": "v0.5.0-rc.3",
-    "title": "Atrium 0.5.0-rc.3",
-    "prerelease": true,
-    "published_at": "2026-11-03T14:51:46Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.3",
-    "notes": "预发布版，供试用。\n\n## 改动\n\n- **右侧对话也跟随半透明**：开启窗口半透明后，对话和时间线共用同一层背景，不再是一块实色。\n- **动画**：\n    - 新任务从顶部滑入，任务顺序变化时平滑移动。\n    - 任务状态变化时节点轻微弹动，变成阻塞时会跳动一次提醒你。\n    - 时长数字滚动更新，选中任务时高亮渐变。\n    - 对话轮次展开、收起有过渡；新的工具调用淡入；审批和出错从底部浮现；切换任务时对话交叉淡入。\n    - 开启“减弱动态效果”时，这些动画全部停用。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.5.0-rc.3-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.3/Atrium-0.5.0-rc.3-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.5.0-rc.3-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.3/Atrium-0.5.0-rc.3-macos-arm64.zip.sha256"
       }
     ]
   }
