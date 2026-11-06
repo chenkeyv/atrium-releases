@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.10.0",
+    "tag": "v0.10.0",
+    "title": "Atrium 0.10.0",
+    "prerelease": false,
+    "published_at": "2026-11-06T19:10:30Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.10.0",
+    "notes": "这一版 Atrium 默认说英文，中文作为翻译保留：\n- 界面、通知、菜单、错误提示和 Atrium 内置 Agent 的提示都以英文为原文，中文是对应的译文；\n- 设置 › 通用 新增“语言”：系统、English、中文。\n\n## 语言\n\n- 选项：“系统”看 macOS 首选语言里英文和中文哪个排在前面，两个都没有时用英文；“English”和“中文”固定使用该语言。默认是“系统”。\n- 生效：改了以后 Atrium 会提示“重启后生效”。退出再打开 Atrium 后，界面换成新语言。\n- 后台服务和 Atrium 内置 Agent 跟随 app 的语言，它们写进对话的提示（例如“后台服务已更换，会话已恢复。”、沙箱和权限提示）和界面一致。正在运行的后台服务保持启动时的语言，直到它被更换或重启。\n- Claude Code、Codex、Kiro 等外部 Agent 不受这个设置影响，它们用自己的语言。\n\n## 已有对话\n\n- 对话里已经写下的提示保留写入时的语言，切换语言后不会重新翻译。\n- 旧版本 Atrium 内置 Agent 写下的中文子任务报告、退出码和工具标题照常识别，计数、改动文件和回忆入口都正常显示。\n- 跨会话记忆的分类和工作笔记的小标题仍沿用原来的中文标识，已保存的记忆不需要迁移。\n\n## 小修\n\n- 时间线的日期和星期、时间范围的月份按所选语言的格式显示。\n- 英文界面里，“模型服务”设置页叫 Providers；中文界面不变。\n- 英文文案按界面用语重写，比原来的中文短的地方，中文也一并精简了，例如“Agent 已退出”“终端输出”“已有请求在处理，完成后再发送。”。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.10.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.10.0/Atrium-0.10.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.10.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.10.0/Atrium-0.10.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.9.1",
     "tag": "v0.9.1",
     "title": "Atrium 0.9.1",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.5.0-rc.5-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.5/Atrium-0.5.0-rc.5-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.5.0-rc.4",
-    "tag": "v0.5.0-rc.4",
-    "title": "Atrium 0.5.0-rc.4",
-    "prerelease": true,
-    "published_at": "2026-11-03T15:09:24Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.4",
-    "notes": "预发布版，供试用。\n\n## 改动\n\n- **Atrium 自己的配色**：不再使用 macOS 默认的蓝、红、青、靛。\n    - 底色是暖石色（时间线）和纸色（对话），文字用墨色。\n    - 按钮和链接用庭院绿；阻塞用朱砂，异常用赭黄，待看用青金蓝。\n    - 浅色、深色和“增强对比度”各自调过。\n- **字体与排版**：\n    - 对话标题和你写的消息用衬线：英文 Charter，中文宋体。全角标点间距正确，中英混排不再有大空隙。\n    - 界面和 agent 的回答用系统无衬线；阅读正文 14pt，行距加大；次要文字从 11pt 提到 12pt。\n    - 代码、路径、分支和时长用 Maple Mono。字体随 app 打包（SIL OFL 1.1，许可证在 app 的 Resources/Fonts 里），没有安装这个字体的电脑也能显示。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.5.0-rc.4-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.4/Atrium-0.5.0-rc.4-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.5.0-rc.4-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.4/Atrium-0.5.0-rc.4-macos-arm64.zip.sha256"
       }
     ]
   }
