@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.8.5",
+    "tag": "v0.8.5",
+    "title": "Atrium 0.8.5",
+    "prerelease": false,
+    "published_at": "2026-11-06T03:49:35Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.8.5",
+    "notes": "## What's Changed\n* Sticky tool bar: pin an expanded tool list's bar while scrolling, plus collapse viewport coverage by @chenkeyv in https://github.com/chenkeyv/atrium/pull/46\n* Let the window tint go down to 15% by @chenkeyv in https://github.com/chenkeyv/atrium/pull/44\n* 修 sticky 工具条与透明度 blur 地板的编译冲突 by @chenkeyv in https://github.com/chenkeyv/atrium/pull/47\n\n\n**Full Changelog**: https://github.com/chenkeyv/atrium/compare/v0.8.4...v0.8.5",
+    "assets": [
+      {
+        "name": "Atrium-0.8.5-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.8.5/Atrium-0.8.5-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.8.5-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.8.5/Atrium-0.8.5-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.8.4",
     "tag": "v0.8.4",
     "title": "Atrium 0.8.4",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.4.1-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.4.1/Atrium-0.4.1-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.4.1-rc.1",
-    "tag": "v0.4.1-rc.1",
-    "title": "Atrium 0.4.1-rc.1",
-    "prerelease": true,
-    "published_at": "2026-11-03T05:51:29Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.4.1-rc.1",
-    "notes": "## What's Changed\n* Check for updates without the GitHub CLI by @chenkeyv in https://github.com/chenkeyv/atrium/pull/17\n\n\n**Full Changelog**: https://github.com/chenkeyv/atrium/compare/v0.4.0...v0.4.1-rc.1",
-    "assets": [
-      {
-        "name": "Atrium-0.4.1-rc.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.4.1-rc.1/Atrium-0.4.1-rc.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.4.1-rc.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.4.1-rc.1/Atrium-0.4.1-rc.1-macos-arm64.zip.sha256"
       }
     ]
   }
