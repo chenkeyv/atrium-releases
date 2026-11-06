@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.10.1",
+    "tag": "v0.10.1",
+    "title": "Atrium 0.10.1",
+    "prerelease": false,
+    "published_at": "2026-11-06T20:34:26Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.10.1",
+    "notes": "这一版主要有这些改进：\n- 右栏的 Folder 小组件变成了 git viewer：点一个改过的文件，就在窗口内的卡片里看它的改动，带行号、增删标记和语法高亮；\n- 文件和文件夹有了按类型的图标（Material Icon Theme）。\n\n## 看改动\n\n- 「Changed by this task」里的文件，以及目录树里带状态字母的文件，单击打开改动卡片；双击仍用默认应用打开；右键菜单多了「Show changes / 查看改动」。\n- 卡片和设置一样是窗口内的卡片：标题是相对路径、状态字母和 `+a −d`，右侧两个图标按钮分别是在任务终端里打开（预填 `git diff` 命令，不执行）和用默认应用打开，Esc 关闭。\n- 正文是统一 diff：左边两列旧/新行号，`+`/`−` 标记列，新增行和删除行各有浅底色，代码按文件语言高亮。超过 6 行的未改动段折叠成一行「N unchanged lines / N 行未改动」，后面跟 git 给的函数上下文，点一下原地展开。⌘C 复制选中的行。\n- 改动来源：已跟踪的文件是工作区相对 HEAD 的差异；未跟踪文件整个算新增；已删除文件显示 HEAD 里的内容；重命名跟随新名字，纯重命名显示「Renamed without changes」；二进制文件显示两侧大小；超过 5000 行显示「Diff too large to show」，可以转到终端看。\n- 不是 git 仓库的目录：用本任务里 Agent 自己报告的最近一次改动，标注「From the agent / 来自 agent 的改动」；没有的话这一行不能点开。\n- 卡片打开期间文件被改了会自动刷新（约 1 秒）。\n- 无障碍：每一行读作「Line 12, added: …」，计数读作「12 added, 3 removed」。\n\n## 状态字母\n\n- 新增 R（重命名）：列表里显示 `old → new`，树里只显示新名字。\n- 已加入暂存区、之后又改过的文件现在显示 A（相对 HEAD 它是新文件），以前显示 M。\n\n## 图标\n\n- 文件按扩展名和知名文件名（`package.json`、`Package.swift`、`Dockerfile`、`Makefile`、`.gitignore`、`README.md`、锁文件……）匹配图标，文件夹按名字匹配（`.git`、`node_modules`、`Sources`、`Tests`、`docs`、`scripts`、`build`……），打开和关闭状态跟随展开。\n- 图标用主题原色，14 pt，和文字基线对齐；状态字母和计数列位置不变。减少动态效果时没有变化。对辅助功能是装饰性的。\n- 来源：PKief/vscode-material-icon-theme（MIT），只打包用到的 222 个 SVG，许可文件随 app 一起分发。\n\n## 已知\n\n- 卡片里的代码用 Maple Mono，`->`、`==` 会显示成连字，和其他代码视图一致。\n- 「来自 agent 的改动」和「改动过大」两种卡片只有单元测试覆盖。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.10.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.10.1/Atrium-0.10.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.10.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.10.1/Atrium-0.10.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.10.0",
     "tag": "v0.10.0",
     "title": "Atrium 0.10.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.5.0-rc.6-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.6/Atrium-0.5.0-rc.6-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.5.0-rc.5",
-    "tag": "v0.5.0-rc.5",
-    "title": "Atrium 0.5.0-rc.5",
-    "prerelease": true,
-    "published_at": "2026-11-03T15:22:35Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.5",
-    "notes": "预发布版，供试用。\n\n## 改动\n\n- **时间线更华丽**，所有装饰都和状态、身份对应：\n    - 活跃任务的线条更粗，用 agent 的颜色渐变，底下垫一层柔光；已完成的任务退成细淡的线。\n    - 运行中的任务有一道光，从分叉处流向节点。\n    - 节点会发光。运行中带缓慢的呼吸光晕，阻塞时光晕更快，提醒你处理。\n    - 主干从“现在”往下渐隐，顶端有一个发光点。\n    - 活跃任务的行底铺一层 agent 色的渐变，阻塞任务铺朱砂色。\n    - 日期分隔改用衬线字配细线。\n- **每行显示 harness 和环境**：\n    - 标题前是 agent 图标，用各自的颜色。\n    - 第三行写模型 · effort，以及仓库 › worktree · 分支；和预设不一致时显示为橙色。\n- 开启“减弱动态效果”时，流光和呼吸光晕停止。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.5.0-rc.5-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.5/Atrium-0.5.0-rc.5-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.5.0-rc.5-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.5/Atrium-0.5.0-rc.5-macos-arm64.zip.sha256"
       }
     ]
   }
