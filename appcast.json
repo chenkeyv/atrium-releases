@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.10.2",
+    "tag": "v0.10.2",
+    "title": "Atrium 0.10.2",
+    "prerelease": false,
+    "published_at": "2026-11-06T23:05:29Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.10.2",
+    "notes": "这一版去掉了 Antigravity 的无头模式。\n\n## Antigravity\n\n- 去掉 Antigravity 的无头模式：Antigravity 只走 `agy acp`，不再有「没有 ACP 时退回无头」这一路。`agy` 没有 `acp` 命令（版本太旧）时，会话失败并提示「Antigravity 需要带 `agy acp` 的版本」。\n- `agents.json` 里还写着 `\"protocol\": \"agy-headless\"` 的条目会按 ACP 启动，日志里留一行提示，不会报错。\n- 旧会话：无头模式存下的 Antigravity 会话，原生 ID 是无头模式的对话 ID，`agy acp` 的 `session/resume` 认不出来。继续这样的会话时，走已有的「恢复失败」路径，带着对话摘要开一个新会话，历史记录照常保留。\n- Antigravity 会话现在显示上下文用量：已用 token 来自每轮 prompt 结果里的 usage（`totalTokens`），窗口按内置的模型窗口表（Gemini 4 Argon、Gemini 3.8 Flash、Claude Opus 5.5、Claude Sonnet 5.5、GPT-OSS 120B）匹配；切换模型后，下一轮按新模型的窗口计算。表里没有的模型只显示已用 token 数，不显示百分比和进度条。\n\n## 测试\n\n- 修复 `hiddenSelectionCanBeReselectedByTheSameNotificationID` 偶发失败：测试用固定的 40 ms 停顿假定选中状态已经生效，主线程繁忙时先调了时间范围，两件事的顺序反了；现在每一步都等自己独有的效果。\n- 修复 `aRejectedSteerFallsBackToTheNextTurnAndSaysSo` 偶发失败：被插话的第一轮只有固定 3 秒，进程被饿住时轮次先结束，插话就不再被拒绝；现在第一轮一直开着，直到测试放行，等到「已拒绝」的提示出现再继续。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.10.2-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.10.2/Atrium-0.10.2-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.10.2-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.10.2/Atrium-0.10.2-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.10.1",
     "tag": "v0.10.1",
     "title": "Atrium 0.10.1",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.5.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0/Atrium-0.5.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.5.0-rc.6",
-    "tag": "v0.5.0-rc.6",
-    "title": "Atrium 0.5.0-rc.6",
-    "prerelease": true,
-    "published_at": "2026-11-03T15:28:12Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.5.0-rc.6",
-    "notes": "预发布版，供试用。\n\n## 改动\n\n- **每个 harness 用它自己的图标**：Atrium 从本机已安装的 app 读取图标显示，自身不打包任何 logo。目前识别 Claude、Codex（含 ChatGPT）、Antigravity、Gemini、Kiro 和 OpenCode 的桌面 app；没装对应 app 的 agent，仍显示它的彩色符号。\n- 包含 rc.5 的全部改动：更华丽的时间线，每行显示模型 · effort 和工作区分支。\n\n## 由 agent 编写的部分\n\n由 Claude 设计并编写。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.5.0-rc.6-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.6/Atrium-0.5.0-rc.6-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.5.0-rc.6-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.5.0-rc.6/Atrium-0.5.0-rc.6-macos-arm64.zip.sha256"
       }
     ]
   }
