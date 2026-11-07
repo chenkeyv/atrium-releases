@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.11.2",
+    "tag": "v0.11.2",
+    "title": "Atrium 0.11.2",
+    "prerelease": false,
+    "published_at": "2026-11-07T13:27:17Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.11.2",
+    "notes": "这一版是远程的第一步：app 可以连接一个不是它自己启动的后台服务（比如另一台 Mac 上经 SSH 转发过来的 socket）。这还是隐藏开关，没有界面上的远程配置；阶段 0 的目的是把「哪些功能还在读本机」实测出来，给阶段 1 定大小。\n\n## 远程（阶段 0）\n\n- 设了环境变量 `ATRIUM_SOCKET` 或 `defaults` 键 `daemon.socketPath`（环境变量优先，`~` 会展开），app 就只连接这个 socket：不启动、不升级、不替换、不停止、不杀这个后台服务。重启对话框和「退出并停止所有代理」置灰并提示「已连接外部后台服务」；断线按原有退避重连。\n- 协议不兼容时保持只读：连接保留、动作禁用，提示「远端后台服务为 X（协议 N）；本应用需要协议 ≥ M」。\n- 设置里多一页「远程」（只在外部模式或 `ATRIUM_REMOTE_SETTINGS=1` 时出现）：socket 路径、「使用本机后台服务」、连接状态（已连接 / 重新连接中 / 不兼容）。\n- 实测缺口表在 `docs/remote.md`：对话、权限卡、插话、取消、终端抽屉（shell 在远端）、历史列表、工作区跟随、外部后台服务重启后的恢复都可用；目录小组件、diff 卡、点开历史、新建任务选目录、打开文件读的是本机，阶段 1 要加 `history/load`、`fs/tree`、`fs/watch`、`fs/list`、`git/status`、`git/diff`。快照约 6–7 KB / 任务，relay 每向加 50 ms 时一次调用约 103 ms。\n- 真机的 `ssh -L` 命令写在文档里（要转发 `atriumd.sock` 和 `atriumd.sock.terminal` 两个），没有在第二台 Mac 上验证过。\n\n## 测试\n\n- 新增 socket 覆盖、惰性路径、不兼容只读、不 spawn 重连的测试；本机模拟远端（第二个后台服务 + `socket-relay.py`，app 在 Seatbelt 下看不到远端目录）；真机检查脚本 `check-remote-phase0.py`。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.11.2-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.11.2/Atrium-0.11.2-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.11.2-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.11.2/Atrium-0.11.2-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.11.1",
     "tag": "v0.11.1",
     "title": "Atrium 0.11.1",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.8.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.8.0/Atrium-0.8.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.7.3",
-    "tag": "v0.7.3",
-    "title": "Atrium 0.7.3",
-    "prerelease": false,
-    "published_at": "2026-11-04T12:41:53Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.7.3",
-    "notes": "这一版让 Atrium agent 能用上聚合多家模型的公司网关。\n\n## 模型服务\n\n- 设置 › 模型服务 › 编辑服务 › 高级里新增\"模型名：加上提供方\"。打开后，模型列表里的每个模型都会按 `owned_by` 拼成\"提供方/模型\"，比如 `deepseek/deepseek-flash`，请求时也用这个名字。小米 Mify 这类网关会把同一个模型挂在多家提供方下面，必须带上提供方才能路由到正确的地方。默认关闭，标准 OpenAI 接口不受影响。\n- 模型列表里注明了 `model_type` 的条目，只保留对话模型（`llm`），向量、语音、图像、视频、重排等模型不再出现在模型选择里。\n\n例如 Mify：\n- 协议选 OpenAI 兼容；\n- 地址填 `https://api.llm.mioffice.cn/v1`；\n- 在\"高级\"里填好模型列表地址，打开\"加上提供方\"。\n\n## 其他\n\n- 修复一个只在 CI 上偶发失败的对话列表测试。v0.7.2 发布时就是被它卡住，重跑后才发出去。\n\n## 由 agent 编写的部分\n\n- Claude 根据网关实际返回的模型列表实现并测试了这些改动。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.7.3-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.7.3/Atrium-0.7.3-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.7.3-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.7.3/Atrium-0.7.3-macos-arm64.zip.sha256"
       }
     ]
   }
