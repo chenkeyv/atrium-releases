@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.11.1",
+    "tag": "v0.11.1",
+    "title": "Atrium 0.11.1",
+    "prerelease": false,
+    "published_at": "2026-11-07T12:55:34Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.11.1",
+    "notes": "这一版加了主 Agent 模式的第一阶段：一个会话可以成为「主 Agent」，用 Atrium 给它的工具创建、指挥、等待和关闭 worker 会话；worker 是普通会话，在侧栏里嵌在主 Agent 下面，你随时可以看、插话或改权限。\n\n## 主 Agent 与 worker\n\n- 新任务面板多一个「主 Agent」开关（只对能接收 MCP 工具的智能体显示：Claude Code、Codex、Kiro、Antigravity…）。打开后，Atrium 在它的每次 `session/new`、`load`、`resume` 里都带上一个 MCP 服务 `atrium`（随 app 打包的 `atrium-mcp`），重启和升级后工具还在。\n- 九个工具：`sessions_list`、`session_create`（agent、目录、提示、标题、权限档、模型、强度）、`session_prompt`（空闲立刻发，忙时排队）、`session_steer`、`session_cancel`、`session_close`、`session_wait`（等轮结束 / 权限请求 / 空闲，最长 600 秒）、`session_read`（摘要 / 最后一条 / 工具调用 / 全文，带游标）、`session_respond_permission`。错误信息是英文，给模型读。\n- 规则由 daemon 把关：只有活着的主 Agent 能建 worker，worker 不能再建 worker，同时最多 4 个；主 Agent 在围栏里时 worker 也在围栏里（无围栏的主 Agent 可以建任一档）；worker 建立时复制主 Agent 当时的围栏开关，之后各管各的。\n- 主 Agent 代答 worker 的权限请求时，worker 的会话里多一条「主 Agent 已允许 / 已拒绝」；你先答了的话主 Agent 会被告知是谁答了什么。\n- 侧栏：worker 紧挨在主 Agent 下面并缩进，主 Agent 的行带一个小图标，可以折叠，折叠后显示数量；主 Agent 的会话里每次创建 worker 显示一个「Worker · 标题」chip，点了跳过去。\n- daemon 协议升到 v8（最低仍是 v6）：`role: chief`、`relation: worker`、`answeredBy: chief`、`session/create_related` 的 worker 字段；旧客户端把 worker 读成交接。\n\n## 测试\n\n- 新增 MCP 服务、daemon 规则、角色持久化、侧栏嵌套的测试；真机检查脚本 `check-chief.py`（模拟主 Agent 经 `atrium-mcp` 指挥一个模拟 Codex worker）。\n",
+    "assets": [
+      {
+        "name": "Atrium-0.11.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.11.1/Atrium-0.11.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.11.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.11.1/Atrium-0.11.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.11.0",
     "tag": "v0.11.0",
     "title": "Atrium 0.11.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.7.3-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.7.3/Atrium-0.7.3-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.7.2",
-    "tag": "v0.7.2",
-    "title": "Atrium 0.7.2",
-    "prerelease": false,
-    "published_at": "2026-11-04T11:29:35Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.7.2",
-    "notes": "这一版主要有这些改进：\n- 大会话不再和后台服务断开连接；\n- 对话列表换成 AppKit，展开、收起和流式输出都更快；\n- 右侧新增小组件栏，可以看上下文用量和目录；\n- 可以删除任务；\n- 可以自选浅色、深色主题和字体；\n- Kiro 也能显示上下文用量；\n- 正在运行的工具调用以可滚动的列表展示。\n\n## 大会话不再断连\n\n以前会话每有一点变化，后台服务就把整段对话发给 app 一次。大会话流式输出时，app 来不及处理，时不时显示\"与后台服务的连接已断开\"。\n\n- 现在只发新增和改动的部分。如果 app 正忙，后台把更新合并成一份最新状态再发，不会越积越多。\n- 收到的数据在后台线程解码，不占界面线程。\n- 只有后台连续 30 秒发不出数据时才断开连接，电脑睡眠的时间不计在内。\n- 实测：一个 3000 条的会话以每秒 30 次的频率流式输出 30 秒，断连从 4 次降到 0 次，流量从每秒约 13 MB 降到约 24 KB。\n\n## 更快的对话列表\n\n- 对话列表改用 AppKit 实现，每一轮是独立的一行。一行高度变化时，只重新排版这一行和它下面的位置。\n- 实测，p95 从左到右为旧版 → 新版：\n    - 展开或收起一条工具调用：92 ms → 29 ms；\n    - 展开一轮：114 ms → 31 ms；\n    - 流式输出时 CPU：81% → 28%。\n- 停在底部时才跟随新内容。往上翻看时，新内容不会把你拉回底部。\n\n## 小组件\n\n右侧栏（⌥⌘0）现在叫\"小组件\"，每个组件都可以折叠：\n- **上下文**：默认是一行，显示百分比、用量和一条彩色条，点一下展开完整的格子图。\n- **目录**：\n    - 显示任务的工作目录，带 git 状态（M 修改、A 新增、D 删除、? 未跟踪），有改动的文件夹带一个小点；\n    - 顶部列出这个任务改过的文件；\n    - 双击用默认 app 打开；右键可以在 Finder 中显示、拷贝路径，或在终端里打开所在目录。\n\n## 删除任务\n\n- 在时间线里右键选\"删除任务…\"，或选中后按 ⌘⌫。\n- 删除时，正在运行的 agent 会先停下，任务的终端会关闭。\n- 对话记录移到废纸篓，可以恢复。工作树里的文件、agent 自己的历史都会保留，已学到的记忆也会保留。\n\n## 外观\n\n设置里新增\"外观\"页：\n- 主题：自动、浅色、深色，切换后立即生效；\n- 对话字体：可以选系统里装的任何字体，也可以用系统、衬线、等宽三个预设；\n- 等宽字体：用于对话里的代码、工具输出、diff 和终端，默认是内置的 Maple Mono。终端字号可以单独设置，已经打开的终端会直接换字体。\n\n## Kiro\n\n- Kiro 的上下文用量现在会出现在小组件、任务标题旁的圆弧和时间线里。\n- 用量分为上下文文件、工具（MCP 和内置）、记忆、Kiro 回复、你的消息、会话文件。\n\n## 正在运行的工具调用\n\n- 一轮还在运行时，它的工具调用显示在一个固定高度的窗口里，大约能放 5 条。每条下面显示输出的最后两行，命令输出会实时刷新。\n- 窗口高度不变，下面的回复不会跳动。\n- 用滚轮可以翻看这一轮更早的调用，不用展开详情。滚到顶部或底部后继续滚，就会滚动整个对话。\n- 停在底部时跟随最新的调用；往上翻过后停在原处，滚回底部再恢复跟随。上下还有内容的一侧会淡出。\n- 点一条调用，会展开这一轮的详情并定位到这一条。\n\n## 更新说明\n\n- 后台服务的协议升到了第 5 版。更新时如果还有任务在跑，旧的后台服务会把它跑完，但新版 app 无法控制它。建议在没有任务运行时更新。\n\n## 已知问题\n\n- 新版本发布后约 5 分钟内，检查更新可能还看不到它。这是 GitHub 缓存造成的，过几分钟再检查即可。\n- 用 VoiceOver 等辅助功能工具展开对话里的一行时，app 可能崩溃。这个问题旧版也有，会在之后的版本修复。\n\n## 由 agent 编写的部分\n\n- Codex 通过 `atrium-probe` 实现了全部功能，并单独审查了同步改动的并发问题：审查发现 3 个问题，修复后才合并。\n- Claude 负责：\n    - 写规格和验收：截图、两种模式的完整测试、性能报告；\n    - 修正 Kiro 格子图闪烁和小组件的重绘范围；\n    - 修正外观页的对齐。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.7.2-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.7.2/Atrium-0.7.2-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.7.2-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.7.2/Atrium-0.7.2-macos-arm64.zip.sha256"
       }
     ]
   }
