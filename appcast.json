@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.17.5",
+    "tag": "v0.17.5",
+    "title": "Atrium 0.17.5",
+    "prerelease": false,
+    "published_at": "2026-11-11T11:27:11Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.5",
+    "notes": "The running turn's preview stays on its newest line, a thought no longer cuts into the row below it, and a Kiro turn shows its credits.\n\n## The rolling preview\n\nWhile a turn runs, the folded tool bar shows a short preview of its latest calls and thoughts. It is meant to stay on the newest line, with older lines fading out at the top.\n\n- **It no longer gets stuck on its first lines.** Scrolling the conversation with the pointer over the preview scrolled the preview itself, to its top, and from then on it stopped following: new calls arrived cut off under the fade at the bottom. Now only a scroll that actually moves the preview pauses it, and it goes back to the newest line when the pointer leaves, three seconds after the last scroll, or when you scroll back to the bottom.\n- **The wheel passes through at the ends.** At its top or bottom the preview hands the scroll to the conversation instead of swallowing it. A scroll gesture that began outside the preview keeps scrolling the conversation as the preview passes under the pointer, inertia included.\n- **A thought no longer overlaps the next row.** The thought line was measured with the reading font and drawn with the thought font. With a conversation font other than the system, serif or mono ones (Helvetica or Palatino, say), the line was drawn taller than its place and the top of the row below it was cut.\n\n## Kiro\n\n- **A Kiro turn shows the credits it used** beside its duration (0.07 credits, say), and the context widget shows the session's total. Kiro reports both at the end of each turn; 0.17.4 had the place for them but did not read them yet.\n- Kiro stays on ACP v1. Kiro 3.1.0 answers a request for protocol version 2 with 2, but a recorded turn shows it still speaks the v1 shapes (the prompt's own result ends the turn, permission requests are v1's), which Atrium's v2 connection does not accept. Nothing is lost by staying: its own fields, credits included, arrive on v1 as well.\n\n## Releases\n\n- The upload to the public releases is bounded and retried: 0.17.4's stalled for 36 minutes and its update feed had to be published by hand.\n\n## Not verified\n\n- Kiro's credits against more than one recorded turn: one real turn on one model was captured. Cancelled and failed turns, sub-agents and a session resumed from history were not.\n\n- A real trackpad on the preview: the wheel rules are tested with constructed events through the real `scrollWheel(with:)` and as a pure decision table, not by hand.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.17.5-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.5/Atrium-0.17.5-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.17.5-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.5/Atrium-0.17.5-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.17.4",
     "tag": "v0.17.4",
     "title": "Atrium 0.17.4",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.13.2-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.2/Atrium-0.13.2-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.13.1",
-    "tag": "v0.13.1",
-    "title": "Atrium 0.13.1",
-    "prerelease": false,
-    "published_at": "2026-11-08T06:16:49Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.13.1",
-    "notes": "这一版把 Claude Code 的子 agent 放进侧栏：每个子 agent 在它的任务下面占一行，点开是它自己的只读对话，可以单独停止。\n\n## 侧栏里的子 agent\n\n- Claude Code 用 Agent / Task 派出的子 agent，在侧栏里排在它的任务下面，缩进一级；行上写子 agent 的角色（比如 Explore），状态图标和其他任务一样：在跑、等你批准、已完成。\n- 有子 agent 的任务行旁边多一个折叠标记：点一下收起下面的子 agent，收起时显示个数；有子 agent 在等你批准时，个数用「需要你」的颜色。主 Agent 的标记把 worker 和子 agent 一起收起。\n- 点开子 agent，看到的是它自己的对话：派给它的任务、它的读改和命令、它的文字和最后的回答。权限卡片照常出现，在这里批准和在任务里批准是同一个请求。\n- 子 agent 是只读的：输入框的位置换成一条窄栏，左边是所属任务（点它回到任务），右边是停止按钮；按停止或 Esc 只停这一个子 agent，任务本身继续。\n- 任务对话里的子 agent 那一行，鼠标移上去右侧会出现「打开子 agent」按钮。\n- 给任务发下一条消息时，上一轮已结束的子 agent 从侧栏收走，任务对话里的那一行还在；还在后台跑的子 agent 一直留着。\n- 子 agent 不计入待批准数、需要你的任务数、菜单栏和通知：这些仍由它所属的任务报告。\n\n## 兼容\n\n- 后台服务协议版本不变（9）。新版 app 向后台服务声明它能读子 agent；旧版 app 和主 Agent 的 `atrium-mcp` 不会收到这些行。新版 app 连旧版后台服务时，子 agent 照旧只在对话里展开。\n\n## 测试\n\n- 单元测试：子 agent 投影（哪些行入侧栏、条目顺序、两次快照 id 不变、各种结束状态、权限按行归属、只有当前开着的那一行能停、目录）、后台服务对投影的请求路由（停止、批准、其余请求一律拒绝且不改状态、未声明的客户端看不到）、侧栏嵌套（一级、worker 下的二级、找不到父任务时不显示、收起与「需要你」）。两种模式全量测试通过。\n- harness：模拟的 Claude 派三个子 agent（一个要批准后完成、一个被取消、一个一直跑到收到它自己的停止）；`check-subagent-sessions.py --all` 在深色半透明和浅色下经真实窗口（辅助功能 + 截图）检查以上全部行为：折叠标记与三行子 agent、等待批准、在子 agent 里批准后完成、只读栏与回到任务、停止只停这一个、新消息收走已结束的行、未声明的客户端看不到。\n\n## 没有验证的\n\n- 任务对话里「打开子 agent」按钮只在鼠标悬停时出现，辅助功能检查读不到它；停止按钮的悬停色也只能靠眼睛看。\n- 真实的 Claude Code 适配器：恢复会话后子会话 id 是否不变、后台子 agent、`SendMessage` 恢复子 agent 时的新行，都只用模拟验证过。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.13.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.1/Atrium-0.13.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.13.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.1/Atrium-0.13.1-macos-arm64.zip.sha256"
       }
     ]
   }
