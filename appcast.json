@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.17.6",
+    "tag": "v0.17.6",
+    "title": "Atrium 0.17.6",
+    "prerelease": false,
+    "published_at": "2026-11-11T16:47:51Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.6",
+    "notes": "Codex moves to ACP v2, Kiro's own turn data is shown, and icons are laid out the same whichever display the system reports.\n\n## Codex\n\nCodex now talks to Atrium over ACP v2, on the same connection and display model Claude already uses.\n\n- **Model and reasoning effort are two settings.** On v1 Codex offered combined ids (`gpt-6.1-sol[low]`); on v2 they are separate options and use the same pickers as the other agents. A saved preset in the old form is split into the two and applied when both parts still exist; one that no longer matches is dropped and the adapter's default stays.\n- **A message sent while a turn runs is a prompt of its own.** It no longer goes through Codex's private steering call. Each message gets the usage of its own part of the turn; when two messages end together their usage is counted once.\n- **A plan that streams in as Markdown stays one row.** Codex resends the whole plan on every change; the row is replaced instead of growing a line per update.\n- **Stopping a turn keeps its usage**, and the stopped command shows as cancelled.\n- **Sessions from 0.17.5 resume.** A Codex session started on v1 continues under v2 with the same id, its settings and its conversation; nothing is replayed twice.\n- **Going back.** An adapter that only answers version 1 is used on v1 as before. To force v1 for the built-in Codex: `defaults write io.github.chenkeyv.atrium acp.codexProtocol v1`, then start a new session.\n\nPermission cards, terminal output, file diffs, sub-agents and the chief's own tools look and behave as they did.\n\n## Kiro\n\nKiro reports more about a turn than Atrium showed. 0.17.5 read the credits; this version reads the rest.\n\n- **A turn's duration is the one Kiro measured**, not Atrium's own clock, and a turn Kiro reports as aborted shows as stopped.\n- **The tools a turn used** are listed under its credits when you hover the turn's usage (up to six names, then a count).\n- **Permission cards name what Kiro asks about**: its own title for the operation, the resource it applies to and the scope it would be allowed for. A card Kiro asks again replaces the earlier one, and a request Kiro resolves on its side is withdrawn.\n- **A turn ends when Kiro says it ended.** Kiro sends `turn_end` before the prompt's own result; Atrium now closes the turn on it, so a late or missing result no longer leaves a finished turn looking as if it were running.\n\n## Layout\n\n- **Icons beside text are measured the same on every display.** AppKit rounds a symbol's box on the pixel grid of the screen the system reports, and the system reports a 1× screen while the displays are off. The same row could be half a point taller or shorter depending on that. Atrium now measures each symbol once at a very large size, scales the box down and puts it on the half-point grid itself.\n- **The gap between an icon and its title is the same in every row.** Where a title's start was computed from the icon's width, it could be half a point off the spacing the rest of the app uses.\n\n## Tests\n\n- Layout tests no longer compare against heights that were read off a display, or against whatever SwiftUI lays out on the day. They assert what the layout promises: one baseline for the parts on a line, gaps equal to the spacing tokens, a row as tall as its parts, nothing clipped. The comparison with SwiftUI and the system's own symbol sizes is now a probe run by hand (`scripts/dev/metric-probe.py`, `scripts/dev/symbol-probe.swift`).\n\n## For the open-source release\n\nNo change in behaviour: the company gateway's name is gone from code, tests and strings, paths from the development machine are gone from the tree, and the licences of the bundled third-party code were added under `ThirdPartyNotices/`.\n\n## Not verified\n\n- **Icon layout with the displays off.** Every test and the hand probe ran with the displays on, where the system reports a 2× screen. The measurement is built not to depend on that; the run that shows it has not been made yet.\n- **Codex on v2 against a real account**: one turn (a command, a file, its usage) on codex-acp 2.6.0. The recorded sessions the tests replay are from 2.5.0. Permission cards, a message sent mid-turn, stopping, resuming a 0.17.5 session, sub-agents and a usage-limit error were tested on those recordings and on a simulated adapter, not live.\n- **Kiro**: one real turn on one model. A stopped turn, a failed turn and a resumed session were tested on recordings only. Kiro says it can report a model fallback; none has been seen, so nothing reads one.\n- **The third-party licences inside the app bundle**: they are in the repository; whether the packaged app carries them was not checked.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.17.6-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.6/Atrium-0.17.6-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.17.6-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.6/Atrium-0.17.6-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.17.5",
     "tag": "v0.17.5",
     "title": "Atrium 0.17.5",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.13.3-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.3/Atrium-0.13.3-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.13.2",
-    "tag": "v0.13.2",
-    "title": "Atrium 0.13.2",
-    "prerelease": false,
-    "published_at": "2026-11-08T09:01:13Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.13.2",
-    "notes": "这一版修一个崩溃：在输入框里粘贴一大段多行文字（比如几 KB 的中文提示词），app 会直接退出。\n\n## 修复\n\n- 在新任务的输入框里粘贴长的多行文字不再崩溃。0.10.5 起就有这个问题，宽窗口里更容易出现：粘贴后输入框长到十行高的过程中，窗口的约束更新停不下来，macOS 把 app 结束了（崩溃报告里是 `_postWindowNeedsUpdateConstraints`）。\n- 原因：系统排版时会拿几种宽度去量输入框该多高，旧代码每量一次都把正在显示的文字改排成那个宽度，文字的行视图重建后又触发下一轮测量，一直循环。现在测量用一份单独的排版副本，结果按宽度缓存；正在显示的文字只按输入框的实际宽度排一次。\n- 输入框的外观和行为不变：一行起步，随文字长到十行，再多就在框内滚动。\n\n## 兼容\n\n- 后台服务协议版本不变（9）。\n\n## 测试\n\n- 单元测试：在各种宽度（0、200、838 等）测量输入框高度时，正在显示的文字容器宽度和文字视图的位置大小都不变（旧代码上这一条失败）；测量结果和实际排版的高度一致；长提示词和上千行的崩溃报告粘贴后都在十行处停住。两种模式全量测试通过。\n- harness：`check-composer.py --all` 加了一步，把窗口拉到屏幕允许的最宽，往输入框一次插入 120 行、约 1 万字的中文，确认 app 仍在运行、文字完整、输入框停在十行高，再全选删除；深色半透明、浅色、中文三遍都过。\n\n## 没有验证的\n\n- 测试 app 里一直没能复现原来的崩溃（只在用户真实的 1920×1050 窗口、输入框约 838 点宽时出现过），所以「修好了」靠的是在真实 app 里用调试器抓到的循环链和上面的单元测试，最终要在真实 app 里粘贴一次确认。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.13.2-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.2/Atrium-0.13.2-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.13.2-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.2/Atrium-0.13.2-macos-arm64.zip.sha256"
       }
     ]
   }
