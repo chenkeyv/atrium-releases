@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.18.0",
+    "tag": "v0.18.0",
+    "title": "Atrium 0.18.0",
+    "prerelease": false,
+    "published_at": "2026-11-11T20:02:06Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.18.0",
+    "notes": "The window is AppKit now. The main window, its three columns, the toolbar, the menus, the menu-bar item, the task pane and the two small windows no longer go through SwiftUI. Nothing is meant to look or work differently except the points below.\n\n## What you can notice\n\n- **Column widths are remembered.** The timeline's and the widget column's widths come back after a restart, and a width you chose survives hiding the widgets and resizing the window. Before, every launch began at the default widths while the window's own frame was restored.\n- **Double-clicking a divider gives the column its default width back.** The dividers are invisible until the pointer is on them, so a column dragged too far had no other way back.\n- **Closing the main window hides it.** Opening it again is immediate, with folded sections and scroll positions where they were. The old window rebuilt its content each time.\n- **A solid window is laid out like a translucent one.** With translucency at 0 the title bar is transparent too, the content fills the window, and the middle column has no plate of its own: the three columns follow one rule in both looks.\n- **The first row is not under the toolbar buttons.** Content starts below the title bar and fades over its top 12 points once it is scrolled.\n\n## Rebuilt, meant to be the same\n\nThe main menu and every shortcut; the menu-bar item; the task header and its session settings; the composer with its completions, attachments and queued messages; pinned work; the editor with its timeline rail; the terminal drawer, filled or not; the scratch terminal and Software Update windows, which open in the middle of the screen and come back where you left them.\n\nBehind a card (a confirmation, Settings, a diff) the timeline and the widget column leave the accessibility tree, as the rest of the window does: VoiceOver stays inside the card.\n\n## Still SwiftUI\n\nA few cards inside the AppKit dialog layer (New Task and Rename among them) and the developer demo pages. The app still links SwiftUI until they are moved.\n\n## Packaging\n\n- The app bundle carries every licence under `ThirdPartyNotices/`. 0.17.6 added them to the repository; its bundle had two.\n\n## Checks\n\n- The real-window checks no longer bring the test app to the front. Keys sent to it are routed, in the test build only, to the window that would be key, typing does not go through the selected input method, and a check fails when the test app became frontmost while it ran. Before this, the checks swallowed the keys of whoever was working at the same Mac and failed when that person typed.\n- The icon measurements of 0.17.6 were run with the displays off, where the system reports a 1× screen: the whole UI target passes there as it does at 2×, and the hand probe counts 17 half-point differences from SwiftUI's own layout, the number it counted at 2×.\n\n## Not verified\n\n- **A real agent in the new window.** The real-window checks drive the isolated test app with recorded and simulated agents. No real Claude, Codex or Kiro session has been run through this window yet.\n- **The pointer on the dividers.** Dragging a divider and double-clicking it are tested on the real split view with constructed events, not by hand. Two real clicks were made: a button in Software Update and one in the scratch terminal.\n- **The active window at 2× on this exact build.** The last pass ran with the displays off, so its screenshots are at 1×; the 2× screenshots that were read came from the shell before its last three merges (0.17.6, the checks' key routing, the fix for cards and the accessibility tree).\n- **VoiceOver itself.** What it would read was checked through the accessibility API, not by listening.\n- **The app's own icon measurements, row by row, between displays on and off.** Both states pass the same tests; the table taken with the displays on was lost, so the direct comparison waits for a new one.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.18.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.0/Atrium-0.18.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.18.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.0/Atrium-0.18.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.17.6",
     "tag": "v0.17.6",
     "title": "Atrium 0.17.6",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.13.4-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.4/Atrium-0.13.4-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.13.3",
-    "tag": "v0.13.3",
-    "title": "Atrium 0.13.3",
-    "prerelease": false,
-    "published_at": "2026-11-08T12:05:57Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.13.3",
-    "notes": "这一版让 SSH 远程可以用密码登录：第一次连一台 Mac 时在 Atrium 里确认它的主机密钥，需要密码、密钥口令或验证码时也在 Atrium 里输入，密码可以存进钥匙串，以后断线重连不再问。\n\n## 远程：密码与主机密钥\n\n- **在 Atrium 里回答 ssh 的提问。** 以前隧道用 `BatchMode=yes` 运行 ssh，只能用密钥或 ssh-agent，第一次连接还得先在终端里跑一次 `ssh` 接受主机密钥。现在 ssh 要问的都会在窗口中间弹出一张卡片：上面是远程的名称，下面是 ssh 的原话，一个保密输入框，「取消」和「连接」。\n- **陌生主机**：卡片显示密钥类型和指纹，按「信任这台 Mac」就继续连接，`known_hosts` 由 ssh 自己写。主机密钥变了不会问，ssh 直接拒绝，远程那一行显示 ssh 的原话。\n- **存入钥匙串**：输入密码时默认勾选「存入钥匙串」，登录成功后才保存（输错的密码不会存）。以后连接和断线重连先用它，不再弹卡片；它不对了（远端改了密码）就删掉，马上再问一次。一次性验证码和密钥口令不保存。\n- **忘记密码**：设置 › 远程里远程那一行的右键菜单多了「忘记密码」；删除远程时它的密码也一起删掉。设置里没有密码栏，密码只在提问时输入。\n- **只在前台问**：Atrium 在后台时断线重连遇到需要输入的提问，不会弹卡片，远程显示「需要密码」（黄点），等你切回 Atrium 时卡片才出现。\n- **不反复重试**：取消提问，或者输入的密码被拒绝，隧道就停下，远程那一行显示原因和「连接」按钮（窗口顶部后台服务那一条里也有一个），点了再问一次，不需要重启 Atrium。不会一遍遍拿错的密码去试，也不会一遍遍弹卡片。取消时 ssh 先被结束，不会给远端发一个空密码。\n- 每次连接只登录一次：ssh 先建一个控制主连接，读远端家目录、加两个 socket 转发都经它走，所以不会因为同一次连接问两遍密码。\n- 第一次从钥匙串读密码时，macOS 可能问是否允许 Atrium 使用这个项目。Atrium 是临时签名的，每次更新后都可能再问一次，选「始终允许」即可；拒绝的话就当没记住，直接问密码。\n\n## 兼容\n\n- 后台服务协议版本不变（9）。远端那台 Mac 不需要更新。\n- 应用包里多了一个小程序 `Contents/MacOS/atrium-askpass`（约 150 KB），由 ssh 通过 `SSH_ASKPASS` 调用，只和 Atrium 自己通信。\n- 密钥、ssh-agent、`~/.ssh/config`（别名、ProxyJump 等）照旧由 ssh 处理；配置里的 `ControlPath`/`ControlMaster` 被 Atrium 自己的控制连接盖过，只影响 Atrium 起的这一个 ssh。\n- 钥匙串项：通用密码，服务 `io.github.chenkeyv.atrium.ssh`，账户是 SSH 目标（`user@host` 或别名），标签「Atrium SSH: <名称>」。\n\n## 测试\n\n- 单元测试：每条 ssh 命令行和环境（主连接、`-O check`、家目录探测、`-O forward`、`-O exit`）都没有 `BatchMode`、带强制的 askpass，token 只在环境变量里；`atrium-askpass` 按 ssh 的方式运行（问题作参数，答案从标准输出读）：答案、token 不对时不问就拒绝、取消退出 1、超时退出 1 并收回卡片；问题分类（密码、键盘交互密码、口令、PIN、验证码、带指纹的主机密钥）；密码存储只经注入的存储（不碰真钥匙串）：记住的密码不再问、登录成功才保存、被拒就删掉再问、输错不重试、取消先结束 ssh、后台时等回到前台、验证码不保存。两种模式全量测试通过。\n- harness：假的 ssh 现在像真 ssh 一样起控制主连接，并按 OpenSSH 的方式调用应用包里真的 `atrium-askpass` 提问；`check-remote-password.py --all` 在深色半透明、浅色两遍里走完：后台「需要密码」→ 信任主机 → 输错密码（显示原因和「连接」、不自动重试、什么也没存）→ 连接后输对并存入 → 已连接 → 杀掉 ssh 后不弹卡片就重连 → 忘记密码后再杀掉 ssh 又会问 → 退出后不留 ssh。`check-remote-phase1.py --all`、`test_harness.py` 照常通过。\n\n## 没有验证的\n\n- 没有在真的 ssh 服务器上试过：密码、键盘交互的验证码、密钥口令的真实提示文字，以及主机密钥变了的情形，都只在假的 ssh 上走过（问题按文字区分，没见过的说法按普通保密输入处理，不会存）。\n- 没有真的读写过钥匙串，更新后 macOS 那次「始终允许」的提示也没有实际看到过。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.13.3-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.3/Atrium-0.13.3-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.13.3-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.3/Atrium-0.13.3-macos-arm64.zip.sha256"
       }
     ]
   }
