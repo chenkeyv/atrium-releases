@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.20.0",
+    "tag": "v0.20.0",
+    "title": "Atrium 0.20.0",
+    "prerelease": false,
+    "published_at": "2026-11-12T17:51:32Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.20.0",
+    "notes": "The timeline now shows which work is still apart from the main line, and where it came from.\n\n## Changed\n\n- Only live tasks in their own worktree or started from a visible parent have a branch. Folder tasks and finished tasks sit on the trunk. A related task leaves its parent's row; nested workers and sub-agents connect downward from that row.\n- Hover a task or its branch's origin to keep its ancestors and descendants visible while unrelated tasks dim. Click an origin to select the parent, or use the row's “Show Origin” accessibility action.\n- The timeline's context menu offers continuation, review and handoff using the same availability rules as the task pane. Handoff is also available in the task pane's More menu and opens a card with another agent selected.\n- A newly arriving branch grows from its origin. When a task ends, its line fades and its node moves to the trunk; its children immediately connect to the parent's new position. Layout, selection and accessibility are ready throughout the animation.\n\n- Workspace dividers now align to backing pixels on 1× displays, keeping the task controls and terminal drawer flush during transitions.\n\n## Validation\n\n- Full normal and strict cooperative-pool suites: 2,877 tests each; four existing opt-in IME/large-tree checks remain skipped.\n- Isolated Release windows: timeline forks in dark/light at motion scales 0 and 10, typography, shell, chief, editor, and selection latency. All measured latency targets remain within their limits.\n- Python release/tooling tests: 50; harness tests: 41.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.20.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.20.0/Atrium-0.20.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.20.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.20.0/Atrium-0.20.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.19.0",
     "tag": "v0.19.0",
     "title": "Atrium 0.19.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.14.1-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.14.1/Atrium-0.14.1-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.14.0",
-    "tag": "v0.14.0",
-    "title": "Atrium 0.14.0",
-    "prerelease": false,
-    "published_at": "2026-11-09T04:08:08Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.14.0",
-    "notes": "Claude Code tasks now run on ACP v2, the newer version of the protocol Atrium speaks to agents. The most visible result: background commands Claude starts now show up in Atrium, with their live output, and you can stop them. Other agents (Codex, Kiro, Antigravity, Gemini, OpenCode, the Atrium agent) are unchanged and stay on v1.\n\n## Background work\n\n- **Pinned above the composer.** Work Claude keeps running in the background is pinned as its own row, with how long it has been running:\n  - a command run in the background (`run_in_background`), titled with the command;\n  - other background tool work.\n- **Live output.** Open a background command's row to see its last lines, updated as it prints.\n- **Stop.** A row the agent can stop has a stop button. The row ends when Claude reports it ended, not when you click, so what it shows is what really happened.\n- **Claude's own turns.** When a background task finishes, Claude sometimes picks the conversation up again on its own. While it does, a quiet \"Claude is working\" row is pinned, and its reply lands in the conversation. The task stays idle the whole time: it isn't shown as running, and it never says it needs you.\n- **Sidebar.** An idle task with background work still running shows a quiet dot and the count next to its status, for example \"2 background tasks running\".\n- The Monitor tool isn't shown yet: the current adapter (0.101) reports it as done right away and never lists it as running.\n\n## Conversation\n\n- **Edits show real line numbers.** Claude's edit cards and the file view of its changes are drawn from the patch Claude reports, with the file's own line numbers and a gap between separate hunks.\n- **Permission requests explain themselves.** When Claude says why it is asking, the reason is on the permission card.\n- **Messages sent during a turn.** Claude Code takes a message you send mid-turn at its next stopping point, usually when the current tool finishes. In our side-by-side test this was as quick as before: the message took effect about 5 seconds after it was sent in both versions, once the command it was waiting on finished. The difference is during a long stretch of writing with no tool in between: v2 waits for that stretch to end.\n\n## Compatibility\n\n- Background service protocol 10 → 11.\n- An older app connected to this background service sees background rows without the stop button.\n- If a future Claude Code adapter breaks v2, Atrium can be sent back to v1 without an update: `defaults write io.github.chenkeyv.atrium acp.claudeProtocol v1`, then restart Claude tasks. An adapter that only speaks v1 is detected and restarted on v1 automatically.\n- Claude sessions started on earlier versions continue on v2 with the same history.\n\n## Tests\n\n- **Unit tests:**\n  - Both real Claude Code v2 recordings (manual approval and auto mode) replayed into a task: transcript, diffs, permissions, sub-agent, turn ends, background work appearing and stopping, live output, Claude's own turns staying idle.\n  - Every kind of v2 message, one by one.\n  - Falling back to v1.\n  - The v1 preference.\n  - Resuming with and without replay.\n  - A session started on v1 resuming on v2.\n  - Worker rules on v2.\n  - Stop forwarded by the background service, refused for agents, hidden for older apps.\n  - The other agents stay on v1.\n- **Full test suite:** passes in both modes, 1665 tests each.\n- **Real-app screenshot checks:** run in dark (translucent 0.15, blur) and light, with a simulated Claude on v2.\n  - Diff card.\n  - Permission card with its reason.\n  - Pinned background command with live output.\n  - Stopping it.\n  - Sidebar count.\n  - Nested sub-agent.\n  - \"Claude is working\" while the task stays idle.\n- **Earlier checks re-run:** sub-agent views and the main-agent checks, on the v1 path.\n- **Real Claude Code (0.101, Haiku):**\n  - End to end over v2 through Atrium's own connection: a Write and an Edit with their line counts, a background command, a foreground command, and a sub-agent in its own child session.\n  - The background command was listed, its output arrived live line by line (the first line replacing the \"running in background\" notice), and it left the list when it exited.\n  - The switch back to v1 worked against the real adapter.\n  - Mid-turn messages, v1 and v2 side by side: both took effect once the running command finished, 4.7 s on v1 and 4.9 s on v2, and both skipped the remaining commands.\n\n## Not verified\n\n- With the real Claude Code:\n  - \"Claude is working\": Claude's own turn after a background task. It was only seen with the simulated Claude. In the real runs, the task ended during a turn and Claude folded it in.\n  - Stopping from the app. Stopping a real background command was checked at the protocol level, not by clicking in the app.\n  - Messages sent during one long stretch of writing with no tool in between.\n- Sessions started on an earlier version continuing on v2 were checked against a simulated adapter only.\n- Signing in over v2 when Claude Code is signed out.\n- That the installed app and background service both read `acp.claudeProtocol`. The switch was checked through `agents.json`.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.14.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.14.0/Atrium-0.14.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.14.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.14.0/Atrium-0.14.0-macos-arm64.zip.sha256"
       }
     ]
   }
