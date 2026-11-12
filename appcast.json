@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.19.0",
+    "tag": "v0.19.0",
+    "title": "Atrium 0.19.0",
+    "prerelease": false,
+    "published_at": "2026-11-12T12:52:56Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.19.0",
+    "notes": "The AppKit window now moves as one: opening a drawer or changing the controls makes room without losing the conversation's bottom, and opening a tool shows where the rows below it went.\n\n## Changed\n\n- Task selection fades the new task in; holding an arrow key keeps intermediate selections immediate. Tool groups, thoughts, tool output and subtask details move the rows below them as they open or close.\n- Terminal drawers, session settings, pinned work and the widget column now have arrival and departure transitions. Review controls and queued messages move with the conversation's bottom edge. Reversing a transition continues from what is on screen.\n- Motion uses four durations: 120 ms to leave, 150 ms to change, 200 ms to enter, and 300 ms to make room. Layout, input and accessibility reach their final state immediately; streaming updates remain immediate.\n- Dragged column dividers settle on a grid and catch their default widths. Double-clicking either divider restores its width. The timeline and widget column settle at a nearby row when a trackpad scroll ends.\n\n## Fixed\n\n- Cancelling the first of several queued messages fades that message, preserving the rows for the messages still waiting. A first prompt sent while an agent starts says that it is waiting for the agent to start.\n- Opening a fold or pinned work reveals its content as the rows below make room, so text does not overlap during the transition. Accessibility actions can expand and collapse long thoughts without losing the action response.\n- A conversation following its bottom stays there when the controls change height; a conversation scrolled back keeps the row being read in place. The composer's text now sits inside the padding its measurement reserves.\n- Upgrading from the previous window implementation preserves the saved window position and size. New windows use the display in use for their initial placement.\n- Long automatic titles end with an ellipsis, emphasis markers do not leak into thought previews, and a failed turn shows its error once on its card.\n\n## How it was checked\n\n- The complete Swift suite passed in normal and strict cooperative-pool modes: 2,857 tests in each run.\n- Four existing opt-in tests remained skipped: two require real input-method focus, and two are large-tree benchmarks.\n- Motion tests inspect the actual layer animations, sample a frozen Core Animation clock, compare scale 0 and animated end states, reverse transitions in flight, and check conversation measurement counts and bottom-following geometry.\n- The Release app ran 31 motion scenarios in dark and light appearances at scales 0 and 10. Both appearances ended with the same selected task and view geometry; slow-motion screenshots were checked for clipping, overlaps and bottom alignment.\n\n## Motion exception\n\nWhen a narrow window needs more width to show widgets, its outer frame changes immediately. The widget column still animates in. Animating the window frame would reflow text on every frame and delay the final input geometry.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.19.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.19.0/Atrium-0.19.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.19.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.19.0/Atrium-0.19.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.18.2",
     "tag": "v0.18.2",
     "title": "Atrium 0.18.2",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.14.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.14.0/Atrium-0.14.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.13.6",
-    "tag": "v0.13.6",
-    "title": "Atrium 0.13.6",
-    "prerelease": false,
-    "published_at": "2026-11-08T16:12:24Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.13.6",
-    "notes": "From this version on, every new task can dispatch workers by default, and nothing needs to be switched on first. Whether to dispatch is the model's call; Atrium never asks you. Which agent and model may be dispatched, and how many at once, is enforced by the background service, so the same rules hold whatever agent the main task runs on.\n\n## Main agent\n\n- **On by default.** Tasks you create (new tasks, \"Continue\", \"Hand off to another agent\", presets) get the worker tools by default, on agents that support MCP: Claude Code, Codex, Antigravity. The \"Main agent\" switch in the New Task panel is gone. Older tasks get the tools the next time they open, with no migration. A worker is still an ordinary task and can't dispatch workers of its own.\n- **Kiro doesn't take part.** Kiro tasks get no worker tools, and a main agent can't dispatch Kiro either. Kiro keeps using its own sub-agents. The Atrium agent can't be a main agent for now, because it doesn't support MCP yet; it can be dispatched as a worker.\n- **The sidebar shows \"Main agent\" only when there are workers.** A task that has never dispatched a worker looks like any other task. A main task with running workers gets a \"Stop All Workers\" item in its right-click menu, which stops and closes all of its workers without affecting the main task's own turn.\n\n## Worker rules (enforced by the background service)\n\n- **Allowed models.** Each agent has a list of models that may be dispatched, each marked Allowed, Sparingly or Not allowed. Defaults:\n  - Claude Code: Sonnet and Haiku allowed; Opus sparingly.\n  - Antigravity: Gemini 3.8 Flash only.\n  - Codex: any model.\n  - Atrium agent: DeepSeek V4.1 Flash only.\n  - Kiro and agents not on the list: can't be dispatched.\n\n  Models match by family (Sonnet, Haiku, Opus), so the list doesn't need changing when a model version is upgraded. With no model given, the first allowed model on the list is used. Dispatching a model off the list fails, and the error lists the models that can be used. Model values that don't say which model they are, such as \"default\" and \"auto\", are always refused.\n- **Sparingly (Opus).** At most 1 at a time across all tasks, and the main agent has to state a reason when dispatching. The reason appears on the worker's hover tooltip and in the task inspector.\n- **No model change mid-way.** `/model` and option changes that the main agent sends a worker are refused. If a worker's model drifts outside the list, the background service stops it, and the main agent learns why. A model change you make yourself in the worker's settings counts.\n- **Limits.**\n  - Each main task can have at most 4 workers running at once.\n  - Across all tasks, at most 8 workers run at once.\n  - Each turn can create at most 4 workers, closed ones included, so a create-then-close loop can't get around the limit.\n  - Errors over a limit tell the main agent to wait, or to close workers first.\n- **Unchanged:** while the main task is fenced, its workers stay fenced too.\n\n## Settings\n\n- New **Settings › Workers** page:\n  - A global switch at the top, \"Tasks can create workers\" (on by default). Turning it off affects tasks opened afterwards; tasks already open keep their tools until they reopen.\n  - Per agent: \"Can direct workers\" and \"Can be dispatched\" (not allowed, any model, or chosen models).\n  - With \"Chosen models\", each model has its own Not allowed, Allowed or Sparingly setting. The Atrium agent's models carry their provider's name. A model on the list that the agent no longer offers shows \"Unavailable\".\n\n## Compatibility\n\n- Background service protocol 9 → 10.\n- An older app connecting to this background service only sees \"Main agent\" on tasks that have workers.\n- A remote that is still an older background service greys out this page and reads \"Needs a newer background service\".\n\n## Tests\n\n- **Unit tests:**\n  - Default rules.\n  - Family matching, including refusal of \"default\" and \"auto\".\n  - The order of refusals: main agent, then target agent, then model, then limits.\n  - Sparingly needing a reason and capped at one.\n  - All three limits.\n  - Refusal of `/model` and option changes from the main agent.\n  - Drift outside the list stopping the worker.\n  - The policy can't be changed from an agent connection.\n  - Old tasks getting the tools when they reopen.\n- **Full test suite:** passes in both modes, 1625 tests each.\n- **Real-app screenshot checks:** run in dark (translucent 0.15, blur) and light.\n  - No main-agent switch in the New Task panel.\n  - \"Main agent\" appears only after the first worker.\n  - A Kiro task gets no tools.\n  - A main agent dispatching in a loop is refused at the 5th worker.\n  - \"Stop All Workers\" closes both workers while the main task keeps running.\n  - Default settings on the Workers page.\n- The original main-agent and sub-agent view checks were re-run and pass.\n\n## Not verified\n\n- No real Claude Code, Codex or Antigravity has acted as a main agent dispatching a worker yet; the screenshot checks used simulated agents. After this version installs, the next time I (Claude Code, running inside Atrium) reopen, I get these tools, and I'll check right away.\n- The Atrium agent's real provider list wasn't checked: if no provider on your Mac offers DeepSeek V4.1 Flash, it shows as \"Unavailable\" in Settings, and dispatching it fails.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.13.6-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.6/Atrium-0.13.6-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.13.6-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.6/Atrium-0.13.6-macos-arm64.zip.sha256"
       }
     ]
   }
