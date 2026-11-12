@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.18.2",
+    "tag": "v0.18.2",
+    "title": "Atrium 0.18.2",
+    "prerelease": false,
+    "published_at": "2026-11-12T07:51:41Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.18.2",
+    "notes": "The newest row of a running turn's preview is drawn in full again.\n\n## Fixed\n\n- **While a turn ran, the newest row of its rolling preview was dimmed and the row at the top was cut off hard.** The preview fades at the edge past which there are more rows: at the top once it has moved on from its first row, at the bottom when the person has read back. Since the conversation became AppKit (0.17.2) the two fades were on the wrong edges, so a preview that followed its newest row laid the fade meant for the top over that newest row, in every turn that outgrew its preview. 0.17.5 fixed a preview that stopped following; this was the other half of the same report.\n\n## Under the hood\n\n- The app itself no longer links SwiftUI: the last pieces that reached for it (an agent's colour when its definition names none, and the demo pages, which are now built only for the demo) are AppKit or compiled out.\n\n## How it was checked\n\n- The fade's place is tested through Core Animation's own geometry: each transparent stop of the preview's mask is carried to the window and compared with where the preview's top and bottom are, following the newest row, read back to the first row, in between, and for a preview that shows all its rows. The test fails without the fix.\n- In the isolated test app, a task that runs only tool calls (a thought, 24 finished calls, one command still running) in the daily look (dark, translucent, blurred) and in light: the screenshots were read, the newest row is as bright as the rows above it and the preview fades at its top.\n- The whole test suite ran on the release's commit.\n\n## Not verified\n\n- The full real-window pass was made when the SwiftUI change was merged (the same day, on the commit this release adds one change to); for this change only the preview's own check was run again.\n- With a real agent on another Mac, where the report came from.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.18.2-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.2/Atrium-0.18.2-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.18.2-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.2/Atrium-0.18.2-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.18.1",
     "tag": "v0.18.1",
     "title": "Atrium 0.18.1",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.13.6-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.6/Atrium-0.13.6-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.13.5",
-    "tag": "v0.13.5",
-    "title": "Atrium 0.13.5",
-    "prerelease": false,
-    "published_at": "2026-11-08T14:40:13Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.13.5",
-    "notes": "这一版是两项小修。回复里用 `*…*` 强调的中文改用楷体，不再和正文分不出来；harness 授权自检的提示也改了：v0.13.4 里那句「重启后台服务」是错的，现在改成正确的处理办法。\n\n## 对话\n\n- **中文强调用楷体。** 回复里的 `*强调*` 本来靠斜体显示。苹方没有斜体，macOS 也不会把中文变斜，所以强调里的中文看起来和正文一模一样，只有英文是斜的。现在强调里的中文、日文和全角标点改用楷体，字号比正文大 2 pt（楷体字面偏小，放大后才和正文一样高），行高不变；英文照旧是斜体。粗体（`**…**`）和粗斜体不变。标题里的楷体用常规字重：楷体的粗体字形会把行撑高。对话字体选「等宽」时不受影响：自带的 Maple Mono NF CN 有斜体，中文本来就是斜的。楷体是 macOS 的可下载字体，没装的话保持原样，Atrium 也不会去下载它。\n\n## 开发与测试\n\n- harness 授权自检（`harness.py preflight`）在缺授权时只给一条建议：去「系统设置 › 隐私与安全性」授权；如果 Atrium 已经在列表里、开关也开着，说明那是旧构建留下的条目，用「−」删掉再用「+」加回。v0.13.4 认为「后台服务比 Atrium 活得久时，授权传不到它下面」，并提示去重启后台服务。这个判断不对：后台服务脱离 Atrium 单独运行时，授权照样有效。所以那条提示和 `orphanedHelper` 诊断字段都去掉了。\n\n## 兼容\n\n- 后台服务协议版本不变（9）。\n\n## 测试\n\n- 单元测试：强调里只有中日韩字符和全角标点换成楷体，字号是所在文字的字号加 2；英文、粗体、粗斜体和行内代码不变；等宽字体或没装楷体时原样输出；本机装了楷体时，17 pt 楷体的行高不超过 15 pt 苹方。\n- 全量测试两种模式（普通、严格）各跑一遍，全部通过。真实 app 的字阶截图检查在深色（半透明 0.15、模糊）和浅色下各跑一遍，都通过。另外用 Atrium 的 Markdown 组件离屏渲染了样张，标题、正文、列表、引用里强调的中文是楷体，英文仍是斜体，粗体、粗斜体和行内代码不变。\n\n## 没有验证的\n\n- 「更新后授权不再丢」：v0.13.4 起发布包用固定签名身份，这是第一次从固定签名的版本更新上来。要等你更新到这一版后再查一次辅助功能和录屏授权才能确认。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.13.5-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.5/Atrium-0.13.5-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.13.5-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.5/Atrium-0.13.5-macos-arm64.zip.sha256"
       }
     ]
   }
