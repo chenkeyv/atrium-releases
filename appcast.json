@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.18.1",
+    "tag": "v0.18.1",
+    "title": "Atrium 0.18.1",
+    "prerelease": false,
+    "published_at": "2026-11-12T04:07:59Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.18.1",
+    "notes": "A click anywhere in the message field gives it the keyboard again.\n\n## Fixed\n\n- **After a turn had ended, the message field took a click only along its top edge.** With the Accept row above it, a click in the field was tested that row's height further down: most of the box did nothing, no caret appeared, and what was typed next went nowhere until another click happened to land near the top. Every point of the box is the text's again. The cause was in 0.18.0's new composer: its hit test handed its subviews a point in its parent's coordinates, which is right only while the composer sits at its parent's origin, that is while a turn runs or once its result has been accepted.\n- **A shutdown's reply is no longer lost when the background service has already exited.** The app dropped the answer to its shutdown request when the acknowledgement that follows could not be sent any more; it keeps the answer, and the closed connection ends the usual way.\n\n## Under the hood\n\n- The chief's tools (`atrium-mcp`) are woken by a change of the session state instead of looking for one every 25 ms.\n- Tests outside the UI target wait for events instead of deadlines. Two diagnostic lines are new: `atriumd` writes `daemon_ready` to its error output once it has started (the app starts it with that output closed), and the update's install script logs when it starts waiting for the app to quit.\n\n## How it was checked\n\n- **With the real pointer**, in the isolated test app, on a task in review with the Accept row above the composer: a click at the middle of the field, near its bottom edge, at its right end and at its bottom left corner, each followed by typing. With 0.18.0's hit test none of the four clicks gave the field the keyboard; with the fix all four did.\n- AppKit's own hit test on the real controls in that state, and with the composer away from its parent's origin in both orientations of the parent. These tests fail without the fix.\n- The whole test suite, normal and with the strict cooperative pool. One run stopped in `TerminalSurfaceTests`, a test that has hung before when it closes its terminal (it waits for a thread of the terminal library); it passed when run again and is not touched here.\n\n## Not verified\n\n- **The rest of the window** got a short real-window pass (type scale and selection latency in the daily look and in light, the composer, permissions, session title, shell and layout checks), not the full one: nothing but the composer's hit test changed in the app since 0.18.0's full pass.\n- The session title check picked the wrong element while the rename card was closing (any button that held the title, when the timeline is not in the accessibility tree for that moment); it now looks for the task's row in the timeline only. A fault of the check, not of the app.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.18.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.1/Atrium-0.18.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.18.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.1/Atrium-0.18.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.18.0",
     "tag": "v0.18.0",
     "title": "Atrium 0.18.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.13.5-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.5/Atrium-0.13.5-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.13.4",
-    "tag": "v0.13.4",
-    "title": "Atrium 0.13.4",
-    "prerelease": false,
-    "published_at": "2026-11-08T13:33:16Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.13.4",
-    "notes": "这一版是几项小修：接手一个断开的会话时，带过去的「父任务结论」是它最后的回复，而不是适配器的报错输出；子 agent 的只读视图不再显示空的「上下文」；你发出的提示词和对话正文用同一种字体。\n\n## 对话\n\n- **父任务结论取最后一条回复。** 从一个已经断开的会话「继续」或「交给另一个 agent」时，新任务开头的「父任务结论」以前取的是会话结束的原因。agent 进程退出时，这个原因就是适配器的报错输出（`[idle-compaction] skip…`、`Unexpected case: {…}` 之类），对新任务没有用。现在取父会话最后一条助手消息；如果最后一轮没有正常结束（出错、被停止、被打断），结论后面加一行「父任务最后一轮没有正常结束；以上是它最后的回复」，报错输出不会带过去。任务检查器里照旧显示最后一轮的结果。\n- **提示词不再用衬线体。** 你发出的提示词以前固定用衬线体（Charter 配宋体），回复和输入框用的是对话字体。现在提示词和对话正文同一种字体（默认系统字体配苹方），字重略重（medium），打字时和发出去以后看起来一样。设置 › 外观里换了对话字体，提示词也跟着换。选中任务的标题仍用衬线体。\n\n## 子 agent\n\n- 选中 Claude Code 子 agent 的只读视图时，右栏不再显示「上下文」：子 agent 没有自己的上下文读数，那一块一直是空的。右栏只剩「文件夹」。\n\n## 修复\n\n- 目录监听在一种时序下会和取消它的任务互相等待而卡住（取消时 Swift 运行时持有任务的锁，监听队列正好在把一次变化交给同一个任务）。正式 app 连着后台服务时不走这条路；测试和不连后台服务的演示模式会偶发卡死，测试套件在严格模式下卡住过一次。现在取消时不再等监听队列。\n- 从终端派给其他 agent 的任务（`atrium-probe --learn`，总管派活用的就是它）会出现在时间线里，但点开是空的：它只记了和 agent 之间的原始收发，没有记对话。现在它像 Atrium 自己的任务一样记下每条提示词和 agent 的回复，派出去的任务在时间线里能看到完整过程；以前留下的、只有原始收发的那些不再列出。\n\n## 开发与测试\n\n- harness 开跑前先检查辅助功能和录屏两项授权（`scripts/test-app/harness.py preflight`，只用 `AXIsProcessTrusted()` 和 `CGPreflightScreenCaptureAccess()`，从不弹授权、从不截屏），缺了就以退出码 3 停下，说明该给哪个 app 授权。后台服务比拉起它的 Atrium 活得久时（Atrium 重启过、后台服务还是旧的那个），给 Atrium 授权到不了它下面的进程，这时提示改为重启后台服务。\n- 新增单测确保脚本里的截图都只截指定窗口（`screencapture -l`），没有全屏截图。\n\n## 签名：授权不再随更新丢失\n\n- 以前每个版本都是临时签名（ad hoc），macOS 按每次构建的哈希记住授权，所以每次更新后辅助功能、录屏和钥匙串里的「始终允许」都会失效。这一版起，发布包用一个固定的签名身份（自签名证书「Atrium Signing」）签名，包里的几个小程序也有了固定的标识（`io.github.chenkeyv.atrium.daemon` 等），以后更新时 macOS 都认得出是同一个 Atrium。\n- **装上这一版后要再授权最后一次**：如果你给 Atrium 开过辅助功能或录屏，请在「系统设置 › 隐私与安全性」里把旧的 Atrium 删掉（「−」）再加回来（「+」）。钥匙串里记住的 SSH 密码第一次被读取时，macOS 会问一次是否允许，选「始终允许」。之后的更新都不会再问。\n- 签名不是 Apple 的 Developer ID，没有经过公证。第一次在一台新 Mac 上打开时的提示，和以前一样。\n\n## 兼容\n\n- 后台服务协议版本不变（9）。\n\n## 测试\n\n- 单元测试：交接内容在连接断开、出错、停止、被打断后都取最后一条回复，不含报错输出；正常结束的交接不加那一行说明；提示词字体随对话字体族变化；取消正在迭代的目录监听任务时，即使监听队列被占着也立刻返回（旧代码上两种模式都失败），监听事件密集到来时反复取消也不卡；派活工具的会话有对话记录时才进时间线。两种模式全量测试通过，严格模式下目录监听测试连续 50 次通过、没有一次卡住。\n- 签名：发布构建的每个可执行文件的指定要求都是「固定标识 + 这张证书」，`codesign --verify --deep --strict` 通过。\n\n## 没有验证的\n\n- 这一版发布前没有跑真实 app 的截图检查（harness）：截图要用辅助功能和录屏授权，而授权要等装上这一版、重新授权以后才稳定。子 agent 视图不显示「上下文」、提示词换成正文字体这两处改动，会在装上这一版后补跑截图确认，有问题在 v0.13.5 修。\n- 「更新后授权不再丢」要到下一次更新（v0.13.5）时才能真正确认。\n",
-    "assets": [
-      {
-        "name": "Atrium-0.13.4-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.4/Atrium-0.13.4-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.13.4-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.13.4/Atrium-0.13.4-macos-arm64.zip.sha256"
       }
     ]
   }
