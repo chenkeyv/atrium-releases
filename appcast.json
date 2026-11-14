@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.22.0",
+    "tag": "v0.22.0",
+    "title": "Atrium 0.22.0",
+    "prerelease": false,
+    "published_at": "2026-11-14T04:33:14Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.22.0",
+    "notes": "The main window now switches between Tasks and a global terminal workspace.\n\n## Added\n\n- A Tasks / Terminal switch in the toolbar opens a terminal workspace without selecting a task. The toolbar shows the number of global terminal tabs.\n- The global terminal supports multiple tabs, with new tabs starting in the selected terminal's current directory. Command-T creates a global terminal tab while this workspace is selected.\n- New Task and Next Blocked Task return to the task workspace. The task selection is preserved when switching between Tasks and Terminal.\n\n## Known issues\n\n- The global terminal and the existing Scratch Terminal window share a render surface. Using both can leave one blank when the other refreshes, including while hidden.\n- After a task follows a new worktree, its terminal's + button starts a tab in the existing terminal's directory instead of the task's updated directory. Command-T still uses the task's directory in the Tasks workspace.\n- Opening a task from a notification or the menu bar does not switch back from Terminal to Tasks automatically.\n- The task terminal's Control-` shortcut remains enabled in the global terminal workspace. It can change the hidden task drawer and redirect keyboard focus to that task's terminal.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.22.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.22.0/Atrium-0.22.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.22.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.22.0/Atrium-0.22.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.21.0",
     "tag": "v0.21.0",
     "title": "Atrium 0.21.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.15.1-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.15.1/Atrium-0.15.1-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.15.0",
-    "tag": "v0.15.0",
-    "title": "Atrium 0.15.0",
-    "prerelease": false,
-    "published_at": "2026-11-09T09:24:12Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.15.0",
-    "notes": "Atrium can now be reached directly: a Mac running Atrium offers its daemon over TLS on Tailscale, the local network or a Surge Ponte name, and another Atrium connects with an address and a password — no ssh, no keys, no port forwarding. The same connection carries conversations, terminals and file reads, so remote tasks look like local ones.\n\n## On the host Mac\n\n- **Settings › Remote › Allow remote access.** A switch, a port (7443 by default) and three places to listen: Tailscale, the local network, and Surge Ponte (loopback). Nothing is exposed beyond those.\n- **One password.** Set it, or generate one and copy it; it is shown once. Changing it disconnects everyone already connected, and a client must not reconnect on its own.\n- **A pinned certificate.** Atrium generates a self-signed certificate on first use and shows its SHA-256 fingerprint. The other Mac pins that fingerprint on first connection, so a changed certificate is refused rather than trusted.\n- **Guesses are throttled.** Five wrong passwords from one address lock it for 30 seconds, doubling up to half an hour.\n- **What is connected.** The section lists live connections with their source and time, and can drop them all.\n\n## On the connecting Mac\n\n- **Settings › Remote › +** now asks for SSH or direct. A direct remote takes `host:port` and the password; the first connection shows the host's fingerprint to accept.\n- Everything else behaves as before: the row shows the host, its state and where it points, and tasks on it read files, run terminals and answer permissions through the same code as an SSH remote.\n\n## Under the hood\n\n- A new `atrium-remote` helper sits beside `atriumd`: TLS 1.3, a WebSocket on `/`, the password check, and a bridge into the daemon's own socket. The daemon supervises it and is the only thing that can configure it.\n- Daemon protocol 13 adds `remote/status`, `remote/set_config` and `remote/disconnect_all`. A connection that came in over the remote port is an ordinary session client: it cannot change remote settings, start workers, or stop the daemon.\n\n## Not yet\n\n- Discovery on the local network, keeping remote access on after logout (a LaunchAgent), and switching remotes without relaunching are the next step.\n- The phone-friendly web client comes after that.\n- Nothing listens on the public internet, and there is no relay.\n- Tailscale and Surge Ponte were not exercised on real networks for this release; the loopback path is what the tests cover.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.15.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.15.0/Atrium-0.15.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.15.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.15.0/Atrium-0.15.0-macos-arm64.zip.sha256"
       }
     ]
   }
