@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.23.4",
+    "tag": "v0.23.4",
+    "title": "Atrium 0.23.4",
+    "prerelease": false,
+    "published_at": "2026-11-14T12:54:03Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.23.4",
+    "notes": "Terminal tab switching avoids redundant configuration and geometry updates, and rendering keeps a short, refresh-rate-independent idle window to reduce display-link churn during rapid output.\n\n## Fixed\n\n- Closing a terminal can finish even if its relay ignores the normal shutdown signal. Relays also preserve the caller's working directory and environment without a redundant privileged login process.\n- Mixed light and dark windows retain their terminal colors after app appearance or font settings change.\n- Input method candidate positions update when terminals move between windows or within a layout.\n- Reattaching or restoring a terminal filters historical device, cursor, mode and color queries so their replies do not appear as shell input. Queries from a still-running program, shell startup and live output remain available to the newly attached terminal.\n- Reused terminal tabs keep the correct title, error state and select/close targets after replacement or reordering.\n- The first click on **Dismiss** now works when leaving the task list: focus changes preserve the pressed error-card button until mouse-up. Permission hints update without replacing their card.\n\nThe renderer retains VSync, font rendering, ligatures and window translucency/blur. Its CoreVideo start/stop operations remain on the main thread, and its idle deadline is safe across synchronous and renderer-thread draws.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.23.4-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.4/Atrium-0.23.4-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.23.4-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.4/Atrium-0.23.4-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.23.0",
     "tag": "v0.23.0",
     "title": "Atrium 0.23.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.16.1-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.1/Atrium-0.16.1-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.16.0",
-    "tag": "v0.16.0",
-    "title": "Atrium 0.16.0",
-    "prerelease": false,
-    "published_at": "2026-11-09T16:27:24Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.16.0",
-    "notes": "The first web client. A phone or any browser on your Tailscale network, your LAN or a Surge Ponte link can open the Mac's remote access port, sign in with the remote access password and follow every task live: the task list, the conversation as it streams, thoughts, tool calls, plans and the permission the agent is waiting on. It is read-only in this release; answering and typing still happen on the Mac.\n\n## Web client (W0)\n\n- **Settings › Remote › Allow remote access** now also serves a page at `https://<host>:<port>/`. Sign in once with the remote access password; the browser keeps a session cookie for seven days. Changing the password or turning remote access off signs every browser out.\n- Mobile first: a task list sorted by what needs you, then running, then to review; a conversation view that follows the newest content and offers a \"New\" pill when you have scrolled up; a permission card that shows what the agent asks and the options, with a note that the answer is given on the Mac.\n- English and Simplified Chinese, following the browser's language. Dark and light follow the system.\n- The page is built from `web/` (Svelte 5, Vite) at release time and shipped inside the app bundle. There is no Node dependency on the Mac.\n- Browsers do not trust the self-signed certificate yet: accept the warning once, or wait for certificate import in a later release.\n\n## Remote access hardening\n\n- Before a client has signed in: the TLS and HTTP handshake must finish within 10 seconds, text frames are capped at 4 KiB, at most 32 unauthenticated connections are held, and a ninth signed-in connection is refused on its own instead of closing everyone.\n- Password lockout counts an attempt before the hash is checked, so parallel guesses no longer slip past the limit; IPv6 sources are grouped by /64; a successful login no longer resets the whole loopback bucket.\n- Browser connections get a smaller set of daemon methods than the Mac app: they can read, send prompts, answer permissions and read files and git, but cannot open terminals, create tasks or change the fence. Binary frames from a browser are refused.\n- WebSocket messages split into several frames are reassembled.\n- New password hashes use 600 000 PBKDF2 rounds through CommonCrypto; existing hashes keep verifying with their stored round count.\n- `Origin` is checked on every browser request; cross-site login or WebSocket attempts are refused.\n\n## Under the hood\n\n- Daemon protocol stays 13. The daemon learns which remote connections are browsers (`remoteKind`) and documents that a client must acknowledge the welcome snapshot before any change is pushed.\n- `atrium-remote` gained `--web <dir>`, static file serving with cache and security headers, `POST /login` and `POST /logout`.\n- New tests: `RemoteWebTests`, `RemoteHardeningTests`, and 33 web unit tests (`npm test` in `web/`).\n\n## Not yet\n\n- Typing, stopping and answering permissions from the browser (W1); terminal, folder tree, diffs and history transcripts (W2).\n- Certificate import or Tailscale certificates for the web page.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.16.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.0/Atrium-0.16.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.16.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.0/Atrium-0.16.0-macos-arm64.zip.sha256"
       }
     ]
   }
