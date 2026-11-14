@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.23.0",
+    "tag": "v0.23.0",
+    "title": "Atrium 0.23.0",
+    "prerelease": false,
+    "published_at": "2026-11-14T09:55:57Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.23.0",
+    "notes": "Antigravity and Codex sessions now support more of their native workflows, including interactive questions, selective session import and recovery after an agent exits.\n\n## Added\n\n- Antigravity tasks can append instructions when creating a session and display the subscription tier reported by the agent.\n- Codex supports mid-turn steering through its native steering request, interactive forms and sign-in links, and native conversation forks when the adapter offers them.\n- New Task can list an agent's external sessions and import a selected conversation. Import preserves the selected permission mode and rebuilds history from supported replay APIs. Failed imports show an error and retain the selected session for retry.\n- Interactive forms support choices, text, numbers, checkboxes and multiple selections, with validation before submission. Each question's choices remain independent.\n- Failed sessions can reconnect in place. Reauthentication preserves the original native conversation; an interrupted prompt is restored as a draft instead of being sent again automatically. Related tasks inherit the parent's permission settings and compatible configuration preferences.\n\n## Fixed\n\n- Antigravity context usage follows the agent's reported context window instead of cumulative billing tokens. Empty late usage updates no longer erase established usage.\n- Agent request cancellation and completed questions dismiss pending interactions without sending duplicate responses.\n- Temporary worktree paths display consistently in the editor and touched-file list.\n\n## Known issues\n\n- The global terminal and Scratch Terminal window still share a render surface; one can appear blank when the other refreshes.\n- After a task follows a new worktree, its terminal's + button uses the existing terminal's directory. Command-T uses the task's directory in the Tasks workspace.\n- Opening a task from a notification or the menu bar does not automatically switch from Terminal to Tasks.\n- The task terminal's Control-` shortcut remains enabled in the global terminal workspace and can redirect keyboard focus to the hidden task terminal.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n- Session listing, native forks and replay depend on the capabilities advertised by the installed agent adapter.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.23.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.0/Atrium-0.23.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.23.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.0/Atrium-0.23.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.22.0",
     "tag": "v0.22.0",
     "title": "Atrium 0.22.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.16.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.0/Atrium-0.16.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.15.1",
-    "tag": "v0.15.1",
-    "title": "Atrium 0.15.1",
-    "prerelease": false,
-    "published_at": "2026-11-09T15:09:24Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.15.1",
-    "notes": "Remote access grew up: Atrium now finds other Macs on your network, keeps the port open after you log in, and switches between this Mac and a remote without relaunching the app.\n\n## Finding a Mac\n\n- **Settings › Remote › +** now lists the Macs on the local network that offer Atrium remote access (Bonjour `_atrium._tcp`). Picking one fills in its name and address.\n- The password is still yours to type, and the host's certificate fingerprint is still confirmed on the first connection. The fingerprint advertised on the network is only a hint, never the trust decision.\n- The service includes the Atrium and daemon protocol versions, so an old peer is visible as such rather than silently failing.\n- Only Macs that listen on the local network advertise; a Tailscale-only or Surge Ponte-only host does not. macOS asks once for local-network access.\n\n## Remote access after login\n\n- **Settings › Remote › After Login.** With remote access on, this installs a per-user LaunchAgent that starts `atriumd --idle-timeout 0` at login. Remote access works without opening the app.\n- Turning remote access off removes it. If the app is moved or updated, the next launch rewrites the plist with the new path and version.\n- `--idle-timeout 0` means never exit for being idle. The daemon still exits on an explicit shutdown, and launchd restarts it only after a crash.\n\n## Switching without relaunching\n\n- **Connect / Disconnect** on a remote now rebinds the running app's daemon connection in place. The window, its size, the menu bar and the running process stay; the remote's tasks appear, and switching back reloads this Mac's tasks.\n- SSH and direct remotes both benefit. The old daemon keeps running: its agents are not stopped, so nothing is lost if you switch back.\n- Editors with unsaved buffers are asked to save or discard first; their instances are closed before the paths change. Terminals and delivered permission notifications belong to the daemon being left behind and are cleared.\n\n## Fixes\n\n- A direct connection's TLS now verifies the certificate without also requiring a hostname match. Connecting by IP, `.ts.net` name or `.sgponte` name works; the pinned fingerprint remains the identity check.\n- After a network drop, a direct tunnel returns to \"Connected\" when a connection gets through again instead of staying on its last error. A wrong password or a changed certificate still stops and waits for you.\n\n## Under the hood\n\n- Daemon protocol stays 13; the three R2 features add no RPC shape.\n- `atrium-remote` advertises `_atrium._tcp` with TXT `v=1`, `proto`, `app` and `fp`; the app browses it only while the Add Remote card is open.\n- The harness covers the three features with `check-remote-r2.py`: a discovered host, a switch that keeps the app's PID and window, and a LaunchAgent plist whose command starts a daemon that a direct client reaches after the app is gone. The existing SSH-remote checks were updated for in-place switching.\n\n## Not yet\n\n- No discovery over Tailscale (Bonjour does not cross it), no web client yet, and still no public exposure or relay.\n- The real local-network permission prompt and a real Tailscale/Ponte network were not exercised in this release; the loopback and rendezvous paths are what the tests cover.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.15.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.15.1/Atrium-0.15.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.15.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.15.1/Atrium-0.15.1-macos-arm64.zip.sha256"
       }
     ]
   }
