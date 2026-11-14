@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.21.0",
+    "tag": "v0.21.0",
+    "title": "Atrium 0.21.0",
+    "prerelease": false,
+    "published_at": "2026-11-14T01:17:58Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.21.0",
+    "notes": "Agents can now manage their own worktrees, use a dedicated browser, and control local Mac apps. The Web client adds files, diffs, history, and terminals.\n\n## Added\n\n- Chief tasks can create and inspect managed worktrees, collect worker reports, and send selected reports back to the chief. Automatic continuation is available as an explicit task setting and remains off by default. Worktree removal refuses active or dirty workspaces.\n- The Web client can browse workspace files, display text and binary diffs, and load older task history in pages. Its terminal supports desktop and phone layouts, Unicode input, resizing, reconnecting to the same shell, and explicit close. Logging out revokes active terminal connections.\n- Each task can use a dedicated Chrome/Chromium profile through browser tools. Actions leave screenshots in the conversation and the latest image in the inspector. Task settings can disable the browser or enable page scripts, which are off by default. Closing the task closes its browser.\n- Local unfenced tasks can observe and operate running Mac apps through desktop tools. Operations show a visible control banner; external input pauses control, and only the person can resume it in task settings. Password fields refuse text and key input. Desktop control is serialized because the desktop is shared between tasks.\n- Browser and desktop screenshots can reach the native agent's model providers as images, while remaining visible in the task's history.\n\n## Fixed\n\n- Desktop helpers no longer take foreground focus while starting. Their own clicks and keys no longer trigger a false user-takeover pause on the next step, and a stop shortcut received by the active monitor is intercepted before reaching the target app.\n- Direct remote terminal streams handle framed input, output, resize, and exit messages consistently.\n- Release asset uploads have bounded retries in both repositories, and isolated app checks clean up their own system preference domains and provide an opaque backdrop for transparent-window screenshots.\n\n## Requirements\n\n- The release package is for Apple silicon Macs running macOS 27 or later.\n- Browser tools require an installed Chrome or Chromium. They use task-owned profiles, not the person's existing browser session.\n- Desktop tools require Accessibility, Screen Recording, and Input Monitoring permission, checked from Atrium Settings. They are local-only and available only to unfenced tasks. User-browser takeover, remote desktop control, and live screen streaming are outside this release.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.21.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.21.0/Atrium-0.21.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.21.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.21.0/Atrium-0.21.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.20.0",
     "tag": "v0.20.0",
     "title": "Atrium 0.20.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.15.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.15.0/Atrium-0.15.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.14.1",
-    "tag": "v0.14.1",
-    "title": "Atrium 0.14.1",
-    "prerelease": false,
-    "published_at": "2026-11-09T05:10:42Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.14.1",
-    "notes": "Atrium can now send pictures to an agent, and show a file without leaving the app. Pictures pasted, dropped or picked in the composer travel with the prompt, appear in the conversation, and reach the agent in the format it asks for; a file selected in the folder tree opens in Quick Look with Space.\n\n## Sending pictures\n\n- **Three ways in.** The paperclip beside the composer (⌘⇧A), a paste into the field, or a dropped image file. Each picture is shown above the field as a 48 pt thumbnail you can remove before sending.\n- **Only where they work.** The composer offers pictures when the agent says it takes them (`promptCapabilities.image`). Claude Code does; the Atrium agent now does too. An agent without that capability gets no paperclip, and a pasted picture is refused with a line saying why.\n- **Small and plain.** Pictures are turned upright, scaled to at most 1568 px on the long side and re-encoded (PNG when they have transparency, JPEG otherwise), so EXIF and location data never leave the Mac. One message carries up to eight pictures of 20 MB each.\n- **In the conversation.** A sent prompt shows its pictures in a 96 pt strip above its text; click one to see it full size.\n\n## The Atrium agent takes pictures\n\nThe built-in agent hands images to Anthropic and OpenAI models in each provider's own shape (an `image` block with base64 `source`, an `image_url` part, or an `input_image` item), and keeps them in its history so a continued session still has them.\n\n## Quick Look\n\n- **Space opens the selected file** in the folder tree, or in \"Changed by this task\". HTML, images, PDFs and Markdown open in the system's preview; the person's typing is never intercepted.\n- The same panel shows a composer thumbnail at full size.\n\n## Under the hood\n\n- The daemon speaks protocol 12: `session/prompt` may carry `attachments`, which the daemon stores beside the session log and forwards as ACP image blocks. Snapshots say whether the agent takes pictures, so an older daemon is never offered any.\n\n## Not yet\n\n- Pictures go out with a prompt of their own: while a turn runs, steering and the queue still carry text only.\n- An image an agent posts back still reads as `[image]` in its reply.\n- Quick Look in a remote task waits for a file-read request over the daemon (protocol 9 has folder listings but not file contents), so it is local-only for now.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.14.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.14.1/Atrium-0.14.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.14.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.14.1/Atrium-0.14.1-macos-arm64.zip.sha256"
       }
     ]
   }
