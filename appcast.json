@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.23.5",
+    "tag": "v0.23.5",
+    "title": "Atrium 0.23.5",
+    "prerelease": false,
+    "published_at": "2026-11-14T15:32:15Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.23.5",
+    "notes": "All top-level ACP agents can direct workers when **Tasks can create workers** is enabled, including the built-in Atrium agent. Tool-call previews show syntax colors again.\n\n## Fixed\n\n- Removed the hidden per-agent `canDirect` setting. Old saved values no longer prevent an agent from receiving task dispatch tools; worker model choices remain unchanged.\n- Connected the built-in Atrium agent to the same task-scoped worker tools used by external agents, including creating, waiting for, reading and closing workers. Worker ownership, model rules, fence inheritance and the restriction against workers creating more workers remain enforced.\n- Restored syntax highlighting for shell commands and source code in the rolling tool preview. Highlighting handles Unicode text, appearance and font changes, and reused preview rows, while keeping parsing bounded to the visible output.\n\n## Updating\n\nReopen a task after updating to receive its dispatch tools. Existing live agent processes do not gain tools automatically.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.23.5-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.5/Atrium-0.23.5-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.23.5-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.5/Atrium-0.23.5-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.23.4",
     "tag": "v0.23.4",
     "title": "Atrium 0.23.4",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.16.2-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.2/Atrium-0.16.2-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.16.1",
-    "tag": "v0.16.1",
-    "title": "Atrium 0.16.1",
-    "prerelease": false,
-    "published_at": "2026-11-10T00:43:56Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.16.1",
-    "notes": "Only the Atrium app, the Mac app's own remote relay and a properly scoped MCP client can now talk to the daemon. A fenced agent cannot reach the daemon socket, and a chief agent's MCP connection sees and controls only its own workers. Daemon protocol 14.\n\n## Daemon identity\n\n- The daemon writes an `app-token` file (mode 0600) next to its socket each time it starts listening. The Mac app reads it and presents it in `initialize`; a connection that claims to be the app without the right token is refused with `-32004` and closed.\n- Older clients (protocol 13 and below) that present no token are read-only: `initialize`, `state/*`, `history/*` and `fs/tree` work, everything else is refused. Upgrading the app and the daemon together is unaffected.\n- Over an SSH remote the app fetches the remote Mac's `app-token` through the main connection before it opens the forwarded socket, and fetches it again when the remote daemon restarts while the ssh connection stays up.\n- A socket forwarded by hand (`ATRIUM_SOCKET` / `daemon.socketPath`) needs a copy of the remote `app-token` beside it; `docs/remote.md` shows the two commands.\n\n## Fence\n\n- The Seatbelt fence now denies outbound connections to the daemon socket and the terminal socket, and denies reading or writing `app-token`. A fenced Atrium agent can no longer drive the daemon from inside a task.\n\n## MCP scope\n\n- `atrium-mcp` must present the chief session it serves. The daemon checks that the session exists, is a chief and is allowed to direct workers; otherwise the connection is refused.\n- Every session method on that connection must target one of the chief's own workers (including workers already closed into history); anything else is `-32003`. `session/create_related` may only attach to the chief itself.\n- Permission answers from an MCP connection must say `answeredBy: \"chief\"`.\n- Snapshots and change notifications sent to an MCP connection contain only the chief and its workers, their history and their terminals.\n\n## Under the hood\n\n- Daemon protocol 13 → 14 (`appIdentityVersion`, `notAnAppCode`). The minimum accepted version stays 6.\n- `scripts/test-app/common.py` reads `app-token` for harness RPC; forwarded-socket scenarios pass `home=` explicitly. The remote simulation publishes the remote daemon's token beside the forwarded socket (`remote_sim.publish_token`), since Seatbelt hides the remote home from the app and its fake ssh.\n- New tests: `DaemonIdentityTests` (token, read-only fallback, token rotation on restart, fence paths, MCP scope); `SandboxTests` covers the socket and token denials. Existing MCP-based tests create a real chief.\n- `docs/daemon.md` and `docs/design.md` D7 describe the token, the read-only fallback, the MCP rules and the fence additions.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.16.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.1/Atrium-0.16.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.16.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.1/Atrium-0.16.1-macos-arm64.zip.sha256"
       }
     ]
   }
