@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.24.0",
+    "tag": "v0.24.0",
+    "title": "Atrium 0.24.0",
+    "prerelease": false,
+    "published_at": "2026-11-15T14:09:12Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.0",
+    "notes": "Atrium now has a **Browser** workspace alongside Tasks and Terminal, with persistent tabs, website storage, bookmarks, history, and downloads. It uses the system WebKit engine and keeps personal browsing separate from task browser automation.\n\n## Added\n\n- Switch between Tasks, Terminal, and Browser without reloading open pages or losing terminal state. Browser views are created only when needed; restored background tabs load when selected.\n- Manage multiple tabs, pin tabs, reopen recently closed tabs, search from the address bar, find text on a page, and adjust zoom.\n- Keep cookies and website storage across tabs and restarts in a dedicated profile. Personal browsing data is not exposed through Atrium's task browser tools.\n- Browse bookmarks, history, and downloads in the sidebar. Export bookmarks as Netscape HTML, search and delete history entries, and download files with non-overwriting names.\n- Show explicit navigation and TLS errors, site permission controls, and recovery notices. Fix a recovery-banner layout crash that could prevent Browser from opening after a restart.\n\n## Fixed\n\n- Fixed a crash when closing an embedded Neovim editor while a background request was still being sent. Shutdown now rejects new requests and synchronizes input-pipe closure with writes.\n\n## Validation and known limits\n\n- Release-app checks covered workspace switching, page form preservation, persistent cookies and local storage, lazy restoration of 20 tabs, downloads and quarantine attributes, history search and deletion, bookmark export, and light/dark layouts. Public HTTPS pages loaded successfully; this does not establish every site's compatibility.\n- File upload and bookmark import have not completed end-to-end acceptance: the automated file selection did not succeed, and the cause is undetermined. Full-screen entry/exit checks did not pass.\n- Actual media playback, DRM streaming, password/Passkey integration, web notifications, and live WebContent crash recovery remain unverified.\n- Some OAuth/SSO providers reject embedded WebKit sign-in. Use Open in System Browser where needed; browser sessions are not transferred between applications.\n- Closing a tab may discard an unsaved web form without the same beforeunload confirmation as Safari. Chrome extensions are not supported.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.24.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.0/Atrium-0.24.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.24.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.0/Atrium-0.24.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.23.6",
     "tag": "v0.23.6",
     "title": "Atrium 0.23.6",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.16.4-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.4/Atrium-0.16.4-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.16.3",
-    "tag": "v0.16.3",
-    "title": "Atrium 0.16.3",
-    "prerelease": false,
-    "published_at": "2026-11-10T05:58:53Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.16.3",
-    "notes": "Opening a past task is faster and no longer a blank wait. The task's header shows the moment you select it, and the conversation opens at its newest turn instead of reading the whole log first. The \"Atrium\" title no longer prints over the timeline.\n\n## UI\n\n- **History opens header first**: selecting a past task shows its title, agent and folder right away from what the timeline already knows; only a thin progress line sits where the conversation will be, instead of a large spinner over everything.\n- **Newest turn first**: the conversation opens at the end of the log. Older turns load a page at a time when you scroll to the top, and each page adds only its own turns, so the rows already on screen are not rebuilt.\n- **Active task**: the composer's text field is built one tick after the conversation's first frame, so selecting a running task paints sooner. The empty field keeps its size, so nothing moves.\n- **Selection**: pressing a task selects it in one update; before, the previous task's inspector was rendered once more first (about 10 ms).\n- **Window title**: the main window no longer draws \"Atrium\" in the transparent title bar, where it landed on the first row's icon and title once the timeline scrolled. The window keeps its name for Mission Control, the Window menu and accessibility.\n- **Widgets for history**: \"Changed by this task\" for a past task comes from its recorded files, not from a scan of the whole transcript.\n\n## Measured\n\nHarness fixtures, dark with the translucent window, on a Mac that was also building other branches, 10 presses per target, press → title on screen through AX (so including the AX polling and tree walk):\n\n| Selecting | Before (audit) | Now, median / p90 |\n|---|---|---|\n| A large past task (`big-history`, 122 MB log) | 870–1225 ms (193 MB log) | 83 / 103 ms |\n| A running task (`everyday`) | 340–360 ms to the composer | about 101 / 115 ms to the title |\n| A small past task (`everyday`) | 140–190 ms | 145–159 / 147–166 ms (two runs; no faster) |\n\nThe daemon serves the newest page of a large log in a median of about 28 ms once the log is in its history list. The before figures are from a different, larger real history, so the large-task row is not a like-for-like comparison; the 150 000-item case was not measured.\n\nThe AX figure is \"title drawn + the app's next main-thread job\": the title can only be read when the main thread answers AX. With the header first, a small past task's title is drawn about 80 ms after the press; the newest page arrives right after and takes another 60–90 ms to lay out, and the AX read waits for it. A running task draws its title at about 72 ms, a large past task at about 43 ms. The polling itself costs about 2 ms. Measured with temporary stamps in the test app and with the harness's new breakdown, on a loaded Mac (other agents building, load average 5–13): small past task 158–171 ms in three runs, of which 85–89 ms until the app first answers and 67–88 ms waiting for the page's layout; running task 96–106 ms; large past task 80 / 102 ms. The harness check now holds the title (the app's first answer) to 150 ms for a small past task and 250 ms otherwise, and the readable-through-AX time to 250 ms for all three; before, the 150 ms limit sat on the second number.\n\n## Remote\n\n- `history/load` takes two optional parameters, `direction` (`forward` by default, or `backward`) and `pageSize` (1 to 500, replacing `limit`). Browsers and the Mac app over the remote tunnel get exactly the pages a local app gets. No protocol bump: an older daemon ignores them and returns forward pages, and the app falls back to reading forward as before.\n\n## Under the hood\n\n- Backward pages start on a user turn, so each page holds whole turns (usually at least the page size); `nextOffset` points at the next older page and is omitted at the start of the log.\n- Turns are cached per turn (`ConversationTurnCache`) with a content version; a page, an edit or a new turn re-segments only what changed, and the result equals segmenting the whole transcript.\n- The composer measures its line height once per font instead of building a layout manager on every probe.\n- Harness: `check-latency.py` (selection latency on `everyday` and `big-history`) and `ax-client presswait`, which also report what each figure is made of (until the app first answers, waiting for its later work, the polling itself); the composer, nvim, ligature and type-scale checks find the timeline by its accessibility label instead of a fixed path, which moved when the range strip became optional; `check-type-scale` shoots the widget column while a task is selected.\n- New tests: backward paging and turn boundaries, remote clients paging like the app, incremental segmentation equal to full segmentation, the history header before the first page, the timeline selection reaching the store at once.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.16.3-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.3/Atrium-0.16.3-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.16.3-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.3/Atrium-0.16.3-macos-arm64.zip.sha256"
       }
     ]
   }
