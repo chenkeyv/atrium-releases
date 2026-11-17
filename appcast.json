@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.24.1",
+    "tag": "v0.24.1",
+    "title": "Atrium 0.24.1",
+    "prerelease": false,
+    "published_at": "2026-11-17T03:17:19Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.1",
+    "notes": "Tool-use previews resume following new content after scrolling stops.\n\n## Fixed\n\n- Fixed a rolling preview that could remain stuck after reading earlier tool output. Delayed scroll notifications and layout changes no longer disable following after its resume timer has ended.\n- Keep the automatic resume timer active while native scroll events arrive. Reading back still pauses the preview for three seconds; leaving the preview or scrolling to the bottom resumes following immediately.\n- Clear a temporary scroll pause when a preview is removed, so showing it again follows the newest content.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.24.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.1/Atrium-0.24.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.24.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.1/Atrium-0.24.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.24.0",
     "tag": "v0.24.0",
     "title": "Atrium 0.24.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.17.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.0/Atrium-0.17.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.16.4",
-    "tag": "v0.16.4",
-    "title": "Atrium 0.16.4",
-    "prerelease": false,
-    "published_at": "2026-11-10T10:01:32Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.16.4",
-    "notes": "A security release. An update must now be signed by the same identity as the Atrium that installs it, a browser signed in with the remote password can do less than before and leaves a trace of what it does, and several ways a faulty or hostile peer could crash or stall the app are closed. Nothing changes in how you use the Mac app. The daemon protocol stays at 14.\n\n## Updates\n\n- **Signer check**: before an update is installed, its code signature must satisfy the designated requirement of the Atrium that is running (the same signing identity). An update signed by anyone else is refused with \"The update isn't signed by the same developer as this copy of Atrium\", and nothing is staged. Until now the updater checked the download's checksum, bundle id, version and that the signature was intact, all of which a replaced release could satisfy.\n- Development builds are ad-hoc signed and have no identity to pin, so they update as before.\n- If Atrium ever changes its signing identity or bundle identifier, the first version under the new one has to be installed by hand; the message points to the release page.\n\n## Remote access and the browser\n\nThe browser page is still read-only in this version, but the server used to accept more from a signed-in browser than the page ever sent. Now:\n\n- **Fewer methods**: a browser connection may call 16 methods: reading and syncing state, sending, queueing and steering a message, cancelling a turn or a queued message, answering a permission request, and the read methods for history, folders and diffs. Closing, stopping or finishing a task, changing its mode or options, continuing a past task and stopping background work are refused (`-32003`). The Mac app connecting directly keeps everything it had.\n- **A browser is always a browser**: a connection that carries an `Origin` header or signs in with the cookie gets the browser's method set whatever it says about itself.\n- **No remote connection answers as the chief**: a permission answered with `answeredBy: \"chief\"` over a remote connection is refused; that identity belongs to the chief agent's own tool connection.\n- **Write budget**: all browser connections together may send 20 writes at once and one more every 2 seconds; beyond that a write is refused with `-32012` and the seconds to wait. Reconnecting does not refill it.\n- **Sent once**: `session/queue` with a `messageID` the daemon has already seen answers with success and does nothing, so a page that resends after a dropped connection cannot double a message. `session/steer` takes a `messageID` too.\n- **A trace on the Mac**: a message, a permission answer, a stop and a cancelled queued message that came from a browser each add a one-line notice to the task's transcript (\"Allowed from a browser\", \"Message from a browser\", …). A permission answer records that it came from the web.\n- **Sign out closes the connection**: signing out ends every socket opened with that cookie, not only the cookie. A cookie is checked again once its socket is registered.\n- **Smaller frames**: a browser frame, whole or in fragments, is limited to 1 MiB and the connection is closed with 1009 beyond it.\n- **Agent text cannot draw controls**: the page's Markdown sanitizer no longer lets through inline styles, or `input`, `button`, `textarea`, `select`, `label` and `form` elements, which an agent's message could have used to paint over the page.\n- The server picks up a new `index.html` without a restart, and keeps the old one if the new one cannot be read.\n\n## Fixes\n\n- **Duplicate ids no longer crash the app**: a snapshot from a faulty or remote daemon that repeats a session or lane id used to trap in three places (session order, the timeline graph); the first entry now wins.\n- **Switching the remote host does not freeze the window**: ending the old ssh tunnel could hold the main thread for up to five seconds. It now ends in the background, and the new connection starts only when the old one is gone.\n- **Atrium's own agent**: opening or loading a session no longer blocks the agent's message loop while provider model lists are fetched, so closing the session during that time is noticed at once; requests for a session that is still loading are refused instead of landing on its previous state; each secret is kept once in the redaction list.\n\n## Not verified\n\n- The signer check on a real update between two published versions through the in-app updater. It was checked with the same Security calls on the published 0.16.1 and 0.16.2 bundles (accepted) and on an ad-hoc build (refused).\n- A browser on a phone against a real Mac; the checks ran against the isolated test daemon and server.\n- A real ssh server when switching hosts; the tunnel tests use a scripted ssh.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.16.4-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.4/Atrium-0.16.4-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.16.4-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.16.4/Atrium-0.16.4-macos-arm64.zip.sha256"
       }
     ]
   }
