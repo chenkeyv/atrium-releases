@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.24.4",
+    "tag": "v0.24.4",
+    "title": "Atrium 0.24.4",
+    "prerelease": false,
+    "published_at": "2026-11-18T03:22:10Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.4",
+    "notes": "This update fixes macOS native UI appearance, layout, focus, and interaction issues across the shell, settings, browser, terminal drawer, composer, conversation, and widgets.\n\n## Fixed\n\n- Fix flipped-coordinate hit testing and effective divider rects on `ShellSplitView` so the title bar stays draggable and the bottom inset responds to divider drags and double-clicks.\n- Refresh layer colors across `BrowserWorkspaceView`, `BrowserSidebarView`, `BrowserPopovers`, `UpdatePanelView`, `DialogLayerView`, and `DialogSurfaces` when switching between Light, Dark, and Increased Contrast appearances.\n- Fix `BrowserTabPillView` hidden media-dot spacing and pinned-tab constraint conflicts, update loading progress width on resize, focus the new-tab search field when opening a new tab, and refresh the sidebar when history or download preferences change.\n- Drop hidden Neovim grid focus when filling the terminal drawer (`EditorWorkspaceView.layoutFilled()`), vertically center terminal drawer branch metadata, prevent header label collisions, and keep selected tab underlines inside bounds.\n- Add mouse/trackpad wheel scrolling and accessibility frame updates to `CompletionListView`, vertically center short `QueuedMessageRow` items, and tint the missing-attachment fallback icon cleanly in Dark mode.\n- Fix `ProviderEditorCard` secondary keyboard navigation (`SettingsSecondaryControls`) and embedded scroll layout, resolve the `RemotePage` add-flow push/pop race, and preserve the settings breadcrumb font size.\n- Fix `RollingSubtaskPreviewView` icon/title overlap, `ToolRowView` hover-action chevron occlusion, rounded inline-code styling in expanded `ThoughtScrollView`, and dynamic screenshot/action-button sizing in Widgets.\n- Standardize button tinting, selection washes, typography tiers, and corner radii on `AtriumColor`, `AtriumType`, and `AtriumShape`.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.24.4-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.4/Atrium-0.24.4-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.24.4-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.4/Atrium-0.24.4-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.24.2",
     "tag": "v0.24.2",
     "title": "Atrium 0.24.2",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.17.2-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.2/Atrium-0.17.2-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.17.1",
-    "tag": "v0.17.1",
-    "title": "Atrium 0.17.1",
-    "prerelease": false,
-    "published_at": "2026-11-10T14:22:14Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.1",
-    "notes": "Two things. A task that runs into its agent's usage limit now waits for the limit to lift and carries on by itself. And the browser page can act, not only watch: answer a permission, send a message, steer a running turn and stop it. The daemon protocol stays at 14.\n\n## When an agent hits its limit\n\nUntil now a turn that stopped on a usage or rate limit was a failed turn like any other, and you had to notice the time and come back.\n\n- **It is its own state.** The task's row says \"Limit reached\" with what happens next, and the end of the conversation has a small card. The agent's own message stays in the conversation as it was.\n- **When the agent said when the limit resets**, Atrium continues the task by itself at that time (a few seconds after, 5 to 30). The row carries an hourglass and reads \"Limit reached · continues at 9:40 PM\"; the card offers Continue Now and Cancel Automatic Continue. The time is shown in your time zone, whatever zone the agent named.\n- **When it did not**, nothing is guessed: the row reads \"Limit reached · reset time unknown\", the task counts as needing you, and the card offers Continue Now and Dismiss. The same after you cancel the automatic continue.\n- **What continuing sends**: if the turn had already started working, the one line \"Continue from where you stopped.\"; if it had not, your last message again. Messages you queued go first.\n- **You can always just type.** Sending a message leaves the state and cancels the timer.\n- **It stops trying**: if the continue runs into the limit again, that counts; after three in a row the task waits for you. A reset time that is not at least half a minute ahead after a failed continue is not trusted.\n- **It survives a restart.** The timer is part of the task: after an update or a restart of the background service the task is still waiting for the same time and continues once. A task whose time passed more than a day ago while nothing was running waits for you instead. A task you reopen from history never sends anything by itself.\n- **Recognising a limit**: Claude's message (\"You've hit your 5-hour limit · resets 5:30pm (Asia/Shanghai)\") was checked against a real one, including the case where Claude reports it as an ordinary end of turn. The patterns for Codex, Antigravity and Kiro come from their documentation and reports, not from limits we hit ourselves; one that is missed still shows as a failed turn, as before. Every failed turn now keeps its raw error in the task's log, so a missed pattern can be added from it.\n- An older Atrium connected to the same background service, and the browser page, see such a task as idle with a failed last turn.\n- **Handoff summaries** (when a task is continued in a new session or by another agent) now always keep the original request, then the latest exchanges, one line of changed files and the results of the last commands, and say how many earlier messages were left out.\n\n## In the browser\n\nThe server side of this shipped in 0.16.4; this is the page. Open `https://<your Mac>:<port>/` with remote access on, as before, and sign in with the remote access password.\n\n- **Permissions**: a task that is waiting shows its request as a card with the same choices the Mac offers. Tap one and the turn goes on. If the Mac (or the chief agent) answered first, the card says who did and what was chosen. A long detail scrolls inside the card and keeps its line breaks; with several requests waiting the card says how many are left.\n- **Messages**: a box at the bottom of a task. While the task is idle it sends a message; while a turn is running the same box steers it, and what you sent is listed above the box as waiting for the model or waiting for the turn to end. A message still waiting can be taken back with ×.\n- **Stop**: a round button beside the box while a turn is running (Esc with a keyboard). It ends the turn and leaves what you were typing.\n- **A dropped connection while sending** does not send twice and does not lose the text. The page says it is checking, and when the connection is back it either clears the box (the message arrived) or says it did not arrive and can be sent again; sending again reuses the same message id, so the daemon takes it once.\n- **Drafts** are kept per task while the page is open and cleared when you sign out.\n- **Signing in once is enough**: a new tab, or a tab the phone had put away, opens straight to your tasks while the sign-in is still valid (seven days). Before, every new tab asked for the password again.\n- With a keyboard, Return sends and Shift-Return starts a new line; a Return that confirms input-method composition is not taken for send. On a phone the box stays above the keyboard and focusing it does not zoom the page.\n- Everything a browser does is written into the task on the Mac as a line of its own (\"Message from a browser\", \"Allowed from a browser\", \"Stopped from a browser\"), as since 0.16.4.\n\n## What the browser still cannot do\n\nStart, close or delete a task, open a terminal, browse files or diffs, change mode, model, permission level or the fence, change settings, or attach images. The page does not work offline. A browser is limited to 20 writes in a burst and one every 2 seconds after that; past it the page says how long to wait.\n\nOne thing to know: the remote access password is the only thing between a browser and these actions. There is no second confirmation on the Mac for a message or an answer sent from a browser; each one is visible in the task afterwards.\n\n## Smaller changes\n\n- CI no longer uploads a copy of the app for every run (only when started by hand, kept one day); the uploads had filled the account's artifact storage.\n\n## Not verified\n\n- A real limit from Codex, Antigravity or Kiro; only Claude's wording comes from a real sample.\n- In the browser: what the page says while the Mac does not answer and while the phone is offline (the check would have needed to suspend the server), Return during input-method composition, the Chinese wording on the page, and a real iPhone with its keyboard up.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.17.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.1/Atrium-0.17.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.17.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.1/Atrium-0.17.1-macos-arm64.zip.sha256"
       }
     ]
   }
