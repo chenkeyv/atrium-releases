@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.24.5",
+    "tag": "v0.24.5",
+    "title": "Atrium 0.24.5",
+    "prerelease": false,
+    "published_at": "2026-11-19T10:51:06Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.5",
+    "notes": "This update polishes the native AppKit conversation interface across turn rendering, scrolling, tool previews, the composer, and task chrome.\n\n## Improved\n\n- Render image attachment strips on user prompts (`PromptAttachmentStripView`, 96 pt expanded / 48 pt folded, up to four thumbnails plus a `+N` overflow badge) with click-to-Quick-Look preview, and add 16 pt horizontal overflow fades and 1.5 s `\"Copied\"` feedback to `CodeBlockView`.\n- Add a floating `ScrollToBottomButton` pill (`Jump to latest`) with a running-turn indicator in `ConversationScrollView`, and support `\"Copy Turn as Markdown\"` from `StickyToolBar` and `\"Open in Terminal\"` on command `ToolRowView` rows.\n- Animate `FieldPlate` focus, disabled, and image-drag target borders in `ComposerView`, add horizontal wheel scrolling to `AttachmentStripView`, and add a scroll-position thumb indicator to overflowing `CompletionListView` popovers.\n- Focus the first invalid control and announce validation errors in `ElicitationCardView`, clear validation errors immediately on edit, tick live expiration countdowns every second, and preserve in-progress elicitation cards across queue count and fence updates in `TaskTailView`.\n- Add horizontal overflow edge-fade masks and vertical wheel passthrough to `SessionConfigurationPanel`, semantic status colors and appearance-aware symbol attachments to `ConfigOptionMenuView`, SF Symbol disclosure chevrons and dynamic row heights to `ChiefWorkbenchView`, and consistent hover/pointing-hand states across task chrome controls.\n\n## Fixed\n\n- Fix `TopEdgeFade` limit updates, flipped clip-view mask polarity, and `contentInsets.top` accounting, and skip `ComposerScrollView` and nested scroll views when attaching column fades in `ColumnContainerView`.\n- Fix `RollingThoughtPreviewView` flipped coordinates and theme colors, `RollingSubtaskPreviewView` narrow-width truncation and trailing commas, `RollingToolPreviewView` timer cleanup and 1 Hz relayout, and stationary `.began` (`deltaY == 0`) trackpad gesture handoff in `RollingToolWheelRouter`.\n- Retain `SummaryBarView` usage tooltip strings across AppKit tooltip registration, remove the 8 pt empty-chip indent, preserve `ToolPartView` text selection across async syntax highlighting, and cancel stale highlight tasks on `ToolRowView` reuse.\n- Filter non-image Finder file icons out of `ComposerPasteboard.pictures()`, guard ghost text against the macOS Accent Picker and IME mark transitions, align multi-line `QueuedMessageRow` text to the top line, and clamp narrow status labels.\n- Keep `PinnedWorkView` ticking until retained finished items expire even after all running items complete, forward `translucent` and workspace `folder` into `PinnedSubagentExpansionView`, and scope `PermissionCardView` key equivalents so they never intercept IME, terminal, button, or active non-empty composer input.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.24.5-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.5/Atrium-0.24.5-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.24.5-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.5/Atrium-0.24.5-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.24.4",
     "tag": "v0.24.4",
     "title": "Atrium 0.24.4",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.17.3-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.3/Atrium-0.17.3-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.17.2",
-    "tag": "v0.17.2",
-    "title": "Atrium 0.17.2",
-    "prerelease": false,
-    "published_at": "2026-11-10T18:01:31Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.2",
-    "notes": "One background behind the whole window, a conversation drawn entirely without SwiftUI, and a round of hardening for remote access and updates. The daemon protocol stays at 14.\n\n## One background\n\nIn the borderless look each of the three columns painted its own shade. With translucency on, the task list, the conversation and the bar on the right did not match.\n\n- **All three columns share one backdrop now**: one translucent layer and one blur behind the whole window, with no plate of its own under any column.\n- **The solid window follows.** The conversation no longer sits on a lighter sheet than its neighbours, and the strip above it is gone.\n\n## The conversation is all AppKit\n\n0.17.0 moved the conversation's rows to AppKit and left four pieces in SwiftUI: the diff card, the running turn's rolling preview of tool output, the tool bar that stays pinned while you scroll, and the empty conversation. These are drawn natively now. The SwiftUI conversation is deleted, and so is the hidden switch between the two. Text is measured without SwiftUI as well. Nothing is meant to look different.\n\n- **Row heights no longer follow the display.** An icon in a tool row was laid out on the screen's pixel grid, so the row could come out one point taller or shorter on a non-Retina display, or while the display slept. Icons are sized on a fixed grid now.\n- The tooltip on the auto-approved bolt (\"Auto-approved · …\") is back on tool rows; the native rows had lost it.\n\n## Limits\n\n- Claude sometimes puts its limit sentence at the end of a longer reply instead of sending it alone (seen with a real weekly limit). That is recognised now, so the task waits and continues as described for 0.17.1 instead of ending as an ordinary reply.\n\n## Remote access and updates\n\n- **Oversized frames before the password are refused from their header.** A connection that has not signed in may send 4 KiB per message. This was checked only after the whole frame had arrived, and the receive buffer allows 256 MiB, so each of the 32 connections allowed to wait for a password could make the Mac hold that much. The length is read from the frame header now and the connection is closed before any of the payload is buffered: masked or not, whatever the frame's type, and whatever length it claims.\n- **The updater checks the running app against its signature** before it reads the signer that updates are pinned to. If the app on disk was changed after launch, the update is refused.\n- **Switching remotes cannot hang on an old SSH connection.** Stopping a tunnel waits at most about 25 seconds for the previous connection's task; a keychain prompt left open could hold it forever, and every later switch was refused as busy.\n\n## Releases and tests\n\n- Publishing the update feed retries after a network error (0.17.1's feed had to be published by hand after one), and the feed alone can be published again without rebuilding the app.\n- Test waits have deadlines, so a condition that never comes true fails the test instead of hanging the run; the mock agent no longer outlives its test; pictures compared in tests are drawn into a fixed bitmap instead of the screen's.\n\n## Not verified\n\n- A real non-Retina display: the row-height fix is checked by drawing at a fixed scale, not on such a screen.\n- Memory under a real flood of oversized frames: the tests show the connection is closed from the header, before the payload is sent; they do not measure the process.\n- The updater's signature check in a signed release: it first runs for real when 0.17.2 updates to the version after it.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.17.2-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.2/Atrium-0.17.2-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.17.2-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.2/Atrium-0.17.2-macos-arm64.zip.sha256"
       }
     ]
   }
