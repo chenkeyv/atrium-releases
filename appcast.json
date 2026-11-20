@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.25.2",
+    "tag": "v0.25.2",
+    "title": "Atrium 0.25.2",
+    "prerelease": false,
+    "published_at": "2026-11-20T15:28:45Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.25.2",
+    "notes": "This update fixes spacing and alignment inside the top-bar workspace switcher.\n\n## Fixed\n\n- **Workspace tab spacing (`ToolbarViewTabsView`)**: Replaced default `NSButton` image/title layout with a dedicated `ToolbarTabButton` layout that enforces uniform outer (`2 pt`), inter-segment (`2 pt`), horizontal (`10 pt`), icon-to-title (`5 pt`), title-to-dot (`6 pt`), and dot-to-count (`4 pt`) spacing with symmetric padding across Tasks, Terminal, and Browser tabs in both English and Simplified Chinese.\n- **Stable widths & alignment**: Accounted for `NSTextField` alignment rect insets and SF Symbol full image sizes, and reserved medium-weight title width so switching between workspaces no longer shifts adjacent tabs.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.25.2-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.2/Atrium-0.25.2-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.25.2-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.2/Atrium-0.25.2-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.25.1",
     "tag": "v0.25.1",
     "title": "Atrium 0.25.1",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.17.6-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.6/Atrium-0.17.6-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.17.5",
-    "tag": "v0.17.5",
-    "title": "Atrium 0.17.5",
-    "prerelease": false,
-    "published_at": "2026-11-11T11:27:11Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.5",
-    "notes": "The running turn's preview stays on its newest line, a thought no longer cuts into the row below it, and a Kiro turn shows its credits.\n\n## The rolling preview\n\nWhile a turn runs, the folded tool bar shows a short preview of its latest calls and thoughts. It is meant to stay on the newest line, with older lines fading out at the top.\n\n- **It no longer gets stuck on its first lines.** Scrolling the conversation with the pointer over the preview scrolled the preview itself, to its top, and from then on it stopped following: new calls arrived cut off under the fade at the bottom. Now only a scroll that actually moves the preview pauses it, and it goes back to the newest line when the pointer leaves, three seconds after the last scroll, or when you scroll back to the bottom.\n- **The wheel passes through at the ends.** At its top or bottom the preview hands the scroll to the conversation instead of swallowing it. A scroll gesture that began outside the preview keeps scrolling the conversation as the preview passes under the pointer, inertia included.\n- **A thought no longer overlaps the next row.** The thought line was measured with the reading font and drawn with the thought font. With a conversation font other than the system, serif or mono ones (Helvetica or Palatino, say), the line was drawn taller than its place and the top of the row below it was cut.\n\n## Kiro\n\n- **A Kiro turn shows the credits it used** beside its duration (0.07 credits, say), and the context widget shows the session's total. Kiro reports both at the end of each turn; 0.17.4 had the place for them but did not read them yet.\n- Kiro stays on ACP v1. Kiro 3.1.0 answers a request for protocol version 2 with 2, but a recorded turn shows it still speaks the v1 shapes (the prompt's own result ends the turn, permission requests are v1's), which Atrium's v2 connection does not accept. Nothing is lost by staying: its own fields, credits included, arrive on v1 as well.\n\n## Releases\n\n- The upload to the public releases is bounded and retried: 0.17.4's stalled for 36 minutes and its update feed had to be published by hand.\n\n## Not verified\n\n- Kiro's credits against more than one recorded turn: one real turn on one model was captured. Cancelled and failed turns, sub-agents and a session resumed from history were not.\n\n- A real trackpad on the preview: the wheel rules are tested with constructed events through the real `scrollWheel(with:)` and as a pure decision table, not by hand.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.17.5-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.5/Atrium-0.17.5-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.17.5-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.5/Atrium-0.17.5-macos-arm64.zip.sha256"
       }
     ]
   }
