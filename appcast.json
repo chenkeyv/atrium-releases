@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.25.0",
+    "tag": "v0.25.0",
+    "title": "Atrium 0.25.0",
+    "prerelease": false,
+    "published_at": "2026-11-20T09:35:24Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.25.0",
+    "notes": "This update adds production MCP, Skills, and `AGENTS.md` / `CLAUDE.md` support across Atrium and its built-in agent, and changes new sessions to use the chosen folder directly without creating a Git worktree by default.\n\n## Added\n\n- **MCP server management and runtime support**:\n  - Added `MCPStore` and `MCPServerConfig` in `AtriumCore` supporting native arrays, Claude Desktop / Cursor `{\"mcpServers\": {...}}` and `{\"servers\": {...}}` objects, stdio (`command`, `args`, `env`, `cwd`) and remote HTTP/SSE (`url`, `headers`) transports, workspace `.mcp.json` and `.atrium/mcp.json` merging with sandbox fence checks, reserved server filtering (`atrium`, `atrium_screen`), and `0600` atomic saves in `~/.config/atrium/mcp.json`.\n  - Built `MCPHub`, `MCPStdioClient`, and `MCPHTTPClient` in `AtriumAgent` with concurrent session startup, per-server timeouts and failure isolation, JSON-RPC 2.0 cursor-paginated `tools/list` and `resources/list`, cancellation notifications, Streamable HTTP + `text/event-stream` SSE parsing, `Mcp-Session-Id` propagation, collision-safe tool name prefixing, read-only hint classification for `explore` subagents, `mcp_resources_list` / `mcp_resource_read` resource helpers, and connection probing.\n  - Forwarded configured enabled MCP servers into compatible external ACP agent sessions via `Session.openingMCPServers()`, and redacted MCP credentials and sensitive headers across `Session` ACP traces and `AgentSession` histories and tool outputs.\n  - Added AppKit MCP management UI in **Settings › Agent** (`MCPEditorCard`, `MCPRowView`) with Stdio/HTTP configuration, inline enable/disable and removal, and live **Test Connection** probing.\n- **Skills discovery and invocation**:\n  - Added `SkillCatalog` in `AtriumCore` to discover `SKILL.md` skills and Markdown commands across workspace (`.atrium/skills`, `.agents/skills`, `.claude/skills`, `.codex/skills`, `.claude/commands`) and user (`~/.config/atrium/skills`, `~/.atrium/skills`, `~/.agents/skills`, `~/.claude/skills`, `~/.codex/skills`) locations with case-insensitive workspace precedence and SandboxFence credential protection.\n  - Integrated skills into the built-in `atrium` agent: system prompt `Available skills` summary, built-in `skill` tool (available in both normal and `explore` subagent modes), ACP `.availableCommands` advertisement, and `/<skill>` slash command autocompletion and inline skill expansion.\n  - Added **Skills & Instructions** status and quick shortcuts (`Open Skills Folder`, `Edit Global AGENTS.md`) to **Settings › Agent**.\n- **`AGENTS.md` and `CLAUDE.md` instructions**:\n  - Updated `SystemPrompt` to load global (`~/.config/atrium/` and fallbacks) and Git-root-to-working-directory instruction hierarchies (`AGENTS.override.md`, `AGENTS.md`, `CLAUDE.md`, `.claude/CLAUDE.md`, `.atrium/AGENTS.md`, and `*.local.md`), expand `@path` / `@\"path\"` imports outside code fences and inline code with cycle/size/fence guards, and lazily attach unseen subdirectory `AGENTS.md` / `CLAUDE.md` rules when reading, searching, or editing files inside nested folders.\n\n## Changed\n\n- **New sessions default to no Git worktree**: Updated `NewTaskCard` so `New worktree` starts unchecked, opening new tasks directly in the selected folder unless a separate worktree is explicitly requested.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.25.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.0/Atrium-0.25.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.25.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.0/Atrium-0.25.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.24.5",
     "tag": "v0.24.5",
     "title": "Atrium 0.24.5",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.17.4-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.4/Atrium-0.17.4-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.17.3",
-    "tag": "v0.17.3",
-    "title": "Atrium 0.17.3",
-    "prerelease": false,
-    "published_at": "2026-11-11T02:36:02Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.3",
-    "notes": "Settings in the borderless look: no card, no sidebar, new motion. The daemon protocol stays at 14.\n\n## Settings\n\nSettings were an opaque card with a darker sidebar inside it, and editing a model service or adding a remote Mac put a second card on top of the first. They are a page on the window's own background now.\n\n- **No card.** Opening Settings (⌘,) blurs and dims the three columns where they are and sets one centred column of rows over them. There is no panel edge, no outline and no title.\n- **Tabs are a row of words**: General, Agent, Memory, Remote, with a short accent line under the current one. ⌘1–⌘4 go to a page; with the row focused, ← and → move between pages.\n- **Rows without boxes.** A label on the left and its control on the right; groups are separated by space, not by lines or plates. Segmented choices (theme, permissions) are words with a faint capsule under the chosen one; the font size is a number with a pair of arrows; text actions (Edit…, Add, Check for Updates) are accent-coloured words.\n- **Second-level pages push in.** Editing a model service, adding a remote Mac and changing the remote password slide into the same column, and the tabs become a breadcrumb. Esc or ‹ goes back one page; Esc again closes Settings. Leaving a form with unsaved changes still asks first.\n- **Motion.** Opening fades the veil in while the rows rise into place; changing pages slides the accent line to the new word and moves the old page out and the new one in; the capsule of a segmented choice slides. Closing takes about 180 ms.\n- Clicking anywhere outside the column closes Settings, as does the × at the end of the tab row.\n\nThe four pages hold the same settings as before, in the same order. The forms on the second-level pages (a model service and its models, a remote Mac) keep their boxed fields for now.\n\n## Tests\n\n- A first round of test clean-up: redundant tests are removed (Core, agent and web suites), tests that returned early without saying so now fail loudly, and assertions on wall-clock time have wider margins. `make test` runs the Python tests too.\n\n## Not verified\n\n- Settings with a real Pinyin input method in the forms' text fields.\n- VoiceOver itself: the accessibility tree is checked by scripts (roles, labels, one current page, one navigation group), not by listening to it.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.17.3-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.3/Atrium-0.17.3-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.17.3-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.3/Atrium-0.17.3-macos-arm64.zip.sha256"
       }
     ]
   }
