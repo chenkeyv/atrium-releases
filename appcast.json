@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.25.1",
+    "tag": "v0.25.1",
+    "title": "Atrium 0.25.1",
+    "prerelease": false,
+    "published_at": "2026-11-20T14:30:25Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.25.1",
+    "notes": "This update adds direct keyboard shortcuts for switching top-level workspaces and selecting Terminal and Browser tabs.\n\n## Added\n\n- **Workspace switching with `⌥1` / `⌥2` / `⌥3`**: Switch between **Tasks** (`⌥1`), **Terminal** (`⌥2`), and **Browser** (`⌥3`) from any window (main window, Scratch Terminal, and Software Update) and any focused input surface (composer, Ghostty terminal, `WKWebView`, or embedded Neovim), without leaking Option characters or Meta escape sequences, while yielding when a modal dialog or Settings layer is open.\n- **Terminal and Browser tab switching with `⌘1`–`⌘9`**: Added `Terminal › Switch Tab` (`Tab 1`–`Tab 8` and `Last Tab` on `⌘9`) and view-level `⌘1`–`⌘9` handling in `TerminalDrawerView` and `BrowserWorkspaceView`. Standalone terminals (global Terminal workspace and Scratch Terminal) always respond to `⌘1`–`⌘9`, while the per-task terminal drawer intercepts them only when focus is inside the drawer so `⌘1` continues toggling the timeline in conversation and editor views.\n- **Toolbar hints & localization**: Updated the workspace tab tooltips (`Tasks (⌥1)`, `Terminal (⌥2)`, `Browser (⌥3)`) with Simplified Chinese translations and automatically focus the global terminal when switching to it via `⌥2`.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.25.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.1/Atrium-0.25.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.25.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.1/Atrium-0.25.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.25.0",
     "tag": "v0.25.0",
     "title": "Atrium 0.25.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.17.5-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.5/Atrium-0.17.5-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.17.4",
-    "tag": "v0.17.4",
-    "title": "Atrium 0.17.4",
-    "prerelease": false,
-    "published_at": "2026-11-11T07:57:22Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.4",
-    "notes": "The context widget opens to the text behind each of its rows, shows the cache hit rate, and every finished turn says what it used. The built-in Gemini CLI agent is gone. The daemon protocol is 15.\n\n## Context: the text behind a row\n\nThe context widget listed what fills an agent's window (system prompt, tools, memory, conversation…) as numbers only.\n\n- **Click a row to read it.** The original text opens under that row, in monospace, selectable, with Copy; text that comes from a file on disk has Open as well. It grows to 240 pt and scrolls beyond that. Click the row again to fold it; only one row is open at a time.\n- **What each agent can show:**\n  - Atrium's own agent: every row. The text is what its last request to the model carried: the system prompt, memory, the tools' JSON schemas, the pack, the conversation, tool results, and the stand-ins for trimmed output.\n  - Claude Code: memory files (read from disk) and messages (the conversation as Atrium recorded it, not the bytes sent to the model). The system prompt, system tools, MCP tools and skills are not exposed by its adapter.\n  - Kiro: context files (read from disk), your prompts and Kiro's responses (as Atrium recorded them). Tools, memory and session files are not available.\n  - A row an agent does not provide says so in one line; nothing is filled in from elsewhere.\n  - Agents that report only a total (Codex, Antigravity, OpenCode) have no rows to open, as before.\n- A finished task keeps the rows whose text is a file or the recorded conversation. The Atrium agent's request is gone once its task has ended.\n- The browser page cannot ask for this text yet: the daemon refuses the request from a browser connection.\n\n## Cache hit rate\n\n- **\"Cache hits N%\"** in the context widget, for the last turn: cache reads over everything the turn sent as input. Hover for the three numbers. It was shown for Atrium's own agent only; it now also appears for Claude Code and Codex, whose adapters report cache reads and writes.\n- An agent whose numbers could not be checked against a real capture (Antigravity, OpenCode) shows a rate only when it reports zero cache reads. Kiro reports none, so it shows nothing. Nothing is estimated.\n\n## What a turn used\n\n- **Each finished turn shows one number beside its duration**: the agent's own cost when it reports one (Claude Code: this turn's share of the session's cost), otherwise the turn's token total. Hover for input, output, cache reads, cache writes and reasoning, whichever were reported. A turn whose agent reports nothing shows nothing.\n- **The session's total** is in the context widget, with the cache hit rate.\n- Kiro's credits have a place in the record and in the display, but Atrium does not read them from Kiro yet.\n\n## Agents\n\n- **The built-in Gemini CLI agent is removed**; Antigravity replaces it. Tasks you ran with it still show in the timeline under its name and icon, and a `gemini` entry you wrote yourself in `agents.json` keeps working. Antigravity's Gemini models are unaffected.\n\n## Protocol\n\n- The daemon protocol is 15 (`context/section`). The minimum a client needs is unchanged, so a 0.17.3 app still works against a 0.17.4 daemon; it just cannot open rows.\n\n## Not verified\n\n- Kiro's context files and Claude Code's memory files against the real agents: the sources are tested with their recorded shapes, not with a live Kiro or Claude session.\n- Whether Antigravity's input count already includes cache reads: its only real capture has zero cache reads.\n- Kiro's credits and Codex's per-turn numbers in a live session.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.17.4-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.4/Atrium-0.17.4-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.17.4-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.4/Atrium-0.17.4-macos-arm64.zip.sha256"
       }
     ]
   }
