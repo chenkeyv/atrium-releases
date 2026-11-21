@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.25.3",
+    "tag": "v0.25.3",
+    "title": "Atrium 0.25.3",
+    "prerelease": false,
+    "published_at": "2026-11-21T01:26:33Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.25.3",
+    "notes": "This update reworks window background transparency and background blur after iTerm2's AppKit and CoreGraphics implementation.\n\n## Changed\n\n- **Pure alpha window backdrop (`WindowBackdropView`, `WindowChrome`)**: Replaced behind-window `NSVisualEffectView` material with a single non-animated alpha canvas layer over a `0.01`-alpha near-clear window backing color (`WindowChrome.translucentWindowBackgroundColor`) with explicit shadow invalidation on opaque transitions and automatic solid-canvas fallback in native full screen.\n- **WindowServer Gaussian blur (`WindowBackgroundBlur`)**: Dynamically resolves `CGSDefaultConnectionForThread` / `CGSMainConnectionID` and `CGSSetWindowBackgroundBlurRadius` from `ApplicationServices.framework`, applies iTerm2's per-window `_minBlur` workaround so toggling blur off and back on never breaks WindowServer blur, and re-synchronizes blur across window presentation, key activation, deminiaturization, and full-screen transitions in both main and auxiliary windows.\n- **Full `0%–100%` translucency & sticky bar clipping**: Removed the previous `15%` / `35%` material opacity floors across `WindowTranslucencyPreferences` and `TranslucencyScale`, and clipped scrolled conversation rows behind the pinned sticky tool bar (`TopEdgeFade.coveredTop`) without a separate behind-window material view.\n\n## Added\n\n- **Background blur and blur radius settings (`GeneralPage`)**: Added a **Background blur** toggle (`translucentWindowBlur`, enabled by default) and a **Blur radius** slider (`1–64`, `translucentWindowBlurRadius`, default `20`) in **Settings › General**, with automatic enablement gating (blur toggle disabled at `0%` translucency; blur radius slider disabled at `0%` or when blur is off), Simplified Chinese localization, and KVO synchronization in Ghostty and embedded Neovim views.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.25.3-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.3/Atrium-0.25.3-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.25.3-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.3/Atrium-0.25.3-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.25.2",
     "tag": "v0.25.2",
     "title": "Atrium 0.25.2",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.18.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.0/Atrium-0.18.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.17.6",
-    "tag": "v0.17.6",
-    "title": "Atrium 0.17.6",
-    "prerelease": false,
-    "published_at": "2026-11-11T16:47:51Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.17.6",
-    "notes": "Codex moves to ACP v2, Kiro's own turn data is shown, and icons are laid out the same whichever display the system reports.\n\n## Codex\n\nCodex now talks to Atrium over ACP v2, on the same connection and display model Claude already uses.\n\n- **Model and reasoning effort are two settings.** On v1 Codex offered combined ids (`gpt-6.1-sol[low]`); on v2 they are separate options and use the same pickers as the other agents. A saved preset in the old form is split into the two and applied when both parts still exist; one that no longer matches is dropped and the adapter's default stays.\n- **A message sent while a turn runs is a prompt of its own.** It no longer goes through Codex's private steering call. Each message gets the usage of its own part of the turn; when two messages end together their usage is counted once.\n- **A plan that streams in as Markdown stays one row.** Codex resends the whole plan on every change; the row is replaced instead of growing a line per update.\n- **Stopping a turn keeps its usage**, and the stopped command shows as cancelled.\n- **Sessions from 0.17.5 resume.** A Codex session started on v1 continues under v2 with the same id, its settings and its conversation; nothing is replayed twice.\n- **Going back.** An adapter that only answers version 1 is used on v1 as before. To force v1 for the built-in Codex: `defaults write io.github.chenkeyv.atrium acp.codexProtocol v1`, then start a new session.\n\nPermission cards, terminal output, file diffs, sub-agents and the chief's own tools look and behave as they did.\n\n## Kiro\n\nKiro reports more about a turn than Atrium showed. 0.17.5 read the credits; this version reads the rest.\n\n- **A turn's duration is the one Kiro measured**, not Atrium's own clock, and a turn Kiro reports as aborted shows as stopped.\n- **The tools a turn used** are listed under its credits when you hover the turn's usage (up to six names, then a count).\n- **Permission cards name what Kiro asks about**: its own title for the operation, the resource it applies to and the scope it would be allowed for. A card Kiro asks again replaces the earlier one, and a request Kiro resolves on its side is withdrawn.\n- **A turn ends when Kiro says it ended.** Kiro sends `turn_end` before the prompt's own result; Atrium now closes the turn on it, so a late or missing result no longer leaves a finished turn looking as if it were running.\n\n## Layout\n\n- **Icons beside text are measured the same on every display.** AppKit rounds a symbol's box on the pixel grid of the screen the system reports, and the system reports a 1× screen while the displays are off. The same row could be half a point taller or shorter depending on that. Atrium now measures each symbol once at a very large size, scales the box down and puts it on the half-point grid itself.\n- **The gap between an icon and its title is the same in every row.** Where a title's start was computed from the icon's width, it could be half a point off the spacing the rest of the app uses.\n\n## Tests\n\n- Layout tests no longer compare against heights that were read off a display, or against whatever SwiftUI lays out on the day. They assert what the layout promises: one baseline for the parts on a line, gaps equal to the spacing tokens, a row as tall as its parts, nothing clipped. The comparison with SwiftUI and the system's own symbol sizes is now a probe run by hand (`scripts/dev/metric-probe.py`, `scripts/dev/symbol-probe.swift`).\n\n## For the open-source release\n\nNo change in behaviour: the company gateway's name is gone from code, tests and strings, paths from the development machine are gone from the tree, and the licences of the bundled third-party code were added under `ThirdPartyNotices/`.\n\n## Not verified\n\n- **Icon layout with the displays off.** Every test and the hand probe ran with the displays on, where the system reports a 2× screen. The measurement is built not to depend on that; the run that shows it has not been made yet.\n- **Codex on v2 against a real account**: one turn (a command, a file, its usage) on codex-acp 2.6.0. The recorded sessions the tests replay are from 2.5.0. Permission cards, a message sent mid-turn, stopping, resuming a 0.17.5 session, sub-agents and a usage-limit error were tested on those recordings and on a simulated adapter, not live.\n- **Kiro**: one real turn on one model. A stopped turn, a failed turn and a resumed session were tested on recordings only. Kiro says it can report a model fallback; none has been seen, so nothing reads one.\n- **The third-party licences inside the app bundle**: they are in the repository; whether the packaged app carries them was not checked.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.17.6-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.6/Atrium-0.17.6-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.17.6-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.17.6/Atrium-0.17.6-macos-arm64.zip.sha256"
       }
     ]
   }
