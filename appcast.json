@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.25.6",
+    "tag": "v0.25.6",
+    "title": "Atrium 0.25.6",
+    "prerelease": false,
+    "published_at": "2026-11-24T01:50:52Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.25.6",
+    "notes": "This update adds automatic idle session title refreshing using the configured memory model, along with a synced General Settings toggle and multi-turn title prompts.\n\n## Added\n\n- **Automatic idle title refresh (`Session`, `SessionStore`)**: Automatically refreshes unlocked task titles 3 seconds after a completed turn (`finishTurn(.endTurn)`) returns to `.idle` with no queued messages, pending permissions, or elicitations. Auto-refreshed titles stay unlocked so subsequent turns can refine the title while suppressing late agent-proposed `session_info_update` titles for the same turn; manually renamed, manually refreshed, or chief-assigned (`setInitialTitle`) titles remain locked, and demo/subagent/restored/cancelled/failed/usage-limited turns are skipped silently without showing a header spinner or error notice.\n- **Auto-refresh title setting & daemon sync (`GeneralPage`, `DaemonServer`, `DaemonProtocol`, `DaemonChange`)**: Added an **Auto-refresh title** toggle (`autoRefreshTitleOnIdle`, enabled by default) in **Settings › General** with Simplified Chinese localization, persisted in daemon `UserDefaults`, synced across `DaemonSnapshot` / `DaemonChange` (including the web client sync layer), and updated via the `settings/set_auto_refresh_title` RPC (allowed for local and remote Mac app connections, refused for browser remote, MCP, and automation connections).\n\n## Changed\n\n- **Multi-turn title refresh prompt (`SessionTitle.refreshPrompt`)**: Includes the latest distinct user message alongside the first user message and latest assistant reply (each bounded to `excerptLength`) so later-turn refreshes reflect how the conversation evolved.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.25.6-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.6/Atrium-0.25.6-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.25.6-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.6/Atrium-0.25.6-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.25.5",
     "tag": "v0.25.5",
     "title": "Atrium 0.25.5",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.19.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.19.0/Atrium-0.19.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.18.2",
-    "tag": "v0.18.2",
-    "title": "Atrium 0.18.2",
-    "prerelease": false,
-    "published_at": "2026-11-12T07:51:41Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.18.2",
-    "notes": "The newest row of a running turn's preview is drawn in full again.\n\n## Fixed\n\n- **While a turn ran, the newest row of its rolling preview was dimmed and the row at the top was cut off hard.** The preview fades at the edge past which there are more rows: at the top once it has moved on from its first row, at the bottom when the person has read back. Since the conversation became AppKit (0.17.2) the two fades were on the wrong edges, so a preview that followed its newest row laid the fade meant for the top over that newest row, in every turn that outgrew its preview. 0.17.5 fixed a preview that stopped following; this was the other half of the same report.\n\n## Under the hood\n\n- The app itself no longer links SwiftUI: the last pieces that reached for it (an agent's colour when its definition names none, and the demo pages, which are now built only for the demo) are AppKit or compiled out.\n\n## How it was checked\n\n- The fade's place is tested through Core Animation's own geometry: each transparent stop of the preview's mask is carried to the window and compared with where the preview's top and bottom are, following the newest row, read back to the first row, in between, and for a preview that shows all its rows. The test fails without the fix.\n- In the isolated test app, a task that runs only tool calls (a thought, 24 finished calls, one command still running) in the daily look (dark, translucent, blurred) and in light: the screenshots were read, the newest row is as bright as the rows above it and the preview fades at its top.\n- The whole test suite ran on the release's commit.\n\n## Not verified\n\n- The full real-window pass was made when the SwiftUI change was merged (the same day, on the commit this release adds one change to); for this change only the preview's own check was run again.\n- With a real agent on another Mac, where the report came from.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.18.2-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.2/Atrium-0.18.2-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.18.2-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.2/Atrium-0.18.2-macos-arm64.zip.sha256"
       }
     ]
   }
