@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.26.0",
+    "tag": "v0.26.0",
+    "title": "Atrium 0.26.0",
+    "prerelease": false,
+    "published_at": "2026-11-24T12:10:49Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.26.0",
+    "notes": "This update introduces Atrium's native in-process agent runtime inside `atriumd`, adds background tasks, event monitors, `ask_user`, and `web_fetch` tools, and upgrades conversation formatting and built-in tool ergonomics across the board.\n\n## Added\n\n- **Native in-process Atrium agent runtime (`AgentProtocol.native`, `AtriumNativeRuntime`, `AtriumNativeConnection`, `atriumd`)**:\n  - Runs the built-in `atrium` agent directly inside `atriumd` without launching per-session `atrium-agent` subprocesses or JSON-RPC stdio hops, while preserving standalone ACP CLI/custom-command fallback.\n  - Adds shared TTL-cached and in-flight-coalesced `ModelCatalog` provider model lookups, direct in-process `DaemonServer` bridges (`directAutomation(for:)`, `directChief(for:)`), typed `DirectAtriumConnection.contextSection(_:)` and `CreateElicitationRequest` routing, native `forkSession`, and skip-replay `continueSession(..., replay: false)`.\n  - Adds event-driven autonomous idle wakeups for background completions and monitor events with stoppable `BackgroundWork.Kind.turn` progress rows, user-prompt preemption, and a consecutive autonomous turn cap.\n- **Background tasks and event monitors (`BackgroundTaskManager`, `monitor`, `background_task`)**:\n  - Supports asynchronous `bash` (`run_in_background: true`) commands and event-streaming `monitor` scripts with Seatbelt sandbox enforcement parity, incremental cursors (`background_task` `list`, `output`, `wait`, `stop`), unread event injection, live output previews and Stop controls in `PinnedWorkView`, `_atrium/stop_background_work` RPC support, and orphan process-group cleanup on session close.\n- **Interactive `ask_user` and `web_fetch` tools**:\n  - Exposes `ask_user` on root sessions supporting `elicitation` (via typed in-process callbacks or ACP `elicitation/create`) with single-select, multi-select, and optional custom notes.\n  - Adds `web_fetch` (`WebFetch`) for bounded streaming HTTP/HTTPS page fetching (2 MB cap), strict redirect validation, and readable HTML text extraction.\n\n## Changed\n\n- **Conversation polish and upgraded built-in tools (`SystemPrompt`, `AgentTools`, `ShellContext`, `Support`)**:\n  - Refined `SystemPrompt` formatting guidance, `#L<line>` editor link jumping in `ShellContext`, UTF-8 codepoint-safe `boundedText` and background line truncation, and live foreground `bash` streaming.\n  - Upgraded `read` (local `.png`/`.jpg`/`.gif`/`.webp` images, EOF hints, pagination cursors), `edit` (diagnostics, CRLF/LF mismatch hints, unified patches for large files), `grep` (`glob`, `caseInsensitive`, `literal`, `context`, `mode`, directory-safe `skipDescendants`), `list` (`depth`), and `bash` (`cwd`, `description`, `rawOutput`).\n\n## Fixed\n\n- **Cross-thread socket metrics race (`UnixSocketPeer.metrics`)**: Replaced `ObservationRegistrar` on lock-protected counters with lock-serialized `observeMetrics` subscriptions invoked outside `self.lock`.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.26.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.26.0/Atrium-0.26.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.26.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.26.0/Atrium-0.26.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.25.6",
     "tag": "v0.25.6",
     "title": "Atrium 0.25.6",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.20.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.20.0/Atrium-0.20.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.19.0",
-    "tag": "v0.19.0",
-    "title": "Atrium 0.19.0",
-    "prerelease": false,
-    "published_at": "2026-11-12T12:52:56Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.19.0",
-    "notes": "The AppKit window now moves as one: opening a drawer or changing the controls makes room without losing the conversation's bottom, and opening a tool shows where the rows below it went.\n\n## Changed\n\n- Task selection fades the new task in; holding an arrow key keeps intermediate selections immediate. Tool groups, thoughts, tool output and subtask details move the rows below them as they open or close.\n- Terminal drawers, session settings, pinned work and the widget column now have arrival and departure transitions. Review controls and queued messages move with the conversation's bottom edge. Reversing a transition continues from what is on screen.\n- Motion uses four durations: 120 ms to leave, 150 ms to change, 200 ms to enter, and 300 ms to make room. Layout, input and accessibility reach their final state immediately; streaming updates remain immediate.\n- Dragged column dividers settle on a grid and catch their default widths. Double-clicking either divider restores its width. The timeline and widget column settle at a nearby row when a trackpad scroll ends.\n\n## Fixed\n\n- Cancelling the first of several queued messages fades that message, preserving the rows for the messages still waiting. A first prompt sent while an agent starts says that it is waiting for the agent to start.\n- Opening a fold or pinned work reveals its content as the rows below make room, so text does not overlap during the transition. Accessibility actions can expand and collapse long thoughts without losing the action response.\n- A conversation following its bottom stays there when the controls change height; a conversation scrolled back keeps the row being read in place. The composer's text now sits inside the padding its measurement reserves.\n- Upgrading from the previous window implementation preserves the saved window position and size. New windows use the display in use for their initial placement.\n- Long automatic titles end with an ellipsis, emphasis markers do not leak into thought previews, and a failed turn shows its error once on its card.\n\n## How it was checked\n\n- The complete Swift suite passed in normal and strict cooperative-pool modes: 2,857 tests in each run.\n- Four existing opt-in tests remained skipped: two require real input-method focus, and two are large-tree benchmarks.\n- Motion tests inspect the actual layer animations, sample a frozen Core Animation clock, compare scale 0 and animated end states, reverse transitions in flight, and check conversation measurement counts and bottom-following geometry.\n- The Release app ran 31 motion scenarios in dark and light appearances at scales 0 and 10. Both appearances ended with the same selected task and view geometry; slow-motion screenshots were checked for clipping, overlaps and bottom alignment.\n\n## Motion exception\n\nWhen a narrow window needs more width to show widgets, its outer frame changes immediately. The widget column still animates in. Animating the window frame would reflow text on every frame and delay the final input geometry.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.19.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.19.0/Atrium-0.19.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.19.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.19.0/Atrium-0.19.0-macos-arm64.zip.sha256"
       }
     ]
   }
