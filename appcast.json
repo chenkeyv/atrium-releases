@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.25.4",
+    "tag": "v0.25.4",
+    "title": "Atrium 0.25.4",
+    "prerelease": false,
+    "published_at": "2026-11-23T23:59:31Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.25.4",
+    "notes": "This update relaxes remote access network restrictions so any reachable IPv4/IPv6 network address or reverse proxy can connect while keeping TLS 1.3, password/lockout, certificate pinning, and CSRF protections intact, and drops the legacy network scope model.\n\n## Changed\n\n- **Wildcard dual-stack binding (`RemoteHostBinding`, `RemoteServer`, `BonjourRecordCodec`)**: Remote access now listens on `0.0.0.0` and `::` (with `IPV6_V6ONLY` when IPv4 is also bound, graceful fallback on IPv4-only systems, and IPv4-mapped IPv6 client address normalization) instead of restricting listeners to per-scope addresses; isolated test-harness runs remain on `127.0.0.1`. Bonjour continues advertising on the local network when binding wildcard addresses.\n- **Reachable address display (`RemoteHostBinding`, `RemoteAddressFormat`, `RemotePage`)**: `remote/status` lists all reachable non-loopback IPv4 and IPv6 addresses (Tailscale IPv4/IPv6, private LAN IPv4, public/other routable IPv4 & IPv6) plus `127.0.0.1`, filtering out unspecified, APIPA, proxy fake-IP TUN (`198.18.0.0/15`), multicast, reserved, and link-local IPv6 addresses. **Settings › Remote** labels Tailscale, Local Network, and Localhost (`本机`) addresses, truncates long IPv6 endpoints in the middle, and updates the subtitle in English and Simplified Chinese.\n- **Reverse-proxy & cross-site navigation support (`RemoteOriginCheck`, `DirectTunnel`)**: Safe static `GET`/`HEAD` requests to Atrium Web are allowed across `Sec-Fetch-Site` while `POST` mutations and WebSocket upgrades continue enforcing same-origin checks. `Origin` validation normalizes case and default ports (`:443`/`:80`) and matches against `Host`, `X-Forwarded-Host`, `X-Forwarded-Port`, `X-Forwarded-Proto`, and RFC 7239 `Forwarded`. Direct Mac connections now send TLS SNI (for DNS hostnames) and the actual target `Host` header so domain-based reverse proxies work out of the box.\n\n## Removed\n\n- **Legacy network scopes (`RemoteScope`, `scopes`)**: Removed `RemoteScope`, the `scopes` field/parameter from `RemoteConfig`, `RemoteAccessStatus`, `remote/set_config`, and `SessionStore.setRemoteAccess`, and the **Scope** checkboxes from **Settings › Remote › Advanced…** (existing `config.json` files continue decoding cleanly while ignoring legacy keys).\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.25.4-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.4/Atrium-0.25.4-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.25.4-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.4/Atrium-0.25.4-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.25.3",
     "tag": "v0.25.3",
     "title": "Atrium 0.25.3",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.18.1-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.1/Atrium-0.18.1-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.18.0",
-    "tag": "v0.18.0",
-    "title": "Atrium 0.18.0",
-    "prerelease": false,
-    "published_at": "2026-11-11T20:02:06Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.18.0",
-    "notes": "The window is AppKit now. The main window, its three columns, the toolbar, the menus, the menu-bar item, the task pane and the two small windows no longer go through SwiftUI. Nothing is meant to look or work differently except the points below.\n\n## What you can notice\n\n- **Column widths are remembered.** The timeline's and the widget column's widths come back after a restart, and a width you chose survives hiding the widgets and resizing the window. Before, every launch began at the default widths while the window's own frame was restored.\n- **Double-clicking a divider gives the column its default width back.** The dividers are invisible until the pointer is on them, so a column dragged too far had no other way back.\n- **Closing the main window hides it.** Opening it again is immediate, with folded sections and scroll positions where they were. The old window rebuilt its content each time.\n- **A solid window is laid out like a translucent one.** With translucency at 0 the title bar is transparent too, the content fills the window, and the middle column has no plate of its own: the three columns follow one rule in both looks.\n- **The first row is not under the toolbar buttons.** Content starts below the title bar and fades over its top 12 points once it is scrolled.\n\n## Rebuilt, meant to be the same\n\nThe main menu and every shortcut; the menu-bar item; the task header and its session settings; the composer with its completions, attachments and queued messages; pinned work; the editor with its timeline rail; the terminal drawer, filled or not; the scratch terminal and Software Update windows, which open in the middle of the screen and come back where you left them.\n\nBehind a card (a confirmation, Settings, a diff) the timeline and the widget column leave the accessibility tree, as the rest of the window does: VoiceOver stays inside the card.\n\n## Still SwiftUI\n\nA few cards inside the AppKit dialog layer (New Task and Rename among them) and the developer demo pages. The app still links SwiftUI until they are moved.\n\n## Packaging\n\n- The app bundle carries every licence under `ThirdPartyNotices/`. 0.17.6 added them to the repository; its bundle had two.\n\n## Checks\n\n- The real-window checks no longer bring the test app to the front. Keys sent to it are routed, in the test build only, to the window that would be key, typing does not go through the selected input method, and a check fails when the test app became frontmost while it ran. Before this, the checks swallowed the keys of whoever was working at the same Mac and failed when that person typed.\n- The icon measurements of 0.17.6 were run with the displays off, where the system reports a 1× screen: the whole UI target passes there as it does at 2×, and the hand probe counts 17 half-point differences from SwiftUI's own layout, the number it counted at 2×.\n\n## Not verified\n\n- **A real agent in the new window.** The real-window checks drive the isolated test app with recorded and simulated agents. No real Claude, Codex or Kiro session has been run through this window yet.\n- **The pointer on the dividers.** Dragging a divider and double-clicking it are tested on the real split view with constructed events, not by hand. Two real clicks were made: a button in Software Update and one in the scratch terminal.\n- **The active window at 2× on this exact build.** The last pass ran with the displays off, so its screenshots are at 1×; the 2× screenshots that were read came from the shell before its last three merges (0.17.6, the checks' key routing, the fix for cards and the accessibility tree).\n- **VoiceOver itself.** What it would read was checked through the accessibility API, not by listening.\n- **The app's own icon measurements, row by row, between displays on and off.** Both states pass the same tests; the table taken with the displays on was lost, so the direct comparison waits for a new one.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.18.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.0/Atrium-0.18.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.18.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.0/Atrium-0.18.0-macos-arm64.zip.sha256"
       }
     ]
   }
