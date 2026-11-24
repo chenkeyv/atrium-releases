@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.25.5",
+    "tag": "v0.25.5",
+    "title": "Atrium 0.25.5",
+    "prerelease": false,
+    "published_at": "2026-11-24T01:10:52Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.25.5",
+    "notes": "This update adds end-to-end Kitty Graphics Protocol support and comprehensive terminal image pasting, supporting both Kitty clipboard/paste events (`OSC 5522` / `DEC mode 5522`) and standard macOS paste and drag-and-drop workflows.\n\n## Added\n\n- **Kitty Graphics Protocol (`TerminalHost`, `TerminalRelay`, `TerminalReplay`, `TerminalFrame`)**: Propagates PTY pixel dimensions (`ws_xpixel`, `ws_ypixel`) across `terminal/create`, `terminal/attach`, `TerminalSavedRecord`, `TerminalPTY`, and 4- or 8-byte binary resize frames (`pixelSize` handshake negotiation for backwards compatibility), configures an explicit 320 MB `image-storage-limit` in `GhosttyConfiguration`, and filters replayed `APC G` streams so queries (`a=q`, including continuations) are stripped while image uploads retain only `q=2` on opening chunks.\n- **Kitty Clipboard Protocol & Paste Events (`OSC 5522`, `DEC mode 5522`, `GhosttyRuntime`, `TerminalSurfaceView`)**: Supports `CSI ? 5522 h` paste event notifications and `pw`-authenticated follow-up reads via a 15-second snapshotted `pasteGrant` (`TerminalPasteSnapshot`) with lazy ImageIO PNG transcoding and multi-MIME clipboard writes (`TerminalClipboard.write`).\n- **Standard Image Paste & Drag-and-Drop (`TerminalClipboard`, `TerminalSurfaceView`)**: Handles `⌘V`, **Edit › Paste** / **Paste and Match Style**, context-menu **Paste**, `NSMenuItemValidation`, and Finder/image drag-and-drop—saving raw PNG/TIFF clipboard images to private temporary `.png` files (`0700`/`0600`, auto-pruned) and pasting shell-escaped paths, prioritizing Finder `file://` URLs over bare filename/icon types and disabling local temp-file fallback on remote terminals (`opensFileLinks == false`).\n\n## Changed\n\n- **Clipboard Security & Paste Flow Control (`GhosttyConfiguration`, `TerminalClipboardPolicy`, `TerminalHost`)**: Enables `clipboard-read = ask` so Ghostty's `pw`-authenticated `OSC 5522` paste grants work while ungranted `OSC 52` / `OSC 5522` reads route to `confirm_read_clipboard_cb` and are unconditionally denied, and adds `TerminalConnection` `DispatchSourceRead` backpressure (`1 MiB` pause / `512 KiB` resume / `4 MiB` hard limit) so large base64 image pastes stream cleanly without disconnecting.\n\n## Fixed\n\n- **Direct Tunnel Socket Fallback (`DirectTunnel`)**: Reserved 16 hex characters (matching `UInt64` FNV-1a tags) when checking the 104-byte Unix socket path limit before falling back to `/tmp`.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.25.5-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.5/Atrium-0.25.5-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.25.5-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.5/Atrium-0.25.5-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.25.4",
     "tag": "v0.25.4",
     "title": "Atrium 0.25.4",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.18.2-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.2/Atrium-0.18.2-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.18.1",
-    "tag": "v0.18.1",
-    "title": "Atrium 0.18.1",
-    "prerelease": false,
-    "published_at": "2026-11-12T04:07:59Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.18.1",
-    "notes": "A click anywhere in the message field gives it the keyboard again.\n\n## Fixed\n\n- **After a turn had ended, the message field took a click only along its top edge.** With the Accept row above it, a click in the field was tested that row's height further down: most of the box did nothing, no caret appeared, and what was typed next went nowhere until another click happened to land near the top. Every point of the box is the text's again. The cause was in 0.18.0's new composer: its hit test handed its subviews a point in its parent's coordinates, which is right only while the composer sits at its parent's origin, that is while a turn runs or once its result has been accepted.\n- **A shutdown's reply is no longer lost when the background service has already exited.** The app dropped the answer to its shutdown request when the acknowledgement that follows could not be sent any more; it keeps the answer, and the closed connection ends the usual way.\n\n## Under the hood\n\n- The chief's tools (`atrium-mcp`) are woken by a change of the session state instead of looking for one every 25 ms.\n- Tests outside the UI target wait for events instead of deadlines. Two diagnostic lines are new: `atriumd` writes `daemon_ready` to its error output once it has started (the app starts it with that output closed), and the update's install script logs when it starts waiting for the app to quit.\n\n## How it was checked\n\n- **With the real pointer**, in the isolated test app, on a task in review with the Accept row above the composer: a click at the middle of the field, near its bottom edge, at its right end and at its bottom left corner, each followed by typing. With 0.18.0's hit test none of the four clicks gave the field the keyboard; with the fix all four did.\n- AppKit's own hit test on the real controls in that state, and with the composer away from its parent's origin in both orientations of the parent. These tests fail without the fix.\n- The whole test suite, normal and with the strict cooperative pool. One run stopped in `TerminalSurfaceTests`, a test that has hung before when it closes its terminal (it waits for a thread of the terminal library); it passed when run again and is not touched here.\n\n## Not verified\n\n- **The rest of the window** got a short real-window pass (type scale and selection latency in the daily look and in light, the composer, permissions, session title, shell and layout checks), not the full one: nothing but the composer's hit test changed in the app since 0.18.0's full pass.\n- The session title check picked the wrong element while the rename card was closing (any button that held the title, when the timeline is not in the accessibility tree for that moment); it now looks for the task's row in the timeline only. A fault of the check, not of the app.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.18.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.1/Atrium-0.18.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.18.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.18.1/Atrium-0.18.1-macos-arm64.zip.sha256"
       }
     ]
   }
