@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.28.0",
+    "tag": "v0.28.0",
+    "title": "Atrium 0.28.0",
+    "prerelease": false,
+    "published_at": "2026-11-25T02:18:30Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.28.0",
+    "notes": "This update refactors Atrium's PostgreSQL memory model into a conflict-free multi-device schema, moves memory maintenance in-process inside `atriumd` with advisory locking and event-driven wakeups, and reuses session working notes and history maps during extraction.\n\n## Changed\n\n- **Multi-device sync-safe PostgreSQL memory model (Schema v3, `PostgresMemoryStore`, `PostgresSyncEngine`)**:\n  - Bumped `PostgresSchema.currentVersion` to `3` with automatic, idempotent v2-to-v3 backfill from legacy monolithic `memory_meta('state')` blobs.\n  - Added `through_turn`, `withheld`, and `filename` columns directly on `memory_sessions`, storing unconsolidated candidates as individual `memory_claims` rows (`status = 'pending'`) so concurrent extraction on multiple Macs merges cleanly without overwriting each other.\n  - Added synced `memory_watermarks` using monotonic CRDT merge (`GREATEST` on `cleared_through_turn` and date-ordered `nightly_through_turn` with zero-echo hybrid merge reconciliation) in `PostgresSyncEngine`.\n  - Moved device-local operational state (`failures`, `retryAfter`, `sources_index`, and migration markers) into local-only `memory_local_state`, excluded local keys from `memory_meta` replication, and added `IS DISTINCT FROM` write guards across `PostgresMemoryStore.writeState` to eliminate cross-device sync echoes.\n- **In-process memory maintenance, PG advisory locks, and event-driven scheduling (`atriumd`, `MemoryMaintenanceScheduler`, `MemoryMaintenance`, `AtriumNativeRuntime`, `PostgresDB`)**:\n  - Added `PostgresDB.withAdvisoryLock(key:)` (`PostgresSchema.memoryMaintenanceLockKey`) so `MemoryMaintenance` coordinates via PostgreSQL session advisory locks with guaranteed cleanup on cancellation instead of local file locks.\n  - Wired `MemoryMaintenanceScheduler` inside `atriumd` to execute in-process against the daemon's shared PostgreSQL pool and cached `AtriumNativeRuntime` provider/model catalog with a 30-minute PostgreSQL consolidation cooldown.\n  - Added debounced event-driven wakeups (`notifyWorkAvailable()`) connected to `Session` / `SessionStore` task completion (`onEnded` / `onSessionEnded`), remote PostgreSQL sync pulls (`DaemonServer` / `PostgresSyncEngine`), and initial legacy migration completion.\n- **Session working notes & history map reuse during extraction (`MemorySources`, `MemoryMaintenance`)**:\n  - Passed redacted, forgetting- and clear-filtered `SessionNotes` and root `HistoryNode` summaries as read-only reference context during initial session extraction while preserving strict verbatim-quote validation against raw conversation messages.\n\n## Fixed\n\n- **Brand-new PostgreSQL database first-run maintenance (`PostgresMemoryStore`)**:\n  - Replaced random fallback UUIDs on empty databases with a deterministic `defaultGeneration` sentinel so initial `MemoryMaintenance` extraction runs complete cleanly without false generation-mismatch cancellation.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.28.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.28.0/Atrium-0.28.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.28.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.28.0/Atrium-0.28.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.27.1",
     "tag": "v0.27.1",
     "title": "Atrium 0.27.1",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.23.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.0/Atrium-0.23.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.22.0",
-    "tag": "v0.22.0",
-    "title": "Atrium 0.22.0",
-    "prerelease": false,
-    "published_at": "2026-11-14T04:33:14Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.22.0",
-    "notes": "The main window now switches between Tasks and a global terminal workspace.\n\n## Added\n\n- A Tasks / Terminal switch in the toolbar opens a terminal workspace without selecting a task. The toolbar shows the number of global terminal tabs.\n- The global terminal supports multiple tabs, with new tabs starting in the selected terminal's current directory. Command-T creates a global terminal tab while this workspace is selected.\n- New Task and Next Blocked Task return to the task workspace. The task selection is preserved when switching between Tasks and Terminal.\n\n## Known issues\n\n- The global terminal and the existing Scratch Terminal window share a render surface. Using both can leave one blank when the other refreshes, including while hidden.\n- After a task follows a new worktree, its terminal's + button starts a tab in the existing terminal's directory instead of the task's updated directory. Command-T still uses the task's directory in the Tasks workspace.\n- Opening a task from a notification or the menu bar does not switch back from Terminal to Tasks automatically.\n- The task terminal's Control-` shortcut remains enabled in the global terminal workspace. It can change the hidden task drawer and redirect keyboard focus to that task's terminal.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.22.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.22.0/Atrium-0.22.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.22.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.22.0/Atrium-0.22.0-macos-arm64.zip.sha256"
       }
     ]
   }
