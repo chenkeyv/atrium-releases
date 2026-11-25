@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.29.0",
+    "tag": "v0.29.0",
+    "title": "Atrium 0.29.0",
+    "prerelease": false,
+    "published_at": "2026-11-25T07:41:53Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.29.0",
+    "notes": "This update upgrades Atrium's built-in agent to search and recall across all synced agent transcripts, index subagent message search with PostgreSQL Schema v4, manage durable memories with direct saves, 60-day staleness tracking, and cold-reset refreshes, and hydrate Atrium sessions resumed from another synced Mac.\n\n## Added\n\n- **Cross-agent transcript search and verbatim recall (`PostgresSessionStore`, `AgentSession`, `AgentTools`, `SystemPrompt`)**:\n  - Added `PostgresSessionStore.searchTranscripts` with multi-term `pg_trgm` query pushdown, macOS symlink path variants, and 1-based user turn calculation, plus `loadSession(nativeSessionID:)` backed by `idx_sessions_native_id`.\n  - Extended `memory_search` with `all_workspaces` and `include_sessions` options to search synced Claude Code, Codex, Kiro, and Atrium transcripts alongside durable claims and compacted summaries, applying secret redaction and forgetting rules.\n  - Extended `recall` to resolve `session:event:<uuid>/turn:<n>` handles from synced session transcripts and fall back to `PostgresSessionStore.loadSession(nativeSessionID:)` for unhydrated remote `session:<nativeUUID>/turn:<n>` handles.\n- **Direct memory save (`AgentTools`, `AgentSession`, `MemoryClaims`, `PostgresMemoryStore`)**:\n  - Added the top-level `memory_save` tool (hidden from subagents) with secret redaction, text normalization deduplication, repository/global scoping rules, and forgetting enforcement.\n\n## Changed\n\n- **PostgreSQL Schema v4 and indexed subagent recall (`PostgresSchema`, `PostgresAgentHistoryStore`, `AgentSession`)**:\n  - Bumped `PostgresSchema.currentVersion` to `4` with LZ4-compressed `agent_messages.search_text`, an idempotent v3-to-v4 SQL backfill, `idx_agent_messages_search_trgm` (`GIN gin_trgm_ops`), and `idx_sessions_native_id`.\n  - Updated parent-session `recall(query:)` to query child subagent messages and notes via indexed `PostgresAgentHistoryStore.searchChildMessages` instead of hydrating every child session history.\n- **Memory staleness lifecycle and cold-reset refresh (`MemoryClaims`, `PostgresMemoryStore`, `MemoryMaintenance`, `AgentSession`)**:\n  - Wired `last_verified_at` and `stale` flags across file and PostgreSQL memory stores, marking unverified `project`, `decision`, and `commitment` claims older than 60 days as stale while keeping preferences and lessons fresh.\n  - Ranked non-stale claims ahead of stale ones and annotated `[stale]` in prompt summaries and search hits.\n  - Refreshed `<earlier_session_notes>` inside `state.fixedPrefix` on cold context resets while keeping warm-turn prompt caches frozen, and added per-run repository scope caching in `MemoryMaintenance` and `AgentSession`.\n- **Cross-device Atrium native session resume (`AtriumNativeRuntime`, `AtriumNativeConnection`, `AgentHistory`, `AgentServer`, `atriumd`)**:\n  - Wired `PostgresSessionStore` through `AtriumNativeRuntime`, `AgentServer`, and `atriumd`, automatically hydrating local `agent_messages`, `agent_updates`, `ContinuityPack`, model/effort configuration, and synced session notes from PostgreSQL when resuming an Atrium session synced from another device.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.29.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.0/Atrium-0.29.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.29.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.0/Atrium-0.29.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.28.0",
     "tag": "v0.28.0",
     "title": "Atrium 0.28.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.23.4-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.4/Atrium-0.23.4-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.23.0",
-    "tag": "v0.23.0",
-    "title": "Atrium 0.23.0",
-    "prerelease": false,
-    "published_at": "2026-11-14T09:55:57Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.23.0",
-    "notes": "Antigravity and Codex sessions now support more of their native workflows, including interactive questions, selective session import and recovery after an agent exits.\n\n## Added\n\n- Antigravity tasks can append instructions when creating a session and display the subscription tier reported by the agent.\n- Codex supports mid-turn steering through its native steering request, interactive forms and sign-in links, and native conversation forks when the adapter offers them.\n- New Task can list an agent's external sessions and import a selected conversation. Import preserves the selected permission mode and rebuilds history from supported replay APIs. Failed imports show an error and retain the selected session for retry.\n- Interactive forms support choices, text, numbers, checkboxes and multiple selections, with validation before submission. Each question's choices remain independent.\n- Failed sessions can reconnect in place. Reauthentication preserves the original native conversation; an interrupted prompt is restored as a draft instead of being sent again automatically. Related tasks inherit the parent's permission settings and compatible configuration preferences.\n\n## Fixed\n\n- Antigravity context usage follows the agent's reported context window instead of cumulative billing tokens. Empty late usage updates no longer erase established usage.\n- Agent request cancellation and completed questions dismiss pending interactions without sending duplicate responses.\n- Temporary worktree paths display consistently in the editor and touched-file list.\n\n## Known issues\n\n- The global terminal and Scratch Terminal window still share a render surface; one can appear blank when the other refreshes.\n- After a task follows a new worktree, its terminal's + button uses the existing terminal's directory. Command-T uses the task's directory in the Tasks workspace.\n- Opening a task from a notification or the menu bar does not automatically switch from Terminal to Tasks.\n- The task terminal's Control-` shortcut remains enabled in the global terminal workspace and can redirect keyboard focus to the hidden task terminal.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n- Session listing, native forks and replay depend on the capabilities advertised by the installed agent adapter.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.23.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.0/Atrium-0.23.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.23.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.0/Atrium-0.23.0-macos-arm64.zip.sha256"
       }
     ]
   }
