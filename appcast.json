@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.27.0",
+    "tag": "v0.27.0",
+    "title": "Atrium 0.27.0",
+    "prerelease": false,
+    "published_at": "2026-11-25T00:01:21Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.27.0",
+    "notes": "This release replaces file-only session and memory persistence with a bundled, relocatable PostgreSQL 17 runtime managed by `atriumd`, adds indexed full-text search across English and Chinese transcripts, and introduces bidirectional cursor-based synchronization with an optional remote PostgreSQL server.\n\n## Added\n\n- **Bundled PostgreSQL 17 runtime (`EmbeddedPostgresHost`, `PostgresDB`, `PostgresSchema`, `scripts/postgres/fetch.py`)**:\n  - Bundles a self-contained, relocatable PostgreSQL 17 runtime (`initdb`, `pg_ctl`, `pg_isready`, `postgres`, `pg_dump`, `pg_restore`, `pg_trgm`, ICU, LZ4, Zstd, OpenSSL, Kerberos) inside `Atrium.app/Contents/SharedSupport/Postgres`, accompanied by PostgreSQL and `postgres-nio` notices in `ThirdPartyNotices/`.\n  - `EmbeddedPostgresHost` manages cluster initialization (`UTF8` / `en_US.UTF-8`), Unix Domain Socket connections (`<=95`-byte safe paths), `lz4` WAL and TOAST compression, stale `postmaster.pid` recovery (ignoring foreign `EPERM` PIDs), and clean lifecycle shutdown inside `atriumd`.\n  - `PostgresSchema` runs advisory-locked migrations creating `sessions`, `transcript_items`, `agent_sessions`, `agent_messages`, `agent_updates`, `agent_delegates`, `memory_claims`, `memory_sessions`, `memory_forgetting`, `memory_meta`, and `sync_state` tables with `pg_trgm` GIN indexes and optional `pgvector` probing.\n- **PostgreSQL session, internal agent, and long-term memory stores (`PostgresSessionStore`, `PostgresAgentHistoryStore`, `PostgresMemoryStore`)**:\n  - Persists active sessions incrementally via `(seq, revision)` deltas, supports backward/forward `.user`-aligned pagination, full-text EN+ZH `pg_trgm` search (`history/search`), soft-delete tombstones, and immediate write-ahead persistence on turn boundaries so `SIGKILL` restarts cleanly mark interrupted turns.\n  - Moves native agent continuity (`agent_sessions`, `fork` subagent scoping) and long-term memory (claims, session summaries, forgetting rules, maintenance metadata) into PostgreSQL without creating new `.jsonl` files or writing wire traces.\n  - Provides non-destructive, idempotent legacy migrators (`LegacySessionMigrator`, `LegacyAgentHistoryMigrator`, `LegacyMemoryMigrator`) for existing disk histories and memory files.\n- **Bidirectional remote PostgreSQL synchronization (`PostgresSyncEngine`, `StorageSyncConfigStore`)**:\n  - Stores non-secret sync settings in `~/.config/atrium/storage.json` while isolating credentials in `0o600` `storage-credentials.json`.\n  - Executes transactional Push-then-Pull batch sync over TLS (`disable`, `prefer`, `require`, `verify-full`) using shared monotonic `atrium_sync_seq` cursors, deterministic Last-Writer-Wins (`updated_at`, `updated_by_device_id`) conflict resolution, foreign-key-safe parent session pre-sync, tombstone propagation, zero-echo device tracking, and credential sanitization on errors.\n- **Daemon Protocol v19 RPCs and Settings UI (`DaemonProtocol`, `DaemonServer`, `MemoryPage`)**:\n  - Bumps `DaemonProtocol.version` to `19` with `history/search` (available locally and to remote Mac apps) and local `storage/status`, `storage/configure`, `storage/test_connection`, `storage/sync_now`, `memory/status`, and `memory/clear` RPCs.\n  - Adds **Settings › Memory › Storage & Remote Sync** with local PostgreSQL 17 status and database size, remote PostgreSQL URL/password/SSL mode inputs, **Test Connection**, **Save**, and **Sync Now** controls, plus Simplified Chinese localizations.\n\n## Changed\n\n- **Test & CI isolation (`Makefile`, `ci.yml`, `release.yml`, `IdleSessionSwapTests`)**:\n  - Updated `deps` and CI/Release workflows to stage PostgreSQL 17 before building and testing, verified relocatable `@rpath` linking and strict bundle signing in `Contents/SharedSupport/Postgres`, and isolated test daemons to dedicated state directories and ports (`ATRIUM_DISABLE_POSTGRES=1` kept where `.jsonl` wire traces are directly inspected).\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.27.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.27.0/Atrium-0.27.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.27.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.27.0/Atrium-0.27.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.26.0",
     "tag": "v0.26.0",
     "title": "Atrium 0.26.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.21.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.21.0/Atrium-0.21.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.20.0",
-    "tag": "v0.20.0",
-    "title": "Atrium 0.20.0",
-    "prerelease": false,
-    "published_at": "2026-11-12T17:51:32Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.20.0",
-    "notes": "The timeline now shows which work is still apart from the main line, and where it came from.\n\n## Changed\n\n- Only live tasks in their own worktree or started from a visible parent have a branch. Folder tasks and finished tasks sit on the trunk. A related task leaves its parent's row; nested workers and sub-agents connect downward from that row.\n- Hover a task or its branch's origin to keep its ancestors and descendants visible while unrelated tasks dim. Click an origin to select the parent, or use the row's “Show Origin” accessibility action.\n- The timeline's context menu offers continuation, review and handoff using the same availability rules as the task pane. Handoff is also available in the task pane's More menu and opens a card with another agent selected.\n- A newly arriving branch grows from its origin. When a task ends, its line fades and its node moves to the trunk; its children immediately connect to the parent's new position. Layout, selection and accessibility are ready throughout the animation.\n\n- Workspace dividers now align to backing pixels on 1× displays, keeping the task controls and terminal drawer flush during transitions.\n\n## Validation\n\n- Full normal and strict cooperative-pool suites: 2,877 tests each; four existing opt-in IME/large-tree checks remain skipped.\n- Isolated Release windows: timeline forks in dark/light at motion scales 0 and 10, typography, shell, chief, editor, and selection latency. All measured latency targets remain within their limits.\n- Python release/tooling tests: 50; harness tests: 41.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.20.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.20.0/Atrium-0.20.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.20.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.20.0/Atrium-0.20.0-macos-arm64.zip.sha256"
       }
     ]
   }
