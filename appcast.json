@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.27.1",
+    "tag": "v0.27.1",
+    "title": "Atrium 0.27.1",
+    "prerelease": false,
+    "published_at": "2026-11-25T01:35:50Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.27.1",
+    "notes": "This update fixes PostgreSQL recall, forgetting, and memory maintenance regressions introduced in the storage migration and eliminates hot-path transaction and query overhead across Atrium's native agent runtime.\n\n## Fixed\n\n- **PostgreSQL cross-session `recall` and forgetting enforcement (`AgentSession`, `PostgresMemoryStore`)**:\n  - Updated `recall(\"session:...\")` to read `MemoryStore` forgetting rules asynchronously from PostgreSQL and load referenced transcripts from `PostgresAgentHistoryStore` instead of reading missing `.jsonl` / `state.json` files on disk.\n  - Updated `PostgresMemoryStore.insertForgetting` from `ON CONFLICT DO NOTHING` to `ON CONFLICT DO UPDATE` (when `reason` or `deleted_at` changes) so incremental `MemoryForgetting.throughTurns` updates persist across runs and sync.\n  - Updated `PostgresMemoryStore.clear()` to capture `(session, turn)` watermarks from existing `memory_claims` and `pending` candidates alongside `sessions`, matching file-store suppression guarantees.\n  - Wired `AgentServer` to construct a `PostgresMemoryStore` when an external `PostgresAgentHistoryStore` is provided, and made `MemoryMaintenanceCommand` derive its PG discovery `stateDirectory` from `ATRIUM_MEMORY_EVENT_DIRECTORY` when overridden.\n- **Task deletion cleanup for `agent_sessions` (`PostgresSessionStore`)**:\n  - Soft-deleting a session in `PostgresSessionStore.softDeleteSession` now also soft-deletes its orphaned `agent_sessions` and child subagent rows once no other active `sessions` row references that `nativeSessionID`, preventing deleted tasks from lingering or being re-learned by memory maintenance.\n\n## Changed\n\n- **PostgreSQL schema v2 migration & search indexing (`PostgresSchema`, `PostgresMemoryStore`)**:\n  - Bumped `PostgresSchema.currentVersion` to `2` with additive `agent_sessions` metadata columns (`cwd_path`, `source`, `ended`, `model`, `user_turn_count`, `through_turn`, `fixed_prefix` with `lz4` compression, and `deleted_at`), automatic backfill from v1 `SessionEnvelope` JSONB rows, `parent_session_id` / top-level / `.user` transcript indexes, and combined `pg_trgm` GIN indexes (`idx_memory_claims_search_trgm`, `idx_memory_sessions_search_trgm`).\n  - Updated `PostgresMemoryStore.search()` to push all search terms (`ILIKE ALL`) onto the combined GIN-indexed expressions, match both `title` and `summary` on `memory_sessions`, order session hits by `ended_at DESC NULLS LAST`, and remove dead write-only `memory_meta('summary')` updates.\n- **Hot-path agent persistence & memory scanning (`PostgresAgentHistoryStore`, `AgentHistory`, `AgentSession`, `NativeRuntime`, `MemorySources`, `MemoryMaintenance`)**:\n  - Coalesced streamed text, thought, and forwarded subagent chunks inside `AgentSession` before persisting `agent_updates` so token streaming emits immediately without per-chunk PostgreSQL transaction commits.\n  - Separated `fixed_prefix` out of `agent_sessions.state` JSONB, added per-session serialization and sequence/existence caches in `PostgresAgentHistoryStore`, eliminated per-chunk `SELECT state::text` reads and no-op `model_usage`/`subagent_result` transactions, and combined end-of-turn `persistState()` writes.\n  - Replaced N+1 full-history loading in `listTopLevelSources()` with a single metadata query scoped by the 31-day maintenance window (preserving linked `nativeSessionID`s), added selective `load(includeUpdates:includeDelegates:)` and `loadChildren()`, guarded same-ID `fork` self-locking, and skipped idle `writeStateAsync(initial)` churn in PostgreSQL mode.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.27.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.27.1/Atrium-0.27.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.27.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.27.1/Atrium-0.27.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.27.0",
     "tag": "v0.27.0",
     "title": "Atrium 0.27.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.22.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.22.0/Atrium-0.22.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.21.0",
-    "tag": "v0.21.0",
-    "title": "Atrium 0.21.0",
-    "prerelease": false,
-    "published_at": "2026-11-14T01:17:58Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.21.0",
-    "notes": "Agents can now manage their own worktrees, use a dedicated browser, and control local Mac apps. The Web client adds files, diffs, history, and terminals.\n\n## Added\n\n- Chief tasks can create and inspect managed worktrees, collect worker reports, and send selected reports back to the chief. Automatic continuation is available as an explicit task setting and remains off by default. Worktree removal refuses active or dirty workspaces.\n- The Web client can browse workspace files, display text and binary diffs, and load older task history in pages. Its terminal supports desktop and phone layouts, Unicode input, resizing, reconnecting to the same shell, and explicit close. Logging out revokes active terminal connections.\n- Each task can use a dedicated Chrome/Chromium profile through browser tools. Actions leave screenshots in the conversation and the latest image in the inspector. Task settings can disable the browser or enable page scripts, which are off by default. Closing the task closes its browser.\n- Local unfenced tasks can observe and operate running Mac apps through desktop tools. Operations show a visible control banner; external input pauses control, and only the person can resume it in task settings. Password fields refuse text and key input. Desktop control is serialized because the desktop is shared between tasks.\n- Browser and desktop screenshots can reach the native agent's model providers as images, while remaining visible in the task's history.\n\n## Fixed\n\n- Desktop helpers no longer take foreground focus while starting. Their own clicks and keys no longer trigger a false user-takeover pause on the next step, and a stop shortcut received by the active monitor is intercepted before reaching the target app.\n- Direct remote terminal streams handle framed input, output, resize, and exit messages consistently.\n- Release asset uploads have bounded retries in both repositories, and isolated app checks clean up their own system preference domains and provide an opaque backdrop for transparent-window screenshots.\n\n## Requirements\n\n- The release package is for Apple silicon Macs running macOS 27 or later.\n- Browser tools require an installed Chrome or Chromium. They use task-owned profiles, not the person's existing browser session.\n- Desktop tools require Accessibility, Screen Recording, and Input Monitoring permission, checked from Atrium Settings. They are local-only and available only to unfenced tasks. User-browser takeover, remote desktop control, and live screen streaming are outside this release.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.21.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.21.0/Atrium-0.21.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.21.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.21.0/Atrium-0.21.0-macos-arm64.zip.sha256"
       }
     ]
   }
