@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.29.4",
+    "tag": "v0.29.4",
+    "title": "Atrium 0.29.4",
+    "prerelease": false,
+    "published_at": "2026-11-26T23:10:27Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.29.4",
+    "notes": "This update separates Atrium agent's background execution into event-driven background tasks and timer-scheduled monitors, removes synchronous waiting so the main session never blocks, and replaces worker polling loops with `kqueue`-backed `DispatchSource` I/O.\n\n## Changed\n\n- **Event-driven background tasks (`bash(run_in_background: true)`, `BackgroundTaskManager`)**:\n  - Background commands now always report lifecycle completion, failure, or timeout asynchronously, and optionally emit irregular runtime events via `event_pattern` (regular expression) or `stream_events: true` with burst debouncing and cooldown.\n  - Matched runtime events are stored in a dedicated bounded event buffer (`200` entries) so noisy log rollover never evicts unread signals.\n- **Timer-scheduled monitors (`monitor`, `MonitorSchedule`)**:\n  - Replaced long-lived monitor shell loops with native timer-scheduled single-run checks on a configurable `interval` (`1–3600s`, non-reentrant), with per-tick `tick_timeout`, optional `max_runs`, `timeout`, and `persistent`.\n  - Every tick updates the live pinned `BackgroundWorkList` strip immediately; `report_mode` (`\"on_change\"` default or `\"always\"`) and `notify` (`\"agent\"` default or `\"ui_only\"`) let monitors either wake the agent or emit lightweight UI notices without waking the LLM.\n- **Non-blocking main session & independent wake budgets (`AgentSession`, `AgentTools`, `SystemPrompt`, `AgentServer`)**:\n  - Removed synchronous `background_task(action=\"wait\")` and all `Waiter` infrastructure, keeping only non-blocking `list`, `output`, and `stop`.\n  - Separated `userTurnActive` from `autonomousTurnActive` so user prompts and `setOption` preempt in-flight autonomous turns cleanly instead of waiting or rejecting configuration changes.\n  - Split autonomous follow-up caps between background task events and periodic monitor reports so frequent monitor ticks never starve background task completions or failures, and enabled `enableAutonomousWake: !isAuxiliary` consistently in `AgentServer`.\n- **`DispatchSource` (`kqueue`) worker I/O (`BackgroundTaskManager.WorkerSession`)**:\n  - Replaced `BlockingIO` + `poll(2)` / `Thread.sleep` loops with `DispatchSourceRead`, `Process.terminationHandler`, and `DispatchSourceTimer` on a serial `DispatchQueue`, eliminating per-task blocked OS threads and idle polling wakeups while preserving `2048`-byte UTF-8 codepoint-safe line truncation and process-group teardown.\n\n## Fixed\n\n- **Two-phase event inbox (`peekNotifications` / `ackNotifications`)**:\n  - Autonomous turns now acknowledge delivered batches only after appending to session history, ensuring preempted autonomous turns never drop pending events and task completions/failures outrank routine monitor reports within the `8,192`-character batch budget without prematurely acknowledging deferred runtime events.\n- **Trailing UI background list updates (`publishBackground`)**:\n  - Added a trailing 500 ms scheduled flush so throttled output bursts never leave the pinned UI card stale after the final line arrives.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.29.4-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.4/Atrium-0.29.4-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.29.4-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.4/Atrium-0.29.4-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.29.3",
     "tag": "v0.29.3",
     "title": "Atrium 0.29.3",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.24.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.0/Atrium-0.24.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.23.6",
-    "tag": "v0.23.6",
-    "title": "Atrium 0.23.6",
-    "prerelease": false,
-    "published_at": "2026-11-15T03:56:45Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.23.6",
-    "notes": "Chief agents can now notice when a worker becomes idle, needs input, or may have stopped making progress. Worker reports remain available until their delivery is confirmed.\n\n## Fixed\n\n- Report worker turn endings, input and permission requests, failures, stops, and sign-in requirements. An idle worker means its current turn has ended; the chief still needs to check whether the assignment is complete.\n- Deliver reports to a running chief through the adapter's supported steering mechanism. Unsupported, rejected, or unconfirmed delivery keeps the report pending. Waking an idle chief still requires **Continue after worker reports** to be enabled.\n- Check workers every 15 seconds without asking their models to generate heartbeats. After 180 seconds without new agent text, tool progress, or a plan change, report that the worker may be stalled. Waiting for a person's answer is excluded, and unchanged status is not repeated.\n- Keep reports through failed delivery and history restoration. A late acknowledgement cannot remove a newer report. Respect stopped tasks and cancelled queued reports, and remove input or permission reminders once they have been answered.\n- Ask workers to give concise updates at meaningful milestones and explain remaining work before ending a turn. Task listings also expose pending reports, input requests, and known idle duration.\n\n## Validation and limits\n\nAutomated coverage includes injected-clock monitoring and real local daemon/ACP connections to controlled test agents, including delivery failures, late acknowledgements, cancellation, restoration, and resolved input requests. Live model and adapter combinations have not all been tested; delivery to a running chief depends on the adapter's steering and acknowledgement support.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.23.6-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.6/Atrium-0.23.6-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.23.6-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.6/Atrium-0.23.6-macos-arm64.zip.sha256"
       }
     ]
   }
