@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.29.2",
+    "tag": "v0.29.2",
+    "title": "Atrium 0.29.2",
+    "prerelease": false,
+    "published_at": "2026-11-26T03:39:34Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.29.2",
+    "notes": "This update fixes a crash in the background agent service `atriumd` while a shell command streams more than 15 KB of output, stops a long-lived command or monitor from growing its captured tail in memory, and makes the shell's UI tests run on displays that cannot open a 1240 pt window.\n\n## Fixed\n\n- **Crash while streaming command output (`Support`, `ProcessRunner`)**:\n  - Fixed `utf8TailText` and `boundedText` reading the trimmed tail buffer from offset 0. `Data.removeFirst` advances `startIndex`, so after the first 15 KB the next streamed read indexed past the buffer and trapped the process with a precondition failure (SIGTRAP), killing `atriumd` and every agent session it hosted. Both helpers now walk bytes from the buffer's own `startIndex`.\n  - Triggered by any foreground `bash` call whose output exceeded 15 KB while `onOutput` live streaming was attached, which is every shell command run from the conversation.\n- **Shell UI tests on narrower displays (`ShellAcceptanceRigTests`, `ShellLifecycleTests`)**:\n  - Removed the hardcoded 1240, 1600 and 900 pt window widths. Ordering a window front fits it to the display, so on a narrower display those suites failed while the shell behaved correctly. Expectations now come from `fittedWidth` and `ShellMetrics.columnWidths` for the width the window really gets, and the centring and saved-frame suites compare against `constrainFrameRect`'s own answer.\n  - The measured 620 / 960 / 465 / 413 / 360 column figures stay pinned by `columnWidthsMatchTheMeasuredOldShellWidths`, which needs no window at all.\n\n## Changed\n\n- **Bounded tail trimming (`ProcessRunner`)**:\n  - The streamed tail is now trimmed with `removeSubrange` instead of `removeFirst`. `removeFirst` never reclaims its prefix, so a long-running command's backing store kept growing: 40 MB of output held 318 MB resident. Trimming by range keeps the buffer at its 15 KB cap, and `tailTrimmingKeepsTheBufferBaseAndItsCapacity` pins that the base offset stays at 0.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.29.2-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.2/Atrium-0.29.2-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.29.2-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.2/Atrium-0.29.2-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.29.0",
     "tag": "v0.29.0",
     "title": "Atrium 0.29.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.23.5-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.5/Atrium-0.23.5-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.23.4",
-    "tag": "v0.23.4",
-    "title": "Atrium 0.23.4",
-    "prerelease": false,
-    "published_at": "2026-11-14T12:54:03Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.23.4",
-    "notes": "Terminal tab switching avoids redundant configuration and geometry updates, and rendering keeps a short, refresh-rate-independent idle window to reduce display-link churn during rapid output.\n\n## Fixed\n\n- Closing a terminal can finish even if its relay ignores the normal shutdown signal. Relays also preserve the caller's working directory and environment without a redundant privileged login process.\n- Mixed light and dark windows retain their terminal colors after app appearance or font settings change.\n- Input method candidate positions update when terminals move between windows or within a layout.\n- Reattaching or restoring a terminal filters historical device, cursor, mode and color queries so their replies do not appear as shell input. Queries from a still-running program, shell startup and live output remain available to the newly attached terminal.\n- Reused terminal tabs keep the correct title, error state and select/close targets after replacement or reordering.\n- The first click on **Dismiss** now works when leaving the task list: focus changes preserve the pressed error-card button until mouse-up. Permission hints update without replacing their card.\n\nThe renderer retains VSync, font rendering, ligatures and window translucency/blur. Its CoreVideo start/stop operations remain on the main thread, and its idle deadline is safe across synchronous and renderer-thread draws.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.23.4-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.4/Atrium-0.23.4-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.23.4-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.4/Atrium-0.23.4-macos-arm64.zip.sha256"
       }
     ]
   }
