@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.29.3",
+    "tag": "v0.29.3",
+    "title": "Atrium 0.29.3",
+    "prerelease": false,
+    "published_at": "2026-11-26T17:12:28Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.29.3",
+    "notes": "This update upgrades Atrium agent's window-switching context management for long-running sessions, fixes repetitive tool loops caused by dropped reasoning blocks on non-Claude Anthropic-compatible gateways, bounds screenshot and old-turn thinking growth inside a window, and improves multi-keyword memory, transcript recall, and related-task handoff.\n\n## Fixed\n\n- **Interleaved thinking replay on non-Claude Anthropic gateways (`ModelProvider`, `AgentSession`)**:\n  - Added `StreamingProvider.requiresAnthropicThinkingSignature(model:)` so only Claude models drop unsigned `thinking` blocks. Non-Claude models running through `.anthropicMessages` gateways (such as DeepSeek, Kimi, and MiniMax) now preserve and replay their unsigned `thinking` blocks across tool calls (`replayAnthropicContent(..., allowUnsignedThinking:)`), preventing repetitive tool loops after multi-step tool batches.\n- **In-window token accounting and tool image cleanup (`ContextView`)**:\n  - Stopped double-counting `thinking` and `reasoning` characters in `ContextView.characters(_:)`, weighted inline message images (`* 6_400` chars), cleared replaced message `images` in `render(_:)`, and introduced `imageCleared(_:)` so older tool screenshots are stripped in both warm (`>= 4` eligible images) and cold (`>= 1` eligible image) cleanup passes while protecting the latest 3 tool calls.\n- **Multi-keyword memory, child-session, and transcript search (`MemoryStore`, `PostgresMemoryStore`, `PostgresAgentHistoryStore`, `PostgresSessionStore`)**:\n  - Switched search from brittle `ALL`-term matching to `ANY`-term matching scored by `unnest(...)` match counts and `filterByCoverage`, while keeping `forget()` strict `AND` matching.\n  - Added explicit `::uuid` and `::text` casts on nullable exclusion parameters in `PostgresSessionStore.searchTranscripts`, and fixed `PostgresMemoryStore.search` so its claim query matches `decodeClaim`'s 12-column projection.\n- **Session notes corruption guard & refresh cadence (`SessionMemory`, `AgentSession`)**:\n  - Bounded `memoryInput` payloads by stripping `thinking` blocks, capping fallback `reasoning` at 500 bytes, and capping tool arguments at 1,500 bytes.\n  - Added `SessionNotes.isCorruptEcho(_:)` to reject raw transcript echoes before they can overwrite `state.notes`, and updated `notesDue(history:budget:)` to trigger on long tool-heavy turns (`>= 60` messages and `>= 6,000` new tokens) as well as capped token deltas (`min(budget / 4, 24_000)`).\n- **Related task handoff & continuity pack preservation (`RelatedTask`, `ContinuityPack`)**:\n  - Capped `originalPrompt` at 8,000 chars and `changedFiles` diffs at 16,000 chars (deprioritizing `/tmp/` scratch paths and summarizing omitted files).\n  - Included follow-up user instructions and `ask_user` decisions in `ParentTaskContext` conclusions and in `ContinuityPack` (`User decisions`), plus a bounded `[reasoning]` fallback in `ContinuityPack.lastSteps` when the latest assistant message has no visible text.\n\n## Changed\n\n- **500k active working window & enhanced in-window cleanup (`ContextView`, `AgentSession`, `NativeRuntime`)**:\n  - Capped the active working window at 500,000 tokens (`ContextView.maxWorkingWindow`) via `workingWindow(for:)` so ultra-large models (e.g. 1M) still rotate cleanly via `ContinuityPack` before attention degrades and input costs escalate.\n  - Capped `ContinuityPack` at `80_000` chars (~20k tokens), added message-count window-switch guards (`160` cold / `260` warm boundary when `estimated >= budget / 5`, and `300` mid-turn), capped the warm-clear minimum savings floor at `32_000` tokens (`min(budget * 20 / 100, 32_000)`), and persisted `clearedThinking` to strip completed earlier turns' unsigned `thinking`/`reasoning` without invalidating current-turn reasoning.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.29.3-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.3/Atrium-0.29.3-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.29.3-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.29.3/Atrium-0.29.3-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.29.2",
     "tag": "v0.29.2",
     "title": "Atrium 0.29.2",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.23.6-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.6/Atrium-0.23.6-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.23.5",
-    "tag": "v0.23.5",
-    "title": "Atrium 0.23.5",
-    "prerelease": false,
-    "published_at": "2026-11-14T15:32:15Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.23.5",
-    "notes": "All top-level ACP agents can direct workers when **Tasks can create workers** is enabled, including the built-in Atrium agent. Tool-call previews show syntax colors again.\n\n## Fixed\n\n- Removed the hidden per-agent `canDirect` setting. Old saved values no longer prevent an agent from receiving task dispatch tools; worker model choices remain unchanged.\n- Connected the built-in Atrium agent to the same task-scoped worker tools used by external agents, including creating, waiting for, reading and closing workers. Worker ownership, model rules, fence inheritance and the restriction against workers creating more workers remain enforced.\n- Restored syntax highlighting for shell commands and source code in the rolling tool preview. Highlighting handles Unicode text, appearance and font changes, and reused preview rows, while keeping parsing bounded to the visible output.\n\n## Updating\n\nReopen a task after updating to receive its dispatch tools. Existing live agent processes do not gain tools automatically.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.23.5-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.5/Atrium-0.23.5-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.23.5-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.23.5/Atrium-0.23.5-macos-arm64.zip.sha256"
       }
     ]
   }
