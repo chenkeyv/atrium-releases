@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.30.0",
+    "tag": "v0.30.0",
+    "title": "Atrium 0.30.0",
+    "prerelease": false,
+    "published_at": "2026-11-27T00:25:25Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.30.0",
+    "notes": "This update introduces a dedicated top-level **Agent** tab powered by a persistent always-on Atrium Agent running in `atriumd`, along with global shortcuts to cycle workspaces (`⌥\\`` / `⇧⌥\\``) and pages within a workspace (`⌘\\`` / `⇧⌘\\``).\n\n## Added\n\n- **Always-On Agent tab (`Agent` | `Tasks` | `Terminal` | `Browser`)**:\n  - Added a top-level **Agent** workspace (`⌥1`), keeping **Tasks** (`⌥2`) as the default startup view and shifting **Terminal** (`⌥3`) and **Browser** (`⌥4`).\n  - Backed the tab by a singleton persistent built-in `atrium` session managed by `atriumd` (`agent/ensure`, `agent/reset`), running independently outside the `Tasks` timeline while spawned workers appear in both the `Tasks` timeline and the Agent sidebar.\n  - Added persistent metadata (`isAlwaysOn`, `autonomousWakePaused`, `AgentState.alwaysOn`) across JSONL history, snapshots, and PostgreSQL storage, automatically reopening interrupted always-on sessions across daemon restarts and raising the consecutive autonomous follow-up cap to `20`.\n- **Agent status & control sidebar (`AgentStatusSidebarView`, `⌥⌘0`)**:\n  - Hosts the conversation thread alongside a collapsible right-hand status sidebar toggled via the toolbar **Widgets** button or `⌥⌘0`.\n  - Displays live status (`Online`, `Working`, `Starting`, `Needs Attention`, `Wake Paused`, `Offline`), active model configuration, working directory, context meter, live **Monitors** and **Background Tasks** with per-item Stop actions, and **Workers** (click to jump directly to the worker in `Tasks`).\n  - Provides live controls for **Autonomous Wake** (`session/set_autonomous_wake` / `atrium.autonomous_wake`, immediately canceling in-flight autonomous turns when paused and resetting caps/draining pending wakes when resumed), **Auto-Resume Workers**, **Start/Stop Agent**, and **New Thread**.\n- **Toolbar, menu bar & notification integration**:\n  - Added live status dot and active monitor/background-task count badge on the `Agent` toolbar tab, a quick status row in the menu bar item (`StatusItemController`), notification click routing to the Agent workspace, and fallback in `Next Blocked Task` (`⌥⌘B`).\n- **Workspace & page cycling shortcuts (`ShellShortcuts`, `NvimKeys`, `MainMenu`)**:\n  - `⌥\\`` / `⇧⌥\\`` cycles forward/backward across top-level workspaces (`Agent`, `Tasks`, `Terminal`, `Browser`).\n  - `⌘\\`` / `⇧⌘\\`` cycles forward/backward across tabs/pages within the active workspace (**Browser** tabs, **Terminal** and scratch terminal tabs, and **Tasks** in `TimelineGraphBuilder.newestFirst` order).\n  - Routed `⌥1`–`⌥4`, `⌥\\``, `⇧⌥\\``, `⌘\\``, and `⇧⌘\\`` past Neovim key capture (`NvimKeys`) so shortcuts work while the embedded editor is focused.\n\n## Changed\n\n- Renumbered top-level workspace shortcuts to `⌥1` (`Agent`), `⌥2` (`Tasks`), `⌥3` (`Terminal`), and `⌥4` (`Browser`) across toolbar tooltips, the `View` menu, and shortcut handling.\n- Updated **New Terminal Tab** (`⌘T`) enablement to stay disabled inside the `Agent` workspace.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.30.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.30.0/Atrium-0.30.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.30.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.30.0/Atrium-0.30.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.29.4",
     "tag": "v0.29.4",
     "title": "Atrium 0.29.4",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.24.1-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.1/Atrium-0.24.1-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.24.0",
-    "tag": "v0.24.0",
-    "title": "Atrium 0.24.0",
-    "prerelease": false,
-    "published_at": "2026-11-15T14:09:12Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.0",
-    "notes": "Atrium now has a **Browser** workspace alongside Tasks and Terminal, with persistent tabs, website storage, bookmarks, history, and downloads. It uses the system WebKit engine and keeps personal browsing separate from task browser automation.\n\n## Added\n\n- Switch between Tasks, Terminal, and Browser without reloading open pages or losing terminal state. Browser views are created only when needed; restored background tabs load when selected.\n- Manage multiple tabs, pin tabs, reopen recently closed tabs, search from the address bar, find text on a page, and adjust zoom.\n- Keep cookies and website storage across tabs and restarts in a dedicated profile. Personal browsing data is not exposed through Atrium's task browser tools.\n- Browse bookmarks, history, and downloads in the sidebar. Export bookmarks as Netscape HTML, search and delete history entries, and download files with non-overwriting names.\n- Show explicit navigation and TLS errors, site permission controls, and recovery notices. Fix a recovery-banner layout crash that could prevent Browser from opening after a restart.\n\n## Fixed\n\n- Fixed a crash when closing an embedded Neovim editor while a background request was still being sent. Shutdown now rejects new requests and synchronizes input-pipe closure with writes.\n\n## Validation and known limits\n\n- Release-app checks covered workspace switching, page form preservation, persistent cookies and local storage, lazy restoration of 20 tabs, downloads and quarantine attributes, history search and deletion, bookmark export, and light/dark layouts. Public HTTPS pages loaded successfully; this does not establish every site's compatibility.\n- File upload and bookmark import have not completed end-to-end acceptance: the automated file selection did not succeed, and the cause is undetermined. Full-screen entry/exit checks did not pass.\n- Actual media playback, DRM streaming, password/Passkey integration, web notifications, and live WebContent crash recovery remain unverified.\n- Some OAuth/SSO providers reject embedded WebKit sign-in. Use Open in System Browser where needed; browser sessions are not transferred between applications.\n- Closing a tab may discard an unsaved web form without the same beforeunload confirmation as Safari. Chrome extensions are not supported.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.24.0-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.0/Atrium-0.24.0-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.24.0-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.0/Atrium-0.24.0-macos-arm64.zip.sha256"
       }
     ]
   }
