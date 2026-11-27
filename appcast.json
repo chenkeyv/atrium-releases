@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.31.0",
+    "tag": "v0.31.0",
+    "title": "Atrium 0.31.0",
+    "prerelease": false,
+    "published_at": "2026-11-27T10:14:30Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.31.0",
+    "notes": "This release overhauls Atrium's embedded PostgreSQL 17 runtime, schema, search, multi-device sync, semantic memory, and backup capabilities, bringing `pgvector` semantic recall, English full-text search, real-time `LISTEN/NOTIFY` sync wakeups, Browser bookmark/history storage & sync, and history search in both the macOS app and web UI.\n\n## Added\n\n- **Bundled `pgvector` (`v0.8.7`) & Hybrid Semantic Memory (`scripts/postgres/fetch.py`, `PostgresSchema`, `MemoryEmbeddings`, `PostgresMemoryStore`)**:\n  - Compiled and staged `pgvector` v0.8.7 alongside embedded PostgreSQL 17 with SHA-256 verification and `ThirdPartyNotices/pgvector-LICENSE`.\n  - Added `vector(512)` `embedding` and `embedding_model` columns with HNSW cosine indexes (`vector_cosine_ops`) on `memory_claims` and `memory_sessions`.\n  - Added `MemoryEmbeddingService` supporting optional OpenAI-compatible `/embeddings` endpoints (`MemorySettings.embeddingModel`) and zero-setup on-device 512-dim `NLEmbedding` vectors executed off the cooperative thread pool via `BlockingIO.run`.\n  - Upgraded `memory_search` to combine `ILIKE` substring scoring, English `tsvector`/`ts_rank_cd` full-text search, and pgvector cosine similarity, plus background `backfillMissingEmbeddings` maintenance.\n- **Full-Text Search & History Search UI (`TimelineSearchBar`, `MainWindowController`, `MainMenu`, `web/src/routes/Tasks.svelte`)**:\n  - Added schema v5 stored `tsvector` generated columns and GIN indexes across `sessions`, `transcript_items`, `memory_claims`, `memory_sessions`, `agent_messages`, `browser_bookmarks`, and `browser_history`.\n  - Added `⌘⇧F` (`Search History…`) in the macOS app with debounced inline search (`TimelineSearchBar`) and keyboard navigation across `SessionSearchHit` results.\n  - Enabled `history/search` for web clients (`DaemonServer.remoteWebMethods`) and added a debounced search bar in the Web UI (`Tasks.svelte`).\n- **Browser Bookmarks & History in PostgreSQL (`PostgresBrowserStore`, `BrowserStore`, `atriumd`)**:\n  - Added `browser_bookmark_folders`, `browser_bookmarks`, and `browser_history` tables (schema v5) synchronized across devices via `PostgresSyncEngine` (10 syncable tables).\n  - Added `browser/*` daemon RPCs and `BrowserDaemonBridge` in `BrowserStore` with one-time non-destructive `importLegacyIfEmpty`, write-through persistence, 3-second visit coalescing, and FTS/trigram address bar suggestions while preserving standalone local JSON fallback.\n- **Database Backup, Usage Statistics & Tombstone Purge (`EmbeddedPostgresHost`, `PostgresSessionStore`, `MemoryPage`, `atriumd`)**:\n  - Added `EmbeddedPostgresHost.dumpDatabase(to:)` (`pg_dump -Fc -Z 6`) and `storage/backup` RPC, exposed in Settings → Memory & Storage as **Backup…** with `NSSavePanel`.\n  - Added `PostgresSessionStore.usageStats()` (`StorageUsageStats`) and `storage/stats` RPC surfaced in `MemoryPage` (database size, task/message/claim counts, pgvector status, agent breakdown).\n  - Added `PostgresSchema.purgeExpiredTombstones(database:olderThanDays:now:)` (90-day retention) scheduled periodically in `atriumd`.\n\n## Changed\n\n- **PostgreSQL 17 Tuning & Connection Pooling (`EmbeddedPostgresHost`, `PostgresDatabase`)**:\n  - Configured embedded `atrium.conf` with `shared_buffers = '128MB'`, `effective_cache_size = '512MB'`, `random_page_cost = 1.1`, `wal_level = minimal`, `max_wal_senders = 0`, `log_min_duration_statement = 500`, `statement_timeout = '30s'`, `lock_timeout = '10s'`, and `idle_in_transaction_session_timeout = '60s'`, plus automatic 5 MB log trimming on startup.\n  - Added `PostgresSSLMode.verifyCA` (`verify-ca`) and tuned pool limits (`unixSocket` min=1/max=12, `tcp` min=0/max=4).\n- **Schema v5 Cleanup, Bulk `UNNEST` Writes & Concurrency Safety (`PostgresSchema`, `PostgresSessionStore`, `PostgresMemoryStore`, `PostgresAgentHistory`, `PostgresSyncEngine`)**:\n  - Dropped 3 redundant v1 trigram indexes, optimized hot B-Tree indexes (`idx_sessions_created`, `idx_sessions_parent`, `idx_transcript_session_user_seq`, indexed `sessions.native_session_id`), and eliminated the `ROW_NUMBER()` subquery in `loadHistoryPage` with connection reuse (`withConnection`).\n  - Replaced per-row write loops with bulk `UNNEST` upserts/soft-deletes across `transcript_items`, `memory_sessions`, `memory_claims`, `memory_forgetting`, and all 10 `PostgresSyncEngine` transfer methods.\n  - Added `IS DISTINCT FROM` write guards and revision-cache pre-checks (`PostgresSessionStore`, `Session` debounced writes using `SET LOCAL synchronous_commit = off` and immediate flushes using synchronous commit).\n  - Added transaction-scoped `pg_advisory_xact_lock` serialization in `PostgresMemoryStore` and `PostgresAgentHistoryStore`, SQL `normalized_text` dedupe, structured `memory_forgetting` columns, and SQL `ILIKE` trigram pre-filtering.\n  - Added transactional `sync_xid xid8` visibility stamps and `LISTEN/NOTIFY` (`atrium_sync`) push wakeups to `PostgresSyncEngine`, while skipping redundant `sync_state` writes on 0-row syncs.\n- **Test Coverage**:\n  - Added `PostgresBrowserStoreTests` and `BrowserBridgeTests`, and expanded `PostgresStorageTests`, `PostgresSessionStoreTests`, `PostgresSyncEngineTests`, `PostgresMemoryAndAgentTests`, `RemoteHardeningTests`, `test_postgres_fetch.py`, `MainMenuTests`, and web `actions.test.ts`.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.31.0-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.31.0/Atrium-0.31.0-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.31.0-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.31.0/Atrium-0.31.0-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.30.2",
     "tag": "v0.30.2",
     "title": "Atrium 0.30.2",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.24.5-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.5/Atrium-0.24.5-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.24.4",
-    "tag": "v0.24.4",
-    "title": "Atrium 0.24.4",
-    "prerelease": false,
-    "published_at": "2026-11-18T03:22:10Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.4",
-    "notes": "This update fixes macOS native UI appearance, layout, focus, and interaction issues across the shell, settings, browser, terminal drawer, composer, conversation, and widgets.\n\n## Fixed\n\n- Fix flipped-coordinate hit testing and effective divider rects on `ShellSplitView` so the title bar stays draggable and the bottom inset responds to divider drags and double-clicks.\n- Refresh layer colors across `BrowserWorkspaceView`, `BrowserSidebarView`, `BrowserPopovers`, `UpdatePanelView`, `DialogLayerView`, and `DialogSurfaces` when switching between Light, Dark, and Increased Contrast appearances.\n- Fix `BrowserTabPillView` hidden media-dot spacing and pinned-tab constraint conflicts, update loading progress width on resize, focus the new-tab search field when opening a new tab, and refresh the sidebar when history or download preferences change.\n- Drop hidden Neovim grid focus when filling the terminal drawer (`EditorWorkspaceView.layoutFilled()`), vertically center terminal drawer branch metadata, prevent header label collisions, and keep selected tab underlines inside bounds.\n- Add mouse/trackpad wheel scrolling and accessibility frame updates to `CompletionListView`, vertically center short `QueuedMessageRow` items, and tint the missing-attachment fallback icon cleanly in Dark mode.\n- Fix `ProviderEditorCard` secondary keyboard navigation (`SettingsSecondaryControls`) and embedded scroll layout, resolve the `RemotePage` add-flow push/pop race, and preserve the settings breadcrumb font size.\n- Fix `RollingSubtaskPreviewView` icon/title overlap, `ToolRowView` hover-action chevron occlusion, rounded inline-code styling in expanded `ThoughtScrollView`, and dynamic screenshot/action-button sizing in Widgets.\n- Standardize button tinting, selection washes, typography tiers, and corner radii on `AtriumColor`, `AtriumType`, and `AtriumShape`.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.24.4-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.4/Atrium-0.24.4-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.24.4-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.4/Atrium-0.24.4-macos-arm64.zip.sha256"
       }
     ]
   }
