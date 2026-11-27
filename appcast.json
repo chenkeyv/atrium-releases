@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.30.1",
+    "tag": "v0.30.1",
+    "title": "Atrium 0.30.1",
+    "prerelease": false,
+    "published_at": "2026-11-27T05:02:36Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.30.1",
+    "notes": "This maintenance release hardens Swift 6 concurrency and macOS AppKit lifecycle/accessibility behavior, replaces the two-button dirty-page prompt in Settings with a three-way confirmation (`Discard` / `Cancel` / `Save`), removes the unused SwiftUI demo app and benchmark scaffolding, and streamlines the test suite.\n\n## Fixed\n\n- **Settings unsaved-changes confirmation (`UnsavedSettingsCard`, `SettingsLayerView`)**:\n  - Replaced the two-button (`Cancel` / `Discard`) prompt when navigating back or closing Settings on dirty secondary editor pages (`ProviderEditorCard`, `MCPEditorCard`, `RemoteHostFormCard`, `RemoteAccessPasswordCard`) with a three-way confirmation (`Discard` / `Cancel` / `Save`) matching `UnsavedEditorsCard`.\n  - Disables **Save** (`canPerformSecondaryDefaultAction`) when a form cannot yet be saved, and keeps the secondary editor page open on validation failure (`performSecondaryDefaultAction() -> false`).\n- **Swift 6 concurrency, actor reentrancy & lifecycle fixes**:\n  - Offloaded heavy/blocking I/O and synchronous waits off `@MainActor` and cooperative executors (`RemoteAccess`, `NvimProcess`, `NvimSession`, `RemoteAccessModels`), and persisted application quit state asynchronously using `NSApplication.TerminateReply.terminateLater` in `AtriumApp` / `SessionStore`.\n  - Eliminated data races and actor-reentrancy hazards (`Bonjour`, `RemoteServerCore`, `NvimProcess`, `PostgresSessionStore`, `EmbeddedPostgresHost`, `TextLayoutService`, `PostgresSyncEngine`), migrated lock sites to `Synchronization.Mutex`, and serialized sheet presentation queuing in `BrowserStore`.\n  - Fixed retain cycles, callback/observer cleanup, and `isolated deinit` cleanup across `BrowserPage`, `DaemonLauncher`, `DialogCenter`, `StatusItemController`, `ConversationScrollView`, `AppearancePreference`, and `AgentWorkspaceViewController`.\n- **macOS AppKit & Accessibility polish**:\n  - Added Increase Contrast appearance tracking (`AppearancePreference`) and Reduce Motion support across `AtriumMotion` and `DialogCenter`.\n  - Clamped default and standard zoom frames to the active screen (`MainWindowController`), paused toast dismissal timers while hovering (`NoticeCardView`), truncated overly long menu bar titles (`StatusItemController`), invalidated IME cursor coordinates on Neovim redraws (`NvimGridView`), and cleaned up `MainMenu` (removed non-functional `Customize Toolbar…`, renamed Window item to `Open Atrium`, fixed `Close` validation).\n\n## Changed\n\n- **Unified logging & build/signing hardening**:\n  - Added `AtriumLog` (`os.Logger`, subsystem `io.github.chenkeyv.atrium`) and `StderrLog`, replacing legacy `NSLog` and direct stderr writes.\n  - Added `Resources/Atrium.entitlements` for Developer ID hardened runtime, ordered Postgres `.dylib`/binary codesigning with fixed identifiers in `Makefile`, expanded CI SwiftPM cache keys, and added `script/build_and_run.sh`.\n- **Demo app removal & streamlined test suite**:\n  - Removed all `#if ATRIUM_DEMO` / `#if ATRIUM_PERF` SwiftUI demo app sources and demo scripts (`0` `import SwiftUI` remaining in `Sources/`).\n  - Removed redundant benchmark and per-view motion tests, shortened slow polling/fixture waits, and added concurrency/lifecycle/UI/Settings regression suites (`ConcurrencyAndStorageRegressionTests`, `AuditRegressionTests`).\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.30.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.30.1/Atrium-0.30.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.30.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.30.1/Atrium-0.30.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.30.0",
     "tag": "v0.30.0",
     "title": "Atrium 0.30.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.24.2-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.2/Atrium-0.24.2-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.24.1",
-    "tag": "v0.24.1",
-    "title": "Atrium 0.24.1",
-    "prerelease": false,
-    "published_at": "2026-11-17T03:17:19Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.1",
-    "notes": "Tool-use previews resume following new content after scrolling stops.\n\n## Fixed\n\n- Fixed a rolling preview that could remain stuck after reading earlier tool output. Delayed scroll notifications and layout changes no longer disable following after its resume timer has ended.\n- Keep the automatic resume timer active while native scroll events arrive. Reading back still pauses the preview for three seconds; leaving the preview or scrolling to the bottom resumes following immediately.\n- Clear a temporary scroll pause when a preview is removed, so showing it again follows the newest content.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.24.1-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.1/Atrium-0.24.1-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.24.1-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.1/Atrium-0.24.1-macos-arm64.zip.sha256"
       }
     ]
   }
