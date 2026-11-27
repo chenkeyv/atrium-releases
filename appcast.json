@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.31.1",
+    "tag": "v0.31.1",
+    "title": "Atrium 0.31.1",
+    "prerelease": false,
+    "published_at": "2026-11-27T23:43:23Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.31.1",
+    "notes": "This maintenance release delivers a comprehensive macOS AppKit UI/UX, accessibility, keyboard navigation, visual polish, and view-layer modularity pass across Tasks, Browser, Terminal, embedded Neovim, Settings, Dialogs, and Menus.\n\n## Fixed\n\n- **Tasks, Conversation, Timeline & Composer (`AppKitConversationScroll`, `TaskHeaderView`, `TaskPaneController`, `TaskTailView`, `TimelineColumnView`, `TimelineRowContent`, `TimelineRowPlate`, `TimelineRowView`, `TimelineSearchBar`, `ComposerView`, `ComposerTextView`, `AttachmentStripView`, `CompletionListView`, `NativeDiffView`, `NativeParts`, `RollingToolViewportView`, `ToolRowViews`, `WidgetColumnView`, `WidgetRowViews`, `WidgetStackView`, `ContextSectionView`, `ContextUsageView`, `AgentStatusSidebarView`)**:\n  - Fixed scroll-to-bottom button bottom-right placement in `ConversationScrollView` and eliminated empty-state vs. tail row overlap (`AppKitConversationScroll`).\n  - Aligned `AgentStatusSidebarView` section headings (`Monitors`, `Background Tasks`, `Workers`) and widened status detail wrapping for long task descriptions.\n  - Improved translucent hover/selection contrast, timeline search bar keyboard/focus polish, diff/tool row presentation, wheel scroll handoff (`WheelHandoffScrollView`), and accessibility labels/traits across task, widget, and composer controls.\n- **Dialogs, Permissions & Elicitations (`PermissionCard`, `ElicitationCardView`, `ElicitationSupport`, `NewTaskCard`, `RelatedTaskCard`, `DialogCenter`, `DialogLayerView`, `DialogSurfaces`)**:\n  - Prevented `PermissionCard` key equivalents from intercepting active text field editors (`PermissionCardView.shouldYieldKeyEquivalent`).\n  - Wrapped tall non-scrollable dialog cards in a scroll container inside `DialogLayerView` while preserving direct scrollable card children.\n  - Improved elicitation form validation/accessibility and dialog keyboard/focus handling.\n- **Browser, Terminal & Embedded Neovim (`BrowserWorkspaceView`, `BrowserSidebarView`, `BrowserNewTabView`, `BrowserPopovers`, `BrowserStore`, `TerminalDrawerView`, `EditorWorkspace`, `EditorWorkspaceView`, `NvimGridView`, `NvimKeys`, `NvimSession`)**:\n  - Added collapsible bookmark folders in `BrowserSidebarView` and fixed background tab title synchronization in `BrowserWorkspaceView`.\n  - Hid the terminal drawer fill button when non-resizable and truncated overly long tab titles (`TerminalDrawerView`).\n  - Fixed `EditorWorkspaceView` skipping hidden `NvimGridView` instances during lookup and refined Neovim key mapping (`NvimKeys`).\n- **Settings, Shell, Menus & Notifications (`SettingsLayerView`, `AgentPage`, `GeneralPage`, `MemoryPage`, `RemotePage`, `MCPEditorCard`, `ProviderEditorCard`, `ProviderModelEditorCard`, `RemoteHostFormCards`, `MainMenu`, `MainWindowController`, `ShellActions`, `ShellToolbar`, `AuxiliaryWindows`, `StatusItemController`, `WindowBackgroundBlur`, `UpdatePanelView`, `Notifications`, `AtriumStyle`, `AtriumApp`, `Localizable.xcstrings`, `script/build_and_run.sh`)**:\n  - Fixed `DialogCenter.requestCloseForm` respecting dirty secondary Settings pages before dismissing.\n  - Fixed `RemoteHostFormCard` dirty-state diffing against initial values when editing existing remote hosts.\n  - Hardened `MainMenu`, `ShellActions`, `ShellToolbar`, and `AuxiliaryWindows` accessibility, keyboard shortcuts, and localization.\n  - Fixed `script/build_and_run.sh` to match only the workspace build binary path rather than targeting `/Applications/Atrium.app`.\n\n## Changed\n\n- **AppKit View Modularity & Controls**:\n  - Extracted `BrowserFindBarView`, `BrowserTabStripView`, `SettingsCustomControls`, `TerminalDrawerPresenter`, and `WheelHandoffScrollView` from large composite views (`BrowserWorkspaceView`, `SettingsKit`, `MiddleColumnController`, `ToolRowViews`) to tighten separation of concerns.\n- **Regression Test Coverage**:\n  - Added `UIReviewRegressionTests` (9 UI, layout, accessibility, and interaction regression tests) and updated `NvimKeysTests`, `MainMenuTests`, and `WidgetColumnViewTests`.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.31.1-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.31.1/Atrium-0.31.1-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.31.1-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.31.1/Atrium-0.31.1-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.31.0",
     "tag": "v0.31.0",
     "title": "Atrium 0.31.0",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.25.0-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.25.0/Atrium-0.25.0-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.24.5",
-    "tag": "v0.24.5",
-    "title": "Atrium 0.24.5",
-    "prerelease": false,
-    "published_at": "2026-11-19T10:51:06Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.5",
-    "notes": "This update polishes the native AppKit conversation interface across turn rendering, scrolling, tool previews, the composer, and task chrome.\n\n## Improved\n\n- Render image attachment strips on user prompts (`PromptAttachmentStripView`, 96 pt expanded / 48 pt folded, up to four thumbnails plus a `+N` overflow badge) with click-to-Quick-Look preview, and add 16 pt horizontal overflow fades and 1.5 s `\"Copied\"` feedback to `CodeBlockView`.\n- Add a floating `ScrollToBottomButton` pill (`Jump to latest`) with a running-turn indicator in `ConversationScrollView`, and support `\"Copy Turn as Markdown\"` from `StickyToolBar` and `\"Open in Terminal\"` on command `ToolRowView` rows.\n- Animate `FieldPlate` focus, disabled, and image-drag target borders in `ComposerView`, add horizontal wheel scrolling to `AttachmentStripView`, and add a scroll-position thumb indicator to overflowing `CompletionListView` popovers.\n- Focus the first invalid control and announce validation errors in `ElicitationCardView`, clear validation errors immediately on edit, tick live expiration countdowns every second, and preserve in-progress elicitation cards across queue count and fence updates in `TaskTailView`.\n- Add horizontal overflow edge-fade masks and vertical wheel passthrough to `SessionConfigurationPanel`, semantic status colors and appearance-aware symbol attachments to `ConfigOptionMenuView`, SF Symbol disclosure chevrons and dynamic row heights to `ChiefWorkbenchView`, and consistent hover/pointing-hand states across task chrome controls.\n\n## Fixed\n\n- Fix `TopEdgeFade` limit updates, flipped clip-view mask polarity, and `contentInsets.top` accounting, and skip `ComposerScrollView` and nested scroll views when attaching column fades in `ColumnContainerView`.\n- Fix `RollingThoughtPreviewView` flipped coordinates and theme colors, `RollingSubtaskPreviewView` narrow-width truncation and trailing commas, `RollingToolPreviewView` timer cleanup and 1 Hz relayout, and stationary `.began` (`deltaY == 0`) trackpad gesture handoff in `RollingToolWheelRouter`.\n- Retain `SummaryBarView` usage tooltip strings across AppKit tooltip registration, remove the 8 pt empty-chip indent, preserve `ToolPartView` text selection across async syntax highlighting, and cancel stale highlight tasks on `ToolRowView` reuse.\n- Filter non-image Finder file icons out of `ComposerPasteboard.pictures()`, guard ghost text against the macOS Accent Picker and IME mark transitions, align multi-line `QueuedMessageRow` text to the top line, and clamp narrow status labels.\n- Keep `PinnedWorkView` ticking until retained finished items expire even after all running items complete, forward `translucent` and workspace `folder` into `PinnedSubagentExpansionView`, and scope `PermissionCardView` key equivalents so they never intercept IME, terminal, button, or active non-empty composer input.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.24.5-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.5/Atrium-0.24.5-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.24.5-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.5/Atrium-0.24.5-macos-arm64.zip.sha256"
       }
     ]
   }
