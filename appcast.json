@@ -1,5 +1,24 @@
 [
   {
+    "version": "0.30.2",
+    "tag": "v0.30.2",
+    "title": "Atrium 0.30.2",
+    "prerelease": false,
+    "published_at": "2026-11-27T07:00:22Z",
+    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.30.2",
+    "notes": "This maintenance release hardens Atrium's agent harness prompts, subagent isolation, prompt-caching layout, untrusted-input boundaries, and memory/background prompt consistency.\n\n## Fixed\n\n- **System prompt ordering & window-reset memory refresh (`SystemPrompt`, `AgentServer`, `NativeRuntime`, `AgentSession`)**:\n  - Unified custom/role `append` injection before `## Environment` and trailing memory in `SystemPrompt.components` / `build`, eliminating post-hoc appends that could be stripped when resetting system memory.\n  - Fixed `AgentSession` evaluating `requestSystem` before `prepareContext(...)` so `refreshSystemMemoryOnReset()` applies on the first request of a reset window.\n  - Added explicit `## Sandbox` and `## Git` headings with clear section separation in composed system prompts.\n- **Subagent prompt isolation & `delegate` allowlist enforcement (`SystemPrompt.childSystem`, `Subagents`, `AgentSession`)**:\n  - Replaced root-only guidance (`ask_user`, `monitor`, `background_task`, `memory_save`, `memory_forget`, `delegate`) in child system prompts with mode-specific `explore` (strictly read-only) and `general` subtask scopes while preserving custom test prefixes.\n  - Fixed `SubagentConfiguration.init` so an invalid effort on an allowed model keeps the allowed model with its default effort instead of falling back to a potentially unallowed parent model, and stopped `SubagentConfiguration.call(_:parent:)` from overwriting explicit disallowed models before refusal.\n  - Hid `delegate` and delegation nudges when no allowed subagent model is configured, and restricted `delegate`'s schema/description to allowed models with an explicit `Default model when omitted`.\n- **Always-On Agent, Chief & Automation prompt accuracy (`AlwaysOnAgentPrompt`, `SessionStore`, `Session`, `ChiefToolCatalog`, `AutomationTools`)**:\n  - Removed non-existent `session_create_related` references from `AlwaysOnAgentPrompt` and gated worker-orchestration instructions on the `.chief` role (`instructions(canOrchestrateWorkers:)`).\n  - Structured `ChiefToolCatalog.instructions` into clear sections (`## Worker Sessions`, `## Model Selection`, `## Lifecycle & Verification`, `## Authority Boundaries`).\n  - Split `AutomationTools.instructions` into `browserInstructions` and `computerInstructions`, omitting computer-use instructions in fenced sessions.\n- **Untrusted data isolation & multimodal framing (`PromptXML`, `MCPClient`, `AgentSession`, `MemoryClaims`, `MemoryMaintenance`, `AgentMemoryRunner`, `ModelProvider`, `ContinuityPack`)**:\n  - Added closing-tag escaping (`PromptXML`) and explicit data-not-instructions framing for MCP server instructions, working notes/transcripts/summaries, subdirectory instructions, skills, and memory extraction inputs.\n  - Added untrusted-image framing for tool-returned images on OpenAI Responses and Anthropic Messages APIs matching OpenAI Chat.\n  - Skipped empty sections in `ContinuityPack.build` instead of emitting empty headings.\n\n## Changed\n\n- **Anthropic prompt caching & prompt deduplication (`ModelProvider`, `SystemPrompt`, `AgentTools`)**:\n  - Split Anthropic system blocks at `## Environment` to place `cache_control: ephemeral` on the static system prefix and trailing tool definition alongside the last two message turns.\n  - Deduplicated overlapping tool guidance between `SystemPrompt` and `AgentTools`, relaxed rigid file-count delegation rules in favor of targeted vs. broad exploration guidance, and documented `bash` event streaming and `recall` handle formats accurately.\n- **Model-facing language consistency & background prompt calibration (`SessionMemory`, `MemoryClaims`, `PostgresMemoryStore`, `MemoryMaintenance`, `MemoryPage`, `SessionTitle`, `RelatedTask`, `ConversationRecap`, `FenceHit`, `SessionStore`)**:\n  - Standardized internal model-facing framing, session-note headings, and memory-extraction schemas in English while preserving backward compatibility for legacy Chinese headings/kinds (`SessionNotes.legacySectionAliases`, `MemoryKind.parse(_:)`) and localizing summary headings in the Settings UI (`MemoryPage`).\n  - Calibrated `SessionTitle.refreshPrompt` length constraints per language (`zh-Hans` vs. `en`).\n- **Regression test coverage**:\n  - Added `HarnessPromptRegressionTests` and updated subagent, always-on agent, continuity-pack, context-breakdown, title, and localization test suites.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
+    "assets": [
+      {
+        "name": "Atrium-0.30.2-macos-arm64.zip",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.30.2/Atrium-0.30.2-macos-arm64.zip"
+      },
+      {
+        "name": "Atrium-0.30.2-macos-arm64.zip.sha256",
+        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.30.2/Atrium-0.30.2-macos-arm64.zip.sha256"
+      }
+    ]
+  },
+  {
     "version": "0.30.1",
     "tag": "v0.30.1",
     "title": "Atrium 0.30.1",
@@ -357,25 +376,6 @@
       {
         "name": "Atrium-0.24.4-macos-arm64.zip.sha256",
         "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.4/Atrium-0.24.4-macos-arm64.zip.sha256"
-      }
-    ]
-  },
-  {
-    "version": "0.24.2",
-    "tag": "v0.24.2",
-    "title": "Atrium 0.24.2",
-    "prerelease": false,
-    "published_at": "2026-11-17T11:29:20Z",
-    "url": "https://github.com/chenkeyv/atrium-releases/releases/tag/v0.24.2",
-    "notes": "Independent work now runs concurrently across model discovery, history loading, read-only agent tools, and task cleanup.\n\n## Improved\n\n- Discover models from up to four providers at a time while preserving configuration order and credential redaction.\n- Run adjacent read, list, glob, and grep calls concurrently. Writes, commands, and other stateful tools still wait for earlier reads, and tool results remain in model order. Cancellation closes unfinished calls so the next turn can continue safely.\n- Load and parse independent history logs concurrently, while publishing complete refreshes in order. Git branch lookup and memory loading also overlap during agent startup.\n- Stop workers, close dedicated browsers and Neovim instances, and interrupt or restart separate terminals concurrently. Each instance still completes its own ordered cleanup; worker logs drain before the batch history refresh.\n- Download the update package and checksum together, and cancel remaining downloads when one fails. Prepare independent build dependencies in parallel.\n- Allow up to thirty minutes per release-upload attempt, retaining bounded retries for slow connections.\n\n## Validation and limits\n\nNormal and strict cooperative-pool test runs both passed across seven Swift test targets, reporting 3,077 tests with four existing opt-in tests skipped. The 67 Python tests also passed. Event-gated regressions cover overlap, concurrency limits, result order, write barriers, cancellation, and cleanup.\n\nConcurrency is bounded to control resource usage. Real-workload speedups have not been benchmarked; operations sharing protocol, file-write, or UI state retain their required ordering.\n\n## Requirements\n\n- Apple silicon Mac running macOS 27 or later.\n",
-    "assets": [
-      {
-        "name": "Atrium-0.24.2-macos-arm64.zip",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.2/Atrium-0.24.2-macos-arm64.zip"
-      },
-      {
-        "name": "Atrium-0.24.2-macos-arm64.zip.sha256",
-        "url": "https://github.com/chenkeyv/atrium-releases/releases/download/v0.24.2/Atrium-0.24.2-macos-arm64.zip.sha256"
       }
     ]
   }
